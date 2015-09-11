@@ -1,0 +1,14 @@
+name: date
+description: A simple Date implementation.
+version: 0.0.1
+author: Tony Humbert <humbert.tony@yahoo.com>
+#homepage: https://www.example.com
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dependencies:
+  intl: '>=0.12.0 <0.13.0'
+
+dev_dependencies:
+  test: '>=0.12.0 <0.13.0'
