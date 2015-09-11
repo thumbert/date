@@ -17,6 +17,7 @@ class Date extends Comparable<Date> {
   int _value;  // number of days since origin 1970-01-01
   int _dayOfWeek;
 
+  // Default format is [yyyy-MM-dd]
   static final DateFormat DEFAULT_FMT = new DateFormat('yyyy-MM-dd');
   static final Duration _1day = new Duration(days: 1);
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
@@ -184,6 +185,10 @@ class Date extends Comparable<Date> {
 
   bool isWeekend() => [0,6].contains(weekday);
 
+  /**
+   * Create a sequence of Dates from this Date to the other Date
+   * with a step size.
+   */
   List<Date> seqTo(Date other, {int step: 1}) {
     assert(other >= this);
     List res = [];
@@ -196,6 +201,9 @@ class Date extends Comparable<Date> {
     return res;
   }
 
+  /**
+   * Generate of sequence of Dates of a given length given a step size.
+   */
   List<Date> seqLength(int length, {int step: 1}) {
     assert(length > 0);
     List<Date> res = [this];
