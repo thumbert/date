@@ -96,4 +96,6 @@ test_date() {
 }
 
 
-main() => test_date();
+main() {
+  test_date();
+}
