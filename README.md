@@ -1,8 +1,8 @@
 # date
 
 A simple Date only object.  No time of day, no time zones, no problems.
-The computation from the triple (year, month, day) to a Julian
-date is taken from the R package [chron] http://CRAN.R-project.org/package=chron.
+The calculation to go from the triple (year, month, day) to a Julian
+date is taken from the R package [chron](http://CRAN.R-project.org/package=chron).
 
 
 ## Usage

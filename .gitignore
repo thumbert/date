@@ -13,6 +13,7 @@ pubspec.lock
 .pub/
 build/
 dartdoc-viewer/
+doc/
 
 *.iml
 *.js

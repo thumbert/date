@@ -17,10 +17,15 @@ class Date extends Comparable<Date> {
   int _value;  // number of days since origin 1970-01-01
   int _dayOfWeek;
 
-  // Default format is [yyyy-MM-dd]
+  /**
+   * Default string format is the ISO `yyyy-MM-dd`.
+   */
   static final DateFormat DEFAULT_FMT = new DateFormat('yyyy-MM-dd');
-  static final Duration _1day = new Duration(days: 1);
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
+
+  /**
+   * Use this [DateFormat] to change the `toString()` output of this date.
+   */
   static DateFormat fmt = DEFAULT_FMT;
 
   /**
@@ -30,6 +35,7 @@ class Date extends Comparable<Date> {
     _year = year;
     _month = month;
     _day = day;
+    _simpleValidation();
     _calcValue();
   }
 
@@ -144,12 +150,12 @@ class Date extends Comparable<Date> {
   Date get currentMonth => new Date(_year, _month, 1);
 
   /**
-   * Get beginning of next month.
+   * Get the beginning Date of next month.
    */
   Date get nextMonth => currentMonth.add(31).currentMonth;
 
   /**
-   * Get beginning of previous month
+   * Get the beginning Date of previous month
    */
   Date get previousMonth => currentMonth.subtract(1).currentMonth;
 
@@ -181,8 +187,10 @@ class Date extends Comparable<Date> {
     _dayOfWeek = jx;
   }
 
+  // Return the day of the year.
   int dayOfYear() => value - new Date(_year, 1, 1).value + 1;
 
+  // if this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => [0,6].contains(weekday);
 
   /**
@@ -214,5 +222,12 @@ class Date extends Comparable<Date> {
   }
 
   String toString() => fmt.format(new DateTime(_year, _month, _day));
+
+  _simpleValidation() {
+    if (_month > 12 || _month < 1)
+      throw new FormatException('Invalid month value $_month', _month);
+    if (_day > 31 || _day < 1)
+      throw new FormatException('Invalid day value $_day', _day);
+  }
 }
 
