@@ -205,7 +205,6 @@ class Date extends Comparable<Date> {
       res.add(aux);
       aux = aux.add(step);
     }
-
     return res;
   }
 
@@ -219,6 +218,14 @@ class Date extends Comparable<Date> {
       res.add(res.last.add(step));
     }
     return res;
+  }
+
+  /**
+   * Convert to a regular SDK [DateTime] object at midnight.
+   */
+  DateTime toDateTime({isUtc: false}) {
+    if (isUtc) return new DateTime.utc(year, month, day);
+    else return new DateTime(year, month, day);
   }
 
   String toString() => fmt.format(new DateTime(_year, _month, _day));
