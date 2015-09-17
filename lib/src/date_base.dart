@@ -29,6 +29,14 @@ class Date extends Comparable<Date> {
   static DateFormat fmt = DEFAULT_FMT;
 
   /**
+   * Return today's date.
+   */
+  static Date today() {
+    DateTime now = new DateTime.now();
+    return new Date(now.year, now.month, now.day);
+  }
+
+  /**
    * Construct a [Date] from parts.
    */
   Date(int year, int month, int day) {
