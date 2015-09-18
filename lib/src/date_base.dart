@@ -47,6 +47,9 @@ class Date extends Comparable<Date> {
     _calcValue();
   }
 
+  /**
+   * Construct a [Date] from a DateTime.
+   */
   Date.fromDateTime(DateTime start) {
     _year = start.year;
     _month = start.month;
@@ -96,11 +99,11 @@ class Date extends Comparable<Date> {
     }
   }
 
-
+  /// the year of the date
   int get year => _year;
-  /// month of the year
+  /// month of the year for this date
   int get month => _month;
-  /// day of the month
+  /// day of the month for this date
   int get day => _day;
   /// julian date
   int get value => _value;
