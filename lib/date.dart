@@ -10,3 +10,5 @@ library date;
 
 
 export 'src/date_base.dart';
+export 'src/time_iterable.dart';
+export 'src/month.dart';

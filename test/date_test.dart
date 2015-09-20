@@ -4,8 +4,11 @@
 library test.date;
 
 import 'package:test/test.dart';
-import 'package:date/date.dart';
 import 'package:intl/intl.dart';
+import 'package:date/date.dart';
+import 'package:date/src/time_iterable.dart';
+import 'package:date/src/month.dart';
+
 
 test_date() {
   group("Test Date: ", () {
@@ -95,7 +98,35 @@ test_date() {
   });
 }
 
+test_dateRange() {
+  group('Test TimeIterable: ', () {
+    test('daily for 5 days', () {
+      TimeIterable range = new TimeIterable(start: new Date(2015,1,1), end: new Date(2015,1,5));
+      expect(range.length, 5);
+      expect(range.last, new Date(2015,1,5));
+    });
+    test('weekly for 3 weeks', () {
+      TimeIterable range = new TimeIterable(start: new Date(2015,9,1), end: new Date(2015,9,20), step: 7);
+      print(range);
+      expect(range.length, 3);
+      expect(range.last, new Date(2015,9,15));
+    });
+  });
+}
+
+
 
 main() {
   test_date();
+  test_dateRange();
+
+  Month m = new Month(2015,1);
+  TimeIterator it = m.dateIterator;
+  while (it.moveNext())
+    print(it.current);
+
+
+  TimeIterable days = new TimeIterable(start: new Month(2015,1), end: new Month(2015,12));
+  print(days);
+
 }
