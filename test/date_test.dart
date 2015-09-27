@@ -58,9 +58,15 @@ test_date() {
     });
 
     test('current/next/previous month', (){
-      expect(new Date(2015,2,28).currentMonth, new Date(2015,2,1));
+      expect(new Date(2015,2,28).beginningOfMonth, new Date(2015,2,1));
       expect(new Date(2015,2,28).nextMonth, new Date(2015,3,1));
       expect(new Date(2015,2,28).previousMonth, new Date(2015,1,1));
+    });
+
+    test('add/subtract days', () {
+      expect(new Date(2015,1,1).add(1), new Date(2015,1,2));
+      expect(new Date(2015,1,1).subtract(1), new Date(2014,12,31));
+      expect(new Date(2015,1,1).add(-1), new Date(2014,12,31));
     });
 
     test("Date sequences", () {
@@ -98,19 +104,32 @@ test_date() {
   });
 }
 
-test_dateRange() {
+test_dateIterable() {
   group('Test TimeIterable: ', () {
     test('daily for 5 days', () {
-      TimeIterable range = new TimeIterable(start: new Date(2015,1,1), end: new Date(2015,1,5));
+      TimeIterable range = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5));
       expect(range.length, 5);
       expect(range.last, new Date(2015,1,5));
     });
+    test('daily for 5 days, backwards by one day', () {
+      TimeIterable range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
+      expect(range.length, 5);
+      expect(range.last, new Date(2015,1,1));
+    });
+
     test('weekly for 3 weeks', () {
-      TimeIterable range = new TimeIterable(start: new Date(2015,9,1), end: new Date(2015,9,20), step: 7);
-      print(range);
+      TimeIterable range = new TimeIterable(new Date(2015,9,1), new Date(2015,9,20), step: 7);
       expect(range.length, 3);
       expect(range.last, new Date(2015,9,15));
     });
+
+    test('monthly for 12 months', () {
+      TimeIterable range = new TimeIterable(new Month(2015,1), new Month(2015,12));
+      expect(range.length, 12);
+      expect(range.elementAt(4), new Month(2015,5));
+    });
+
+
   });
 }
 
@@ -118,15 +137,14 @@ test_dateRange() {
 
 main() {
   test_date();
-  test_dateRange();
-
-  Month m = new Month(2015,1);
-  TimeIterator it = m.dateIterator;
-  while (it.moveNext())
-    print(it.current);
+  test_dateIterable();
 
 
-  TimeIterable days = new TimeIterable(start: new Month(2015,1), end: new Month(2015,12));
-  print(days);
+//
+//
+//  TimeIterable days = new TimeIterable(start: new Month(2015,1), end: new Month(2015,12));
+//  print(days);
+
+//  TimeIterable range = new TimeIterable(start: new Date(2015,1,5), end: new Date(2015,1,1), step: -1);
 
 }

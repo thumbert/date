@@ -158,17 +158,17 @@ class Date extends Comparable<Date> {
   /**
    * Get the beginning of the month.
    */
-  Date get currentMonth => new Date(_year, _month, 1);
+  Date get beginningOfMonth => new Date(_year, _month, 1);
 
   /**
    * Get the beginning Date of next month.
    */
-  Date get nextMonth => currentMonth.add(31).currentMonth;
+  Date get nextMonth => beginningOfMonth.add(31).beginningOfMonth;
 
   /**
-   * Get the beginning Date of previous month
+   * Get the beginning Date of previous month.
    */
-  Date get previousMonth => currentMonth.subtract(1).currentMonth;
+  Date get previousMonth => beginningOfMonth.subtract(1).beginningOfMonth;
 
 
   bool operator <(Date other)  => this.value < other.value;

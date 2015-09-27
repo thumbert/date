@@ -4,18 +4,25 @@ import'dart:collection';
 import 'package:date/src/date_base.dart';
 
 
-/**
- * A generic iterable for the common date objects in this package.
- * Can be used to get an iterable of [Date] objects,
- * [Month] objects, etc.
- *
- */
 class TimeIterable<E extends Comparable<E>> extends Object with IterableMixin<E> {
   E start;
   E end;
   int step;
 
-  TimeIterable({E this.start, E this.end, int this.step:1});
+  /**
+   * A generic iterable for the common date objects in this package.
+   * Can be used to get an iterable of [Date] objects,
+   * [Month] objects, etc.
+   * From [start] to [end] inclusive.
+   * The [step] can be positive or negative (but non-zero.)
+   *
+   */
+  TimeIterable(E this.start, E this.end, {int this.step:1}) {
+    if (end.compareTo(start) > 0 && step < 0)
+      throw 'End is after start and step is negative!';
+    if (end.compareTo(start) < 0 && step > 0)
+      throw 'End is before start and step is positive!';
+  }
 
   Iterator<E> get iterator => new TimeIterator<E>(start, end, step: step);
 }
@@ -26,8 +33,17 @@ class TimeIterable<E extends Comparable<E>> extends Object with IterableMixin<E>
 class TimeIterator<E extends Comparable<E>> extends Iterator<E> {
   E _current, start, end;
   int step;
+  Function _isDone;
 
-  TimeIterator(E this.start, E this.end, {int this.step: 1});
+  TimeIterator(E this.start, E this.end, {int this.step: 1}) {
+    if (step > 0) {
+      _isDone = (x) => x.compareTo(end) > 0;
+    } else if (step < 0) {
+      _isDone = (x) => x.compareTo(end) < 0;
+    } else {
+      throw 'Step cannot be zero.';
+    }
+  }
 
   bool moveNext() {
     bool res = true;
@@ -35,7 +51,7 @@ class TimeIterator<E extends Comparable<E>> extends Iterator<E> {
       _current = start;
     } else {
       _current = _current.add(step);
-      if (_current.compareTo(end) < 0) res = false;
+      if (_isDone(_current)) res = false;
     }
 
     return res;

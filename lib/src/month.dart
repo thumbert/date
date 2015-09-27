@@ -60,6 +60,7 @@ class Month extends Comparable<Month> {
   bool operator >(Month other)  => _value > other._value;
   bool operator >=(Month other) => _value >= other._value;
   bool operator ==(Month other) => _value == other._value;
+
   int get hashCode => _value;
 
   int get year => _year;
@@ -79,31 +80,9 @@ class Month extends Comparable<Month> {
   }
 
   /**
-   * Create a Month sequence starting with this month and ending at
-   * [other].  The [step] can be used to skip months if needed.
+   * Days of the month as an [Iterable].
    */
-  List<Month> seqTo(Month other, {int step: 1}) {
-    List res = [];
-    Month aux = this;    // candidate
-    while (aux <= other) {
-      res.add(aux);
-      aux = aux.add(step);
-    }
-
-    return res;
-  }
-
-  /**
-   * Create a Month sequence of given [length] starting with this month.
-   * The [step] can be used to skip months if needed.
-   */
-  List<Month> seqLength(int length, {int step: 1}) {
-    List<Month> res = [this];
-    while (res.length <= length-1) {
-      res.add(res.last.add(step));
-    }
-    return res;
-  }
+  Iterable<Date> days() => new TimeIterable(startDate, endDate);
 
   String toString() => fmt.format(new DateTime(year, month));
 
