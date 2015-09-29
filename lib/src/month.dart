@@ -55,11 +55,11 @@ class Month extends Comparable<Month> {
   Month add(int months) => new Month(_calcYear(_value+months), _calcMonth(_value+months));
   Month subtract(int months) => new Month(_calcYear(_value-months), _calcMonth(_value-months));
 
-  bool operator <(Month other)  => _value < other._value;
-  bool operator <=(Month other) => _value <= other._value;
-  bool operator >(Month other)  => _value > other._value;
-  bool operator >=(Month other) => _value >= other._value;
-  bool operator ==(Month other) => _value == other._value;
+//  bool operator <(Month other)  => _value < other._value;
+//  bool operator <=(Month other) => _value <= other._value;
+//  bool operator >(Month other)  => _value > other._value;
+//  bool operator >=(Month other) => _value >= other._value;
+  bool operator ==(Month other) => other != null && _value == other._value;
 
   int get hashCode => _value;
 

@@ -171,10 +171,10 @@ class Date extends Comparable<Date> {
   Date get previousMonth => beginningOfMonth.subtract(1).beginningOfMonth;
 
 
-  bool operator <(Date other)  => this.value < other.value;
-  bool operator <=(Date other) => this.value <= other.value;
-  bool operator >(Date other)  => this.value > other.value;
-  bool operator >=(Date other) => this.value >= other.value;
+//  bool operator <(Date other)  => this.value < other.value;
+//  bool operator <=(Date other) => this.value <= other.value;
+//  bool operator >(Date other)  => this.value > other.value;
+//  bool operator >=(Date other) => this.value >= other.value;
   bool operator ==(Date other) => other != null && other._value == _value;
   int compareTo(Date other)    => this.value.compareTo(other.value);
   int get hashCode => _value;
@@ -203,33 +203,6 @@ class Date extends Comparable<Date> {
 
   // if this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => [0,6].contains(weekday);
-
-  /**
-   * Create a sequence of Dates from this Date to the other Date
-   * with a step size.
-   */
-  List<Date> seqTo(Date other, {int step: 1}) {
-    assert(other >= this);
-    List res = [];
-    Date aux = this;    // candidate
-    while (aux <= other) {
-      res.add(aux);
-      aux = aux.add(step);
-    }
-    return res;
-  }
-
-  /**
-   * Generate of sequence of Dates of a given length given a step size.
-   */
-  List<Date> seqLength(int length, {int step: 1}) {
-    assert(length > 0);
-    List<Date> res = [this];
-    while (res.length <= length-1) {
-      res.add(res.last.add(step));
-    }
-    return res;
-  }
 
   /**
    * Convert to a regular SDK [DateTime] object at midnight.
