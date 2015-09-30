@@ -3,13 +3,14 @@ library month;
 import 'package:intl/intl.dart';
 import 'package:date/src/time_iterable.dart';
 import 'package:date/src/date_base.dart';
+import 'package:date/src/time_ordering.dart';
 
 /**
  * Class representing a calendar Month.
  *
  *
  */
-class Month extends Comparable<Month> {
+class Month extends Comparable<Month> implements TimeOrdering<Month>{
 
   int _value;
   int _year;
@@ -55,10 +56,8 @@ class Month extends Comparable<Month> {
   Month add(int months) => new Month(_calcYear(_value+months), _calcMonth(_value+months));
   Month subtract(int months) => new Month(_calcYear(_value-months), _calcMonth(_value-months));
 
-//  bool operator <(Month other)  => _value < other._value;
-//  bool operator <=(Month other) => _value <= other._value;
-//  bool operator >(Month other)  => _value > other._value;
-//  bool operator >=(Month other) => _value >= other._value;
+  bool isBefore(Month other) => _value < other._value;
+  bool isAfter(Month other) => _value > other._value;
   bool operator ==(Month other) => other != null && _value == other._value;
 
   int get hashCode => _value;

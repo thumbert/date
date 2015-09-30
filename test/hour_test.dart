@@ -8,7 +8,8 @@ import 'package:timezone/standalone.dart';
 
 hour_test() async {
   await initializeTimeZone();
-  Location location = getLocation('America/New_York');
+  //Location location = getLocation('UTC');
+  Location location = getLocation('US/Eastern');  // 'US/Mountain', 'US/Central', 'US/Pacific'
   group('Hour test: ', () {
     test('create hour', (){
       Hour h = new Hour.beginning(new TZDateTime(location, 2015, 1, 1));

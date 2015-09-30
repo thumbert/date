@@ -5,11 +5,15 @@
 library date.base;
 
 import 'package:intl/intl.dart';
+import 'package:date/src/month.dart';
+import 'package:date/src/hour.dart';
+import 'package:date/src/time_iterable.dart';
+import 'package:date/src/time_ordering.dart';
 
 /**
  * A simple Date class.  No worries about the time of the day, time zones, etc.
  */
-class Date extends Comparable<Date> {
+class Date extends Comparable<Date> implements TimeOrdering<Date> {
 
   int _year;
   int _month;
@@ -161,20 +165,13 @@ class Date extends Comparable<Date> {
   Date get beginningOfMonth => new Date(_year, _month, 1);
 
   /**
-   * Get the beginning Date of next month.
+   * Get the [Month] this [Date] belongs to.
    */
-  Date get nextMonth => beginningOfMonth.add(31).beginningOfMonth;
-
-  /**
-   * Get the beginning Date of previous month.
-   */
-  Date get previousMonth => beginningOfMonth.subtract(1).beginningOfMonth;
+  Month currentMonth() => new Month(_year, _month);
 
 
-//  bool operator <(Date other)  => this.value < other.value;
-//  bool operator <=(Date other) => this.value <= other.value;
-//  bool operator >(Date other)  => this.value > other.value;
-//  bool operator >=(Date other) => this.value >= other.value;
+  bool isBefore(Date other) => _value < other._value;
+  bool isAfter(Date other) => _value > other._value;
   bool operator ==(Date other) => other != null && other._value == _value;
   int compareTo(Date other)    => this.value.compareTo(other.value);
   int get hashCode => _value;
@@ -220,5 +217,9 @@ class Date extends Comparable<Date> {
     if (_day > 31 || _day < 1)
       throw new FormatException('Invalid day value $_day', _day);
   }
+
+//  Iterable<Hour> hours({Location location}) {
+//    new TimeIterable(new Hour.beginning())
+//  }
 }
 

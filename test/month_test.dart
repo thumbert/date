@@ -50,6 +50,20 @@ test_month() {
       it.moveNext();
       expect(it.current, m.startDate);
     });
+
+    test('Get the days of the month', () {
+      TimeIterable it = new TimeIterable(new Month(2015,1), new Month(2015,12));
+      List days = it.map((Month m) => m.days().length).toList();
+      expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+    });
+
+    test('compare months', (){
+      Month m1 = new Month(2015,6);
+      Month m2 = new Month(2015,2);
+      expect(m1.isBefore(m2), false);
+      expect(m1.isAfter(m2), true);
+    });
+
   });
 }
 

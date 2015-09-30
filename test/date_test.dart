@@ -59,27 +59,14 @@ test_date() {
 
     test('current/next/previous month', (){
       expect(new Date(2015,2,28).beginningOfMonth, new Date(2015,2,1));
-      expect(new Date(2015,2,28).nextMonth, new Date(2015,3,1));
-      expect(new Date(2015,2,28).previousMonth, new Date(2015,1,1));
+      expect(new Date(2015,2,28).currentMonth().next.startDate, new Date(2015,3,1));
+      expect(new Date(2015,2,28).currentMonth().previous.startDate, new Date(2015,1,1));
     });
 
     test('add/subtract days', () {
       expect(new Date(2015,1,1).add(1), new Date(2015,1,2));
       expect(new Date(2015,1,1).subtract(1), new Date(2014,12,31));
       expect(new Date(2015,1,1).add(-1), new Date(2014,12,31));
-    });
-
-    test("Date sequences", () {
-      Date d1 = new Date(2014, 1, 1);
-      expect(d1.toString(), "2014-01-01");
-      expect(d1.next, new Date(2014, 1, 2));
-      expect(new Date(2014, 1, 31).next, new Date(2014, 2, 1));
-      expect(
-          d1.seqTo(new Date(2014, 1, 10), step: 4).map((e) => e.toString()).join(','),
-          "2014-01-01,2014-01-05,2014-01-09");
-      expect(
-          d1.seqLength(3, step: 4).map((e) => e.toString()).join(','),
-          "2014-01-01,2014-01-05,2014-01-09");
     });
 
     test("Change the date display format", () {
@@ -138,13 +125,4 @@ test_dateIterable() {
 main() {
   test_date();
   test_dateIterable();
-
-
-//
-//
-//  TimeIterable days = new TimeIterable(start: new Month(2015,1), end: new Month(2015,12));
-//  print(days);
-
-//  TimeIterable range = new TimeIterable(start: new Date(2015,1,5), end: new Date(2015,1,1), step: -1);
-
 }
