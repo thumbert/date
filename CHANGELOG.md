@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.4
+- Added an Interval class.
+
 ## 0.0.3
 - Added a TimeIterable class.
 - Added a Month class.

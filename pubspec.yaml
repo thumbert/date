@@ -8,8 +8,8 @@ environment:
   sdk: '>=1.0.0 <2.0.0'
 
 dependencies:
-  intl: '>=0.12.0 <0.13.0'
-  timezone: '^0.3.1'
+  intl: '>=0.13.0 <0.14.0'
+  timezone: '>=0.4.3 <0.5.0'
 
 dev_dependencies:
   test: '>=0.12.0 <0.13.0'
