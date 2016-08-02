@@ -57,6 +57,6 @@ class Hour extends Interval with Comparable<Hour> implements TimeOrdering<Hour> 
 
   int get hashCode => _start.hashCode;
 
-  String toString() => 'HB: $_start';
+  String toString() => '[$start, $end)';
 }
 
