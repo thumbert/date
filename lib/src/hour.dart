@@ -3,20 +3,21 @@ library date.hour;
 import 'package:timezone/standalone.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/time_ordering.dart';
+import 'package:date/src/interval.dart';
 
 /// An immutable class to represent an hour.
-class Hour extends Comparable<Hour> implements TimeOrdering<Hour> {
+class Hour extends Interval with Comparable<Hour> implements TimeOrdering<Hour> {
   TZDateTime _start, _end;
 
   static Duration _H1 = new Duration(hours: 1);
 
   /// Create an hour beginning at a given [TZDateTime]
-  Hour.beginning(TZDateTime start) {
+  Hour.beginning(TZDateTime start): super(start, start.add(_H1)) {
     _start = start;
   }
 
   /// Create an hour ending at a given [TZDateTime]
-  Hour.ending(TZDateTime end) {
+  Hour.ending(TZDateTime end): super(end.subtract(_H1), end) {
     _end = end;
   }
 

@@ -28,7 +28,7 @@ main() {
   test('interval overlap', () {
     Interval i1 = new Interval(new DateTime(2015,1,1), new DateTime(2015,1,2));
     Interval i2 = new Interval(new DateTime(2015,1,1,15), new DateTime(2015,1,3));
-    //expect(i1.overlap(i2), new Interval(i2.start, i1.end));
+    expect(i1.overlap(i2), new Interval(i2.start, i1.end));
 
     Interval i3 = new Interval(new DateTime(2015,1,2), new DateTime(2015,1,3));
     Interval i4 = new Interval(new DateTime(2015,1,1,15), new DateTime(2015,1,4));

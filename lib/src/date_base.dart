@@ -6,8 +6,6 @@ library date.base;
 
 import 'package:intl/intl.dart';
 import 'package:date/src/month.dart';
-import 'package:date/src/hour.dart';
-import 'package:date/src/time_iterable.dart';
 import 'package:date/src/time_ordering.dart';
 
 /**
