@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:date/src/time_iterable.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/time_ordering.dart';
+import 'package:date/src/interval.dart';
 
 /**
  * Class representing a calendar Month.
@@ -18,14 +19,12 @@ class Month extends Comparable<Month> implements TimeOrdering<Month>{
 
   static final DateFormat DEFAULT_FMT = new DateFormat('MMMyy');
   static final DateFormat fmt = DEFAULT_FMT;
-  static final Duration H1 = new Duration(hours: 1);
 
   static Month current( {DateTime datetime} ) {
     if (datetime == null)
       datetime = new DateTime.now();
     return new Month(datetime.year, datetime.month);
   }
-
 
   /**
    * Creates a new Month object.
@@ -48,7 +47,11 @@ class Month extends Comparable<Month> implements TimeOrdering<Month>{
   int _calcYear(int x)  => (x-1) ~/ 12;
   int _calcMonth(int x) => (x-1) % 12 + 1;
 
+  /// get the local time corresponding to the beginning of this month.
+  DateTime get start => new DateTime(_year, _month);
+  /// get the first day of the month
   Date get startDate => new Date(_year, _month, 1);
+  /// get the last day of the month
   Date get endDate => next.startDate.subtract(1);
 
   Month get previous => new Month(_calcYear(_value-1), _calcMonth(_value-1));
@@ -83,7 +86,9 @@ class Month extends Comparable<Month> implements TimeOrdering<Month>{
    */
   Iterable<Date> days() => new TimeIterable(startDate, endDate);
 
-  String toString() => fmt.format(new DateTime(year, month));
+  String toString() => fmt.format(start);
+
+  Interval toInterval() => new Interval(start, next.start);
 
   TimeIterator get dateIterator => new TimeIterator(startDate, endDate, step: 1);
 }

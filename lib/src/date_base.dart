@@ -7,6 +7,8 @@ library date.base;
 import 'package:intl/intl.dart';
 import 'package:date/src/month.dart';
 import 'package:date/src/time_ordering.dart';
+import 'package:date/src/interval.dart';
+
 
 /**
  * A simple Date class.  No worries about the time of the day, time zones, etc.
@@ -18,12 +20,15 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   int _day;
   int _value;  // number of days since origin 1970-01-01
   int _dayOfWeek;
+  DateTime _start;
+  DateTime _end;
 
   /**
    * Default string format is the ISO `yyyy-MM-dd`.
    */
   static final DateFormat DEFAULT_FMT = new DateFormat('yyyy-MM-dd');
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
+  static final Duration D1 = new Duration(days: 1);
 
   /**
    * Use this [DateFormat] to change the `toString()` output of this date.
@@ -109,6 +114,18 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   int get day => _day;
   /// julian date
   int get value => _value;
+
+  /// The start time of this day (closed).
+  DateTime get start {
+    _start ??= new DateTime(_year, _month, day);
+    return _start;
+  }
+
+  /// The end time of this day (open).
+  DateTime get end {
+    _end ??= _start.add(D1);
+    return _end;
+  }
 
   // calculate year, month, day when you know the _value
   void _calcYearMonthDay() {
@@ -208,6 +225,8 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   }
 
   String toString() => fmt.format(new DateTime(_year, _month, _day));
+
+  Interval toInterval() => new Interval(start, end);
 
   _simpleValidation() {
     if (_month > 12 || _month < 1)
