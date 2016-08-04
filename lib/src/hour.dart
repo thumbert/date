@@ -7,22 +7,14 @@ import 'package:date/src/interval.dart';
 
 /// An immutable class to represent an hour.
 class Hour extends Interval with Comparable<Hour> implements TimeOrdering<Hour> {
-  TZDateTime _start, _end;
 
   static Duration _H1 = new Duration(hours: 1);
 
   /// Create an hour beginning at a given [TZDateTime]
-  Hour.beginning(TZDateTime start): super(start, start.add(_H1)) {
-    _start = start;
-  }
+  Hour.beginning(TZDateTime start): super(start, start.add(_H1));
 
   /// Create an hour ending at a given [TZDateTime]
-  Hour.ending(TZDateTime end): super(end.subtract(_H1), end) {
-    _end = end;
-  }
-
-  TZDateTime get start => _start != null ? _start : end.subtract(_H1);
-  TZDateTime get end => _end != null ? _end : start.add(_H1);
+  Hour.ending(TZDateTime end): super(end.subtract(_H1), end);
 
   /**
    * Get the previous hour.
@@ -55,7 +47,7 @@ class Hour extends Interval with Comparable<Hour> implements TimeOrdering<Hour> 
 
   int compareTo(Hour other) => this.start.compareTo(other.start);
 
-  int get hashCode => _start.hashCode;
+  int get hashCode => start.hashCode;
 
   String toString() => '[$start, $end)';
 

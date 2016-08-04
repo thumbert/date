@@ -13,15 +13,13 @@ import 'package:date/src/interval.dart';
 /**
  * A simple Date class.  No worries about the time of the day, time zones, etc.
  */
-class Date extends Comparable<Date> implements TimeOrdering<Date> {
+class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> {
 
   int _year;
   int _month;
   int _day;
   int _value;  // number of days since origin 1970-01-01
   int _dayOfWeek;
-  DateTime _start;
-  DateTime _end;
 
   /**
    * Default string format is the ISO `yyyy-MM-dd`.
@@ -46,7 +44,7 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   /**
    * Construct a [Date] from parts.
    */
-  Date(int year, int month, int day) {
+  Date(int year, int month, int day): super(new DateTime(year, month, day), new DateTime(year, month, day+1)) {
     _year = year;
     _month = month;
     _day = day;
@@ -57,7 +55,7 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   /**
    * Construct a [Date] from a DateTime.
    */
-  Date.fromDateTime(DateTime start) {
+  Date.fromDateTime(DateTime start): super(start, start.add(D1)) {
     _year = start.year;
     _month = start.month;
     _day = start.day;
@@ -67,10 +65,12 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   /**
    * Construct a date given the number of days since the origin 1970-01-01.
    */
-  Date.fromJulianDay(int value) {
+  Date.fromJulianDay(int value): super(new DateTime.fromMillisecondsSinceEpoch(1000*24*3600*value),
+      new DateTime.fromMillisecondsSinceEpoch(1000*24*3600*(value+1))) {
     _value = value;
     _calcYearMonthDay();
   }
+
 
   /**
    * Constructs a new [Date] instance based on [formattedString].
@@ -114,18 +114,6 @@ class Date extends Comparable<Date> implements TimeOrdering<Date> {
   int get day => _day;
   /// julian date
   int get value => _value;
-
-  /// The start time of this day (closed).
-  DateTime get start {
-    _start ??= new DateTime(_year, _month, day);
-    return _start;
-  }
-
-  /// The end time of this day (open).
-  DateTime get end {
-    _end ??= _start.add(D1);
-    return _end;
-  }
 
   // calculate year, month, day when you know the _value
   void _calcYearMonthDay() {

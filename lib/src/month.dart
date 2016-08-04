@@ -11,7 +11,7 @@ import 'package:date/src/interval.dart';
  *
  *
  */
-class Month extends Comparable<Month> implements TimeOrdering<Month>{
+class Month extends Interval with Comparable<Month> implements TimeOrdering<Month>{
 
   int _value;
   int _year;
@@ -29,7 +29,7 @@ class Month extends Comparable<Month> implements TimeOrdering<Month>{
   /**
    * Creates a new Month object.
    */
-  Month(int year, int month) {
+  Month(int year, int month): super(new DateTime(year, month), new DateTime(year, month+1))  {
     _value = year*12 + month;
     _year  = year;
     _month = month;
@@ -38,7 +38,8 @@ class Month extends Comparable<Month> implements TimeOrdering<Month>{
   /**
    * Creates a new Month object from a DateTime.  The Month will contain the [datetime].
    */
-  Month.fromDateTime(DateTime datetime) {
+  Month.fromDateTime(DateTime datetime): super(new DateTime(datetime.year, datetime.month),
+      new DateTime(datetime.year, datetime.month+1)) {
     _value = datetime.year*12 + datetime.month;
     _year  = datetime.year;
     _month = datetime.month;

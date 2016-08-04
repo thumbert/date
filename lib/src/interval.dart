@@ -32,7 +32,7 @@ class Interval {
   }
 
   /// Tests whether this interval has an overlapping part with this interval.
-  bool hasOverlap(Interval other) {
+  bool _hasOverlap(Interval other) {
     if ((end.isAfter(other.start)) || (other.end.isAfter(this.start))) return true;
     return false;
   }
@@ -57,7 +57,12 @@ class Interval {
   bool operator ==(Interval other) => other != null && _start == other.start
       && _end == other.end;
 
-  int get hashCode => _start.hashCode;  /// TODO: FIXME!!
+  /// see the pairing function http://szudzik.com/ElegantPairing.pdf
+  int get hashCode {
+    int res = end.millisecondsSinceEpoch*(end.millisecondsSinceEpoch + 1) +
+      start.millisecondsSinceEpoch;
+    return res;
+  }
 
   String toString() => '[$_start, $end)';
 }

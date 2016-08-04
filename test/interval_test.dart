@@ -35,5 +35,10 @@ main() {
     expect(i3.overlap(i4), new Interval(i3.start, i3.end));
   });
 
+  test('interval hashCode', () {
+    Interval i1 = new Interval(new DateTime(2015,1,1), new DateTime(2015,1,2));
+    print(i1.hashCode);
+  });
+
 
 }
