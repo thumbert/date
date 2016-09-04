@@ -1,5 +1,5 @@
 name: date
-description: A simple Date implementation.
+description: A simple Date implementation and other time related utilities.
 version: 0.0.2
 author: Tony Humbert <humbert.tony@yahoo.com>
 #homepage: https://www.example.com
@@ -8,7 +8,7 @@ environment:
   sdk: '>=1.0.0 <2.0.0'
 
 dependencies:
-  intl: '>=0.13.0 <0.14.0'
+  intl: '>=0.14.0 <0.15.0'
   timezone: '>=0.4.3 <0.5.0'
 
 dev_dependencies:

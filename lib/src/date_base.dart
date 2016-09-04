@@ -92,10 +92,10 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
 
     Match match = re.firstMatch(formattedString);
     if (match != null) {
-      int parseIntOrZero(String matched) {
-        if (matched == null) return 0;
-        return int.parse(matched);
-      }
+//      int parseIntOrZero(String matched) {
+//        if (matched == null) return 0;
+//        return int.parse(matched);
+//      }
 
       int years = int.parse(match[1]);
       int month = int.parse(match[2]);

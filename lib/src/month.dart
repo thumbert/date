@@ -35,6 +35,12 @@ class Month extends Interval with Comparable<Month> implements TimeOrdering<Mont
     _month = month;
   }
 
+  /// Parse a string into a Month.  The default format is 'MMMyy'.
+  static Month parse(String s, {DateFormat fmt}) {
+    fmt ??= DEFAULT_FMT;
+    return new Month.fromDateTime(fmt.parse(s));
+  }
+
   /**
    * Creates a new Month object from a DateTime.  The Month will contain the [datetime].
    */

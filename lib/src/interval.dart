@@ -1,10 +1,10 @@
 library interval;
 
-/// An implementation of a time interval. The interval is ClosedOpen [start, end).
 class Interval {
   DateTime _start;
   DateTime _end;
 
+  /// An implementation of a time interval. The interval is ClosedOpen [start, end).
   Interval(DateTime start, DateTime end) {
     _start = start;
     _end = end;
