@@ -6,11 +6,10 @@ import 'package:date/src/time_iterable.dart';
 import 'package:timezone/standalone.dart';
 
 
-hour_test() async {
-  await initializeTimeZone();
+hour_test() {
   //Location location = getLocation('UTC');
   Location location = getLocation('US/Eastern');  // 'US/Mountain', 'US/Central', 'US/Pacific'
-  group('Hour test: ', () {
+  group('Test Hour: ', () {
     test('create hour', (){
       Hour h = new Hour.beginning(new TZDateTime(location, 2015, 1, 1));
       expect(h.end, new TZDateTime(location, 2015, 1, 1, 1));
@@ -41,5 +40,8 @@ hour_test() async {
 }
 
 
-main() => hour_test();
+main() {
+  initializeTimeZoneSync();
+  hour_test();
+}
 

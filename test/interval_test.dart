@@ -11,7 +11,7 @@ main() {
     Interval i1 = new Interval(new DateTime(2015,1,1), new DateTime(2015,1,2));
     Interval i2 = new Interval(new DateTime(2015,1,1), new DateTime(2015,1,2));
     Interval i3 = new Interval(new DateTime(2015,1,1), new DateTime(2015,1,3));
-    print(i1.toString());
+    //print(i1.toString());
     expect(i1 == i2, true);
     expect(i1 == i3, false);
   });
@@ -37,8 +37,14 @@ main() {
 
   test('interval hashCode', () {
     Interval i1 = new Interval(new DateTime(2015,1,1), new DateTime(2015,1,2));
-    print(i1.hashCode);
+    //print(i1.hashCode);
   });
 
+  test('instant (degenerate) interval', () {
+    Interval i = new Interval(new DateTime(2015), new DateTime(2015));
+    expect(i.isInstant(), true);
+    //print(i.toString());
+    expect(i.toString(), '2015-01-01 00:00:00.000');
+  });
 
 }

@@ -54,6 +54,8 @@ class Interval {
     return new Interval(iStart, iEnd);
   }
 
+  bool isInstant() => start.isAtSameMomentAs(end);
+
   bool operator ==(Interval other) => other != null && _start == other.start
       && _end == other.end;
 
@@ -64,6 +66,6 @@ class Interval {
     return res;
   }
 
-  String toString() => '[$_start, $end)';
+  String toString() => isInstant() ? start.toString() : '[$_start, $end)';
 }
 
