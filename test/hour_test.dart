@@ -1,13 +1,13 @@
 library test.hour_test;
 
+import 'dart:io';
 import 'package:test/test.dart';
 import 'package:date/src/hour.dart';
 import 'package:date/src/time_iterable.dart';
 import 'package:timezone/standalone.dart';
-
+import 'package:timezone/src/env.dart';
 
 hour_test() {
-  //Location location = getLocation('UTC');
   Location location = getLocation('US/Eastern');  // 'US/Mountain', 'US/Central', 'US/Pacific'
   group('Test Hour: ', () {
     test('create hour', (){
@@ -36,12 +36,25 @@ hour_test() {
       expect(it2.length, 7);  // fall back
     });
 
+    test('get all the hours in year 2016 (leap year)', () {
+      Hour start = new Hour.beginning(new TZDateTime(location, 2016));
+      Hour end = new Hour.ending(new TZDateTime(location, 2017));
+      List hours = new TimeIterable(start, end).toList();
+      expect(hours.length, 8784);
+    });
+
   });
 }
 
 
-main() {
-  initializeTimeZoneSync();
+main() async {
+  Map env = Platform.environment;
+  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
+  initializeTimeZoneSync(tzdb);
+
   hour_test();
+
+
+
 }
 

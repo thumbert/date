@@ -7,14 +7,21 @@ import 'package:date/src/interval.dart';
 
 /// An immutable class to represent an hour.
 class Hour extends Interval with Comparable<Hour> implements TimeOrdering<Hour> {
+  /// number of hours since origin in UTC timezone, hour beginning
+  /// should explore if this is worth doing.
+  ///int _value;
 
   static Duration _H1 = new Duration(hours: 1);
 
   /// Create an hour beginning at a given [TZDateTime]
-  Hour.beginning(TZDateTime start): super(start, start.add(_H1));
+  Hour.beginning(TZDateTime start): super(start, start.add(_H1)) {
+    //_value = (start.toUtc().millisecondsSinceEpoch/3600000).round();
+  }
 
   /// Create an hour ending at a given [TZDateTime]
-  Hour.ending(TZDateTime end): super(end.subtract(_H1), end);
+  Hour.ending(TZDateTime end): super(end.subtract(_H1), end) {
+    //_value = (end.toUtc().millisecondsSinceEpoch/3600000).round()-1;
+  }
 
   /**
    * Get the previous hour.
