@@ -12,6 +12,7 @@ import 'package:date/src/interval.dart';
 
 /**
  * A simple Date class.  No worries about the time of the day, time zones, etc.
+ * Days are counted as integers from an origin, set to '1970-01-01'.
  */
 class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> {
 
@@ -20,6 +21,7 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
   int _day;
   int _value;  // number of days since origin 1970-01-01
   int _dayOfWeek;
+
 
   /**
    * Default string format is the ISO `yyyy-MM-dd`.
@@ -62,15 +64,14 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
     _calcValue();
   }
 
-  /**
-   * Construct a date given the number of days since the origin 1970-01-01.
-   */
-  Date.fromJulianDay(int value): super(new DateTime.fromMillisecondsSinceEpoch(1000*24*3600*value),
-      new DateTime.fromMillisecondsSinceEpoch(1000*24*3600*(value+1))) {
-    _value = value;
-    _calcYearMonthDay();
-  }
 
+  /// Construct a date given the number of days since the origin 1970-01-01.
+  /// Can't make this a constructor because I have problems setting the start/end
+  /// of the superclass in the correct local timezone.
+  static Date fromJulianDay(int value) {
+    var startZ = new DateTime.fromMillisecondsSinceEpoch(1000*24*3600*value, isUtc: true);
+    return new Date(startZ.year, startZ.month, startZ.day);
+  }
 
   /**
    * Constructs a new [Date] instance based on [formattedString].
@@ -145,22 +146,22 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
   /**
    * Return the previous day.
    */
-  Date get previous => new Date.fromJulianDay(_value - 1);
+  Date get previous => Date.fromJulianDay(_value - 1);
 
   /**
    * Return the next day.
    */
-  Date get next => new Date.fromJulianDay( value + 1);
+  Date get next => Date.fromJulianDay( value + 1);
 
   /**
    * Add a number of days to this date.
    */
-  Date add(int step) => new Date.fromJulianDay(_value + step);
+  Date add(int step) => Date.fromJulianDay(_value + step);
 
   /**
    * Subtract a number of days from this date.
    */
-  Date subtract(int step) => new Date.fromJulianDay(value - step);
+  Date subtract(int step) => Date.fromJulianDay(value - step);
 
   /**
    * Get the beginning of the month.

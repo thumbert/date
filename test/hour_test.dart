@@ -53,8 +53,5 @@ main() async {
   initializeTimeZoneSync(tzdb);
 
   hour_test();
-
-
-
 }
 

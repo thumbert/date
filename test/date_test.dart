@@ -29,7 +29,7 @@ test_date() {
     test("From Julian day to year month day", () {
       Date d = new Date(2014, 5, 15);
       expect([d.year, d.month, d.day], [2014, 5, 15]);
-      Date d2 = new Date.fromJulianDay(d.value);
+      Date d2 = Date.fromJulianDay(d.value);
       expect([d2.year, d2.month, d2.day], [2014, 5, 15]);
       expect(d2.value, 16205);
     });
@@ -88,6 +88,19 @@ test_date() {
       expect(x.toSet().toList().length, 1);
     });
 
+    test('start/end of a Date', () {
+      var x = new Date(2016,1,1);
+      expect(x.start.toString(), '2016-01-01 00:00:00.000');
+      expect(x.end.toString(), '2016-01-02 00:00:00.000');
+    });
+
+    test('start/end of a Date after you add one day', () {
+      var x = new Date(2016,1,1);
+      var y = x.add(1);
+      expect(y.start.toString(), '2016-01-02 00:00:00.000');
+      expect(y.end.toString(), '2016-01-03 00:00:00.000');
+    });
+
   });
 }
 
@@ -98,6 +111,13 @@ test_dateIterable() {
       expect(range.length, 5);
       expect(range.last, new Date(2015,1,5));
     });
+
+    test('daily iterable start/end gets correct hours', () {
+      List x = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5)).toList();
+      List startHours = x.map((Date day) => day.start.hour).toList();
+      expect(startHours.every((v) => v == 0), true);
+    });
+
     test('daily for 5 days, backwards by one day', () {
       TimeIterable range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
       expect(range.length, 5);
