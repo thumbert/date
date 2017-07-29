@@ -1,8 +1,11 @@
 library myy;
 
+import 'month.dart';
+
 List<String> _iMon = ['F','G','H','J','K','M','N','Q','U','V','X','Z'];
 Map<String,int> _mon = new Map.fromIterables(_iMon, new List.generate(12, (i) => i+1));
 
+/// TODO: This should be a static method in the Month class.
 /// Parse a string in the format MYY (e.g. 'F18') into a month.
 Month parseMYY(String x) {
   int yy = int.parse(x.substring(1));

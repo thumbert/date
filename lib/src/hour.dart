@@ -6,7 +6,7 @@ import 'package:date/src/time_ordering.dart';
 import 'package:date/src/interval.dart';
 
 /// An immutable class to represent an hour.
-class Hour extends Interval with Comparable<Hour> implements TimeOrdering<Hour> {
+class Hour extends Interval implements TimeOrdering<Hour>, ComparableWithAdd<Hour> {
   /// number of hours since origin in UTC timezone, hour beginning
   /// should explore if this is worth doing.
   ///int _value;

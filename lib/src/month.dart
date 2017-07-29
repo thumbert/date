@@ -6,12 +6,9 @@ import 'package:date/src/date_base.dart';
 import 'package:date/src/time_ordering.dart';
 import 'package:date/src/interval.dart';
 
-/**
- * Class representing a calendar Month.
- *
- *
- */
-class Month extends Interval with Comparable<Month> implements TimeOrdering<Month>{
+
+/// Class representing a calendar Month.
+class Month extends Interval implements TimeOrdering<Month>, ComparableWithAdd<Month> {
 
   int _value;
   int _year;
@@ -26,9 +23,7 @@ class Month extends Interval with Comparable<Month> implements TimeOrdering<Mont
     return new Month(datetime.year, datetime.month);
   }
 
-  /**
-   * Creates a new Month object.
-   */
+  /// Creates a new Month object.
   Month(int year, int month): super(new DateTime(year, month), new DateTime(year, month+1))  {
     _value = year*12 + month;
     _year  = year;
@@ -41,9 +36,7 @@ class Month extends Interval with Comparable<Month> implements TimeOrdering<Mont
     return new Month.fromDateTime(fmt.parse(s));
   }
 
-  /**
-   * Creates a new Month object from a DateTime.  The Month will contain the [datetime].
-   */
+  /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromDateTime(DateTime datetime): super(new DateTime(datetime.year, datetime.month),
       new DateTime(datetime.year, datetime.month+1)) {
     _value = datetime.year*12 + datetime.month;
@@ -88,9 +81,8 @@ class Month extends Interval with Comparable<Month> implements TimeOrdering<Mont
     return res;
   }
 
-  /**
-   * Days of the month as an [Iterable].
-   */
+
+  /// Days of the month as an [Iterable].
   Iterable<Date> days() => new TimeIterable(startDate, endDate);
 
   String toString() => fmt.format(start);

@@ -5,16 +5,15 @@
 library date.base;
 
 import 'package:intl/intl.dart';
-import 'package:date/src/month.dart';
-import 'package:date/src/time_ordering.dart';
-import 'package:date/src/interval.dart';
+import 'month.dart';
+import 'time_ordering.dart';
+import 'interval.dart';
 
 
-/**
- * A simple Date class.  No worries about the time of the day, time zones, etc.
- * Days are counted as integers from an origin, set to '1970-01-01'.
- */
-class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> {
+
+ ///A simple Date class.  No worries about the time of the day, time zones, etc.
+ ///Days are counted as integers from an origin, set to '1970-01-01'.
+class Date extends Interval implements TimeOrdering<Date>, ComparableWithAdd<Date> {
 
   int _year;
   int _month;
@@ -23,29 +22,25 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
   int _dayOfWeek;
 
 
-  /**
-   * Default string format is the ISO `yyyy-MM-dd`.
-   */
+
+  /// Default string format is the ISO `yyyy-MM-dd`.
   static final DateFormat DEFAULT_FMT = new DateFormat('yyyy-MM-dd');
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
   static final Duration D1 = new Duration(days: 1);
 
-  /**
-   * Use this [DateFormat] to change the `toString()` output of this date.
-   */
+
+  /// Use this [DateFormat] to change the `toString()` output of this date.
   static DateFormat fmt = DEFAULT_FMT;
 
-  /**
-   * Return today's date.
-   */
+
+  /// Return today's date.
   static Date today() {
     DateTime now = new DateTime.now();
     return new Date(now.year, now.month, now.day);
   }
 
-  /**
-   * Construct a [Date] from parts.
-   */
+
+  /// Construct a [Date] from parts.
   Date(int year, int month, int day): super(new DateTime(year, month, day), new DateTime(year, month, day+1)) {
     _year = year;
     _month = month;
@@ -54,9 +49,8 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
     _calcValue();
   }
 
-  /**
-   * Construct a [Date] from a DateTime.
-   */
+
+  /// Construct a [Date] from a DateTime.
   Date.fromDateTime(DateTime start): super(start, start.add(D1)) {
     _year = start.year;
     _month = start.month;
@@ -93,11 +87,6 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
 
     Match match = re.firstMatch(formattedString);
     if (match != null) {
-//      int parseIntOrZero(String matched) {
-//        if (matched == null) return 0;
-//        return int.parse(matched);
-//      }
-
       int years = int.parse(match[1]);
       int month = int.parse(match[2]);
       int day = int.parse(match[3]);
@@ -116,22 +105,6 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
   /// julian date
   int get value => _value;
 
-  // calculate year, month, day when you know the _value
-  void _calcYearMonthDay() {
-    var j = value + _ORIGIN - 1721119;
-    _year = (4 * j - 1) ~/ 146097;
-    j = 4 * j - 1 - 146097 * _year;
-    _day = j ~/ 4;
-    j = (4 * _day + 3) ~/ 1461;
-    _day = (4 * _day + 3) - 1461 * j;
-    _day = (_day + 4) ~/ 4;
-    _month = (5 * _day - 3) ~/ 153;
-    _day = (5 * _day - 3) - 153 * _month;
-    _day = (_day + 5) ~/ 5;
-    _year = 100 * _year + j;
-    _year = _year + (_month < 10 ? 0 : 1);
-    _month = _month + (_month < 10 ? 3 : -9);
-  }
 
   void _calcValue() {
     // code from julian date in the S book (p.269)
@@ -143,34 +116,28 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
     _value = (146097*c) ~/ 4 + (1461*ya) ~/ 4 + (153 * m + 2) ~/ 5 + _day + 1721119 - _ORIGIN;
   }
 
-  /**
-   * Return the previous day.
-   */
+
+  /// Return the previous day.
   Date get previous => Date.fromJulianDay(_value - 1);
 
-  /**
-   * Return the next day.
-   */
+
+  /// Return the next day.
   Date get next => Date.fromJulianDay( value + 1);
 
-  /**
-   * Add a number of days to this date.
-   */
+
+  /// Add a number of days to this date.
   Date add(int step) => Date.fromJulianDay(_value + step);
 
-  /**
-   * Subtract a number of days from this date.
-   */
+
+  /// Subtract a number of days from this date.
   Date subtract(int step) => Date.fromJulianDay(value - step);
 
-  /**
-   * Get the beginning of the month.
-   */
+
+  /// Get the beginning of the month.
   Date get beginningOfMonth => new Date(_year, _month, 1);
 
-  /**
-   * Get the [Month] this [Date] belongs to.
-   */
+
+  /// Get the [Month] this [Date] belongs to.
   Month currentMonth() => new Month(_year, _month);
 
 
@@ -180,9 +147,8 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
   int compareTo(Date other)    => this.value.compareTo(other.value);
   int get hashCode => _value;
 
-  /**
-   * Return the day of the week.  Mon=1, ... Sat=6, Sun=7.
-   */
+
+  /// Return the day of the week.  Mon=1, ... Sat=6, Sun=7.
   int get weekday {
     if (_dayOfWeek == null) _calcDayOfWeek();
     return _dayOfWeek;
@@ -199,15 +165,14 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
     _dayOfWeek = jx;
   }
 
-  // Return the day of the year.
+  /// Return the day of the year.
   int dayOfYear() => value - new Date(_year, 1, 1).value + 1;
 
-  // if this [Date] is Sat or Sun, return true.  False otherwise.
+  /// If this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => [0,6].contains(weekday);
 
-  /**
-   * Convert to a regular SDK [DateTime] object at midnight.
-   */
+
+  /// Convert to a regular SDK [DateTime] object at midnight.
   DateTime toDateTime({isUtc: false}) {
     if (isUtc) return new DateTime.utc(year, month, day);
     else return new DateTime(year, month, day);
@@ -223,9 +188,21 @@ class Date extends Interval with Comparable<Date> implements TimeOrdering<Date> 
     if (_day > 31 || _day < 1)
       throw new FormatException('Invalid day value $_day', _day);
   }
-
-//  Iterable<Hour> hours({Location location}) {
-//    new TimeIterable(new Hour.beginning())
-//  }
 }
 
+// calculate year, month, day when you know the _value
+//  void _calcYearMonthDay() {
+//    var j = value + _ORIGIN - 1721119;
+//    _year = (4 * j - 1) ~/ 146097;
+//    j = 4 * j - 1 - 146097 * _year;
+//    _day = j ~/ 4;
+//    j = (4 * _day + 3) ~/ 1461;
+//    _day = (4 * _day + 3) - 1461 * j;
+//    _day = (_day + 4) ~/ 4;
+//    _month = (5 * _day - 3) ~/ 153;
+//    _day = (5 * _day - 3) - 153 * _month;
+//    _day = (_day + 5) ~/ 5;
+//    _year = 100 * _year + j;
+//    _year = _year + (_month < 10 ? 0 : 1);
+//    _month = _month + (_month < 10 ? 3 : -9);
+//  }

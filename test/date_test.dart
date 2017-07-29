@@ -101,6 +101,12 @@ test_date() {
       expect(y.end.toString(), '2016-01-03 00:00:00.000');
     });
 
+    test('compare Dates', (){
+      var x = new Date(2016, 1, 1);
+      var y = new Date(2017, 3, 3);
+      expect(x.compareTo(y), -1);
+    });
+
   });
 }
 

@@ -27,8 +27,8 @@ dt2.subtract(1) == new Date(2015,2,28);
 
 Generate a sequence of dates:
 ```dart
-List s1 = new Date(2015,1,1).seqTo(new Date(2015,12,31));
-List s2 = new Date(2015,1,1).seqLength(365);
+TimeIterable it = new TimeIterable(new Date(2015), new Date(2016).previous);
+List days = it.toList();
 ```
 
 
