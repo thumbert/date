@@ -13,6 +13,10 @@ class Hour extends Interval implements TimeOrdering<Hour>, ComparableWithAdd<Hou
 
   static Duration _H1 = new Duration(hours: 1);
 
+  /// Create an hour containing a given [TZDateTime]
+  Hour.containing(TZDateTime dt) : super(new TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour),
+      new TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour+1)) {}
+  
   /// Create an hour beginning at a given [TZDateTime]
   Hour.beginning(TZDateTime start): super(start, start.add(_H1)) {
     //_value = (start.toUtc().millisecondsSinceEpoch/3600000).round();
