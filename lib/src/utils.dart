@@ -1,5 +1,6 @@
 library utils;
 
+import 'interval.dart';
 
 /// Split this interval into hours.
 /// If the interval is inside an hour, return an empty list.
