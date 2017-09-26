@@ -1,5 +1,6 @@
 library utils;
 
+import 'hour.dart';
 import 'interval.dart';
 
 /// Split this interval into hours.
