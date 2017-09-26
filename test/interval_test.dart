@@ -76,5 +76,20 @@ main() {
     expect(res.length, 1);
   });
   
+  test('Make contiguous intervals', () {
+    var i1 = new Interval(new TZDateTime(location, 2017, 1, 1),
+        new TZDateTime(location, 2017, 1, 1, 4));
+    var i2 = new Interval(new TZDateTime(location, 2017, 1, 1, 6),
+        new TZDateTime(location, 2017, 1, 1, 8));
+    var i3 = new Hour.beginning(new TZDateTime(location, 2017, 1, 1, 9));
+    List hours = []
+      ..addAll(splitIntoHours(i1))
+      ..addAll(splitIntoHours(i2))
+      ..add(i3);
+    var res = makeContiguousIntervals(hours);
+    expect(res, [i1, i2, i3]);
+    //res.forEach(print);
+    expect(makeContiguousIntervals([i3]), [i3]);
+  });
   
 }
