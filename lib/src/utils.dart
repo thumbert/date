@@ -3,6 +3,27 @@ library utils;
 import 'hour.dart';
 import 'interval.dart';
 
+/// Given a list of intervals return another list of contiguous intervals.
+/// For example hours Hour.beginning(2017,1,1,1) and Hour.beginning(2017,1,1,2)
+/// will combine into Interval [2017-01-01 01:00:00 -> 2017-01-01 03:00:00)
+/// The input interval [x] needs to be sorted.
+List<Interval> makeContiguousIntervals(List<Interval> x) {
+  List res = [];
+  if (x.isEmpty) return [];
+  Interval current = x.first;
+  for (int i = 1; i < x.length; i++) {
+    if (x[i].abuts(current)) {
+      current = new Interval(current.start, x[i].end);
+    } else {
+      res.add(current);
+      current = x[i];
+    }
+  }
+  res.add(current);
+  return res;
+}
+
+
 /// Split this interval into hours.
 /// If the interval is inside an hour, return an empty list.
 /// If the interval is exactly an hour, return it.
