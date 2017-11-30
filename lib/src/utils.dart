@@ -24,32 +24,6 @@ List<Interval> makeContiguousIntervals(List<Interval> x) {
 }
 
 
-/// Split this interval into hours.
-/// If the interval is inside an hour, return an empty list.
-/// If the interval is exactly an hour, return it.
-/// If the interval crosses the start of an hour, return both hours.
-List<Hour> splitIntoHours(Interval interval) {
-  List<Hour> res = [];
-  Hour current = new Hour.containing(interval.start);
-  Hour last;
-  if (isBeginningOfHour(interval.end))
-    last = new Hour.ending(interval.end);
-  else
-    last = new Hour.containing(interval.end);
-  if (current == last) {
-    if (isBeginningOfHour(interval.start) && isBeginningOfHour(interval.end))
-      res.add(current);
-  } else {
-    while (!current.isAfter(last)) {
-      res.add(current);
-      current = current.next;
-    }
-  }
-  return res;
-}
-
-
-
 
 /// Check if a DateTime is a beginning of an hour
 bool isBeginningOfHour(DateTime dt) {

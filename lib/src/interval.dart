@@ -1,5 +1,7 @@
 library interval;
 
+import 'package:func/func.dart';
+
 class Interval {
   DateTime _start;
   DateTime _end;
@@ -10,6 +12,12 @@ class Interval {
     _end = end;
     if (end.isBefore(start))
       throw new ArgumentError('Start DateTime needs to be before end DateTime.');
+  }
+
+  /// Construct an interval of a given [duration] starting at a [start] DateTime.
+  Interval.beginning(DateTime start, Duration duration) {
+    _start = start;
+    _end = start.add(duration);
   }
 
   DateTime get start => _start;
@@ -65,6 +73,25 @@ class Interval {
       start.millisecondsSinceEpoch;
     return res;
   }
+
+
+  /// Split this interval into a list of abutting intervals according to
+  /// function [f].  The function [f] operates on the start(left) of
+  /// each interval.
+  /// <p>For example to split an year into hours use
+  /// f = (x) => new Hour.beginning(x)
+  /// <p>or, to split a month into days use
+  /// f = (x) => new Date(x.year, x.month, x.day)
+  List<Interval> splitLeft(Func1<DateTime,Interval> f) {
+    List res = [];
+    Interval current = f(start);
+    while (current.end.compareTo(end) < 1) {
+      res.add(current);
+      current = f(current.end);
+    }
+    return res;
+  }
+
 
   String toString() => isInstant() ? start.toString() : '[$_start, $end)';
 }

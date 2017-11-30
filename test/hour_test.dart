@@ -36,7 +36,7 @@ hour_test() {
       expect(it2.length, 7);  // fall back
     });
 
-    test('get all the hours in year 2016 (leap year)', () {
+    test('there are 8784 hours in year 2016 (leap year)', () {
       Hour start = new Hour.beginning(new TZDateTime(location, 2016));
       Hour end = new Hour.ending(new TZDateTime(location, 2017));
       List hours = new TimeIterable(start, end).toList();
