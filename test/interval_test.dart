@@ -5,6 +5,8 @@ import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
 import 'package:date/src/interval.dart';
 import 'package:date/src/hour.dart';
+import 'package:date/src/month.dart';
+import 'package:date/src/date_base.dart';
 import 'package:date/src/utils.dart';
 
 main() {
@@ -87,7 +89,7 @@ main() {
       List res = interval.splitLeft((x) => new Hour.beginning(x));
       expect(res.length, 1);
     });
-    test('splitting three hours into 36 5-min intervals', () {
+    test('split three hours into 36 5-min intervals', () {
       TZDateTime start = new TZDateTime(location, 2017, 1, 1, 0);
       TZDateTime end = new TZDateTime(location, 2017, 1, 1, 3);
       Interval interval = new Interval(start, end);
@@ -95,6 +97,18 @@ main() {
       List res = interval.splitLeft((x) => new Interval.beginning(x, min5));
       expect(res.length, 36);
     });
+    test('Split 1 month into days using splitLeft', (){
+      var interval = new Month(2017,3);
+      var days = interval.splitLeft((dt) => new Date.fromDateTime(dt));
+      days.forEach(print);
+      expect(days.length, 31);
+    });
+    test('Split 3 months into days using splitLeft', (){
+      var interval = new Interval(new DateTime(2017,1,1), new DateTime(2017,4,1));
+      var days = interval.splitLeft((dt) => new Date.fromDateTime(dt));
+      ///days.forEach(print);
+    });
+
 
     test('Make contiguous intervals', () {
       var i1 = new Interval(new TZDateTime(location, 2017, 1, 1),
