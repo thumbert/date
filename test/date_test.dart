@@ -19,7 +19,12 @@ test_date() {
       expect(new Date(2100, 1, 1).value, 47482);
     });
 
-    test('parse a string', (){
+    test('Constructor from DateTime across DST', (){
+      var dst = new Date.fromDateTime(new DateTime(2017,3,12));
+      expect(dst.end, new DateTime(2017,3,13));
+    });
+
+    test('Parse a string', (){
       expect(Date.parse('20150101'), new Date(2015,1,1));
       expect(Date.parse('2015-01-03'), new Date(2015,1,3));
       expect(Date.parse('2015-0103'), new Date(2015,1,3));

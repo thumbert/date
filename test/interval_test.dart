@@ -9,32 +9,28 @@ import 'package:date/src/month.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/utils.dart';
 
-main() {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] +
-      '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b.tzf';
-  initializeTimeZoneSync(tzdb);
+testInterval() {
   Location location = getLocation('US/Eastern');
 
   group('Test Interval:', () {
     test('interval', () {
       Interval i1 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
       Interval i2 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
       Interval i3 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 3));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 3));
       expect(i1 == i2, true);
       expect(i1 == i3, false);
     });
 
     test('interval abuts', () {
       Interval i1 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
       Interval i2 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
       Interval i3 =
-          new Interval(new DateTime(2015, 1, 2), new DateTime(2015, 1, 3));
+      new Interval(new DateTime(2015, 1, 2), new DateTime(2015, 1, 3));
       expect(i1.abuts(i2), false);
       expect(i1.abuts(i3), true);
       expect(i3.abuts(i1), true);
@@ -42,21 +38,21 @@ main() {
 
     test('interval overlap', () {
       Interval i1 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
       Interval i2 =
-          new Interval(new DateTime(2015, 1, 1, 15), new DateTime(2015, 1, 3));
+      new Interval(new DateTime(2015, 1, 1, 15), new DateTime(2015, 1, 3));
       expect(i1.overlap(i2), new Interval(i2.start, i1.end));
 
       Interval i3 =
-          new Interval(new DateTime(2015, 1, 2), new DateTime(2015, 1, 3));
+      new Interval(new DateTime(2015, 1, 2), new DateTime(2015, 1, 3));
       Interval i4 =
-          new Interval(new DateTime(2015, 1, 1, 15), new DateTime(2015, 1, 4));
+      new Interval(new DateTime(2015, 1, 1, 15), new DateTime(2015, 1, 4));
       expect(i3.overlap(i4), new Interval(i3.start, i3.end));
     });
 
     test('interval hashCode', () {
       Interval i1 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
+      new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
       //print(i1.hashCode);
     });
 
@@ -75,13 +71,13 @@ main() {
     });
     test(
         'splitting into hours an interval less than an hour, returns an empty list',
-        () {
-      TZDateTime start = new TZDateTime(location, 2017, 1, 1, 1, 10);
-      TZDateTime end = new TZDateTime(location, 2017, 1, 1, 1, 15);
-      Interval interval = new Interval(start, end);
-      List res = interval.splitLeft((x) => new Hour.beginning(x));
-      expect(res.length, 0);
-    });
+            () {
+          TZDateTime start = new TZDateTime(location, 2017, 1, 1, 1, 10);
+          TZDateTime end = new TZDateTime(location, 2017, 1, 1, 1, 15);
+          Interval interval = new Interval(start, end);
+          List res = interval.splitLeft((x) => new Hour.beginning(x));
+          expect(res.length, 0);
+        });
     test('splitting into hours an exact hour, returns the hour', () {
       TZDateTime start = new TZDateTime(location, 2017, 1, 1, 0);
       TZDateTime end = new TZDateTime(location, 2017, 1, 1, 1);
@@ -100,13 +96,12 @@ main() {
     test('Split 1 month into days using splitLeft', (){
       var interval = new Month(2017,3);
       var days = interval.splitLeft((dt) => new Date.fromDateTime(dt));
-      days.forEach(print);
       expect(days.length, 31);
     });
     test('Split 3 months into days using splitLeft', (){
       var interval = new Interval(new DateTime(2017,1,1), new DateTime(2017,4,1));
       var days = interval.splitLeft((dt) => new Date.fromDateTime(dt));
-      ///days.forEach(print);
+      expect(days.length, 90);
     });
 
 
@@ -125,4 +120,14 @@ main() {
       expect(makeContiguousIntervals([i3]), [i3]);
     });
   });
+}
+
+
+main() {
+  Map env = Platform.environment;
+  String tzdb = env['HOME'] +
+      '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b.tzf';
+  initializeTimeZoneSync(tzdb);
+
+  testInterval();
 }

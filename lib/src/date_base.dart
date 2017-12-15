@@ -51,8 +51,7 @@ class Date extends Interval implements TimeOrdering<Date>, ComparableWithAdd<Dat
 
 
   /// Construct a [Date] from a DateTime.
-  /// TODO: I think this is dangerous. Date needs to call the super in UTC. 
-  Date.fromDateTime(DateTime start): super(start, start.add(D1)) {
+  Date.fromDateTime(DateTime start): super(start, new DateTime(start.year, start.month, start.day+1)) {
     _year = start.year;
     _month = start.month;
     _day = start.day;
