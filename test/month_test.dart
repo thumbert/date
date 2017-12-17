@@ -1,10 +1,18 @@
 library test_month;
 
+import 'dart:io';
 import 'package:test/test.dart';
+import 'package:timezone/standalone.dart';
+import 'package:timezone/timezone.dart';
 import 'package:date/src/month.dart';
 import 'package:date/src/time_iterable.dart';
 
+
 test_month() {
+  Map env = Platform.environment;
+  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
+  initializeTimeZoneSync(tzdb);
+
   group("Test Month:", () {
     test("Create months from year month", () {
       Month m = new Month(2014, 1);
@@ -21,6 +29,15 @@ test_month() {
       expect([m.year, m.month], [2014, 11]);
       m = new Month.fromDateTime(new DateTime(2014, 12));
       expect([m.year, m.month], [2014, 12]);
+    });
+
+    test('Create month in a different timezone', (){
+      Month m1 = new Month(2017, 1)..location=getLocation('US/Eastern');
+      expect(m1.location.toString(), 'US/Eastern');
+      expect(m1.start.toString(), '2017-01-01 00:00:00.000-0500');
+      Month m2 = new Month(2017, 1);
+      expect(m2.location.toString(), 'UTC');
+      expect(m2.start.toString(), '2017-01-01 00:00:00.000Z');
     });
 
     test("Next/previous months", () {
@@ -51,11 +68,22 @@ test_month() {
       expect(it.current, m.startDate);
     });
 
-    test('Get the days of the month', () {
-      TimeIterable it = new TimeIterable(new Month(2015,1), new Month(2015,12));
-      List days = it.map((Month m) => m.days().length).toList();
-      expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+//    test('Get the days of the month', () {
+//      TimeIterable it = new TimeIterable(new Month(2015,1), new Month(2015,12));
+//      List days = it.map((Month m) => m.days().length).toList();
+//      expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+//    });
+
+    test('Split one year with TZDateTime into months using splitLeft', (){
+      var interval = new Interval(new TZDateTime(location, 2016), new TZDateTime(location, 2017));
+      print(new TZDateTime(location, 2016).millisecondsSinceEpoch);
+      // the line below works just fine ...
+      //var interval = new Interval(new DateTime(2016), new DateTime(2017));
+      var months = interval.splitLeft((dt) => new Month(dt.year, dt.month));
+      months.forEach(print);
+      expect(months.length, 12);
     });
+
 
     test('compare months', (){
       Month m1 = new Month(2015,6);

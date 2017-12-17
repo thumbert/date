@@ -1,6 +1,7 @@
 library interval;
 
 import 'package:func/func.dart';
+import 'package:timezone/timezone.dart';
 
 class Interval {
   DateTime _start;
@@ -85,7 +86,9 @@ class Interval {
   List<Interval> splitLeft(Func1<DateTime,Interval> f) {
     List res = [];
     Interval current = f(start);
-    while (current.end.compareTo(end) < 1) {
+    /// TODO: can't compare if one is DateTime and one is TZDateTime
+    /// for example one TZ year split into months!
+    while ((current.end.millisecondsSinceEpoch).compareTo(end.millisecondsSinceEpoch) < 1) {
       res.add(current);
       current = f(current.end);
     }
