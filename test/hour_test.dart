@@ -3,13 +3,14 @@ library test.hour_test;
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:date/src/hour.dart';
+import 'package:date/src/interval.dart';
 import 'package:date/src/time_iterable.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/src/env.dart';
 
 hour_test() {
   Location location = getLocation('US/Eastern');  // 'US/Mountain', 'US/Central', 'US/Pacific'
-  group('Test Hour: ', () {
+  group('Test Hour:', () {
     test('create hour', (){
       Hour h = new Hour.beginning(new TZDateTime(location, 2015, 1, 1));
       expect(h.end, new TZDateTime(location, 2015, 1, 1, 1));
@@ -26,13 +27,11 @@ hour_test() {
       TimeIterable it1 = new TimeIterable(
           new Hour.beginning(new TZDateTime(location, 2015, 3, 8, 0)),
           new Hour.beginning(new TZDateTime(location, 2015, 3, 8, 5)));
-      //it1.forEach((h) => print(h));
       expect(it1.length, 5);  // spring forward
 
       TimeIterable it2 = new TimeIterable(
           new Hour.beginning(new TZDateTime(location, 2015, 11, 1, 0)),
           new Hour.beginning(new TZDateTime(location, 2015, 11, 1, 5)));
-      //it2.forEach((h) => print(h));
       expect(it2.length, 7);  // fall back
     });
 
@@ -40,6 +39,13 @@ hour_test() {
       Hour start = new Hour.beginning(new TZDateTime(location, 2016));
       Hour end = new Hour.ending(new TZDateTime(location, 2017));
       List hours = new TimeIterable(start, end).toList();
+      expect(hours.length, 8784);
+    });
+
+    test('split an year into hours', () {
+      var year = new Interval(new TZDateTime(location, 2016),
+          new TZDateTime(location, 2017));
+      var hours = year.splitLeft((dt) => new Hour.beginning(dt));
       expect(hours.length, 8784);
     });
 

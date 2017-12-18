@@ -3,14 +3,21 @@
 
 library test.date;
 
+import 'dart:io';
 import 'package:test/test.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart';
+import 'package:timezone/standalone.dart';
 import 'package:date/date.dart';
 import 'package:date/src/time_iterable.dart';
 import 'package:date/src/month.dart';
 
 
 test_date() {
+  Map env = Platform.environment;
+  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
+  initializeTimeZoneSync(tzdb);
+
   group("Test Date: ", () {
     test("From year month day to Julian day", () {
       expect(new Date(1970, 1, 1).value, 0);
@@ -19,9 +26,10 @@ test_date() {
       expect(new Date(2100, 1, 1).value, 47482);
     });
 
-    test('Constructor from DateTime across DST', (){
-      var dst = new Date.fromDateTime(new DateTime(2017,3,12));
-      expect(dst.end, new DateTime(2017,3,13));
+    test('Constructor from TZDateTime for DST', (){
+      Location eastern = getLocation('US/Eastern');
+      var dst = new Date.fromTZDateTime(new TZDateTime(eastern,2017,3,12));
+      expect(dst.end, new TZDateTime(eastern,2017,3,13));
     });
 
     test('Parse a string', (){
@@ -95,15 +103,15 @@ test_date() {
 
     test('start/end of a Date', () {
       var x = new Date(2016,1,1);
-      expect(x.start.toString(), '2016-01-01 00:00:00.000');
-      expect(x.end.toString(), '2016-01-02 00:00:00.000');
+      expect(x.start.toString(), '2016-01-01 00:00:00.000Z');
+      expect(x.end.toString(), '2016-01-02 00:00:00.000Z');
     });
 
     test('start/end of a Date after you add one day', () {
       var x = new Date(2016,1,1);
       var y = x.add(1);
-      expect(y.start.toString(), '2016-01-02 00:00:00.000');
-      expect(y.end.toString(), '2016-01-03 00:00:00.000');
+      expect(y.start.toString(), '2016-01-02 00:00:00.000Z');
+      expect(y.end.toString(), '2016-01-03 00:00:00.000Z');
     });
 
     test('compare Dates', (){

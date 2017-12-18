@@ -107,13 +107,13 @@ testInterval() {
     });
     test('Split 1 month into days using splitLeft', () {
       var interval = new Month(2017, 3);
-      var days = interval.splitLeft((dt) => new Date.fromDateTime(dt));
+      var days = interval.splitLeft((dt) => new Date.fromTZDateTime(dt));
       expect(days.length, 31);
     });
     test('Split 3 months into days using splitLeft', () {
       var interval =
           new Interval(new DateTime(2017, 1, 1), new DateTime(2017, 4, 1));
-      var days = interval.splitLeft((dt) => new Date.fromDateTime(dt));
+      var days = interval.splitLeft((dt) => new Date(dt.year, dt.month, dt.day));
       expect(days.length, 90);
     });
     test('Split one year with TZDateTime into months using splitLeft', () {

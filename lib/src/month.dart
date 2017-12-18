@@ -10,11 +10,10 @@ import 'package:timezone/timezone.dart';
 /// Class representing a calendar Month implemented as an Interval.
 class Month extends Interval
     implements TimeOrdering<Month>, ComparableWithAdd<Month> {
-
   int _value;
   int _year;
   int _month; // between Jan=1 to Dec=12
-  Location location;
+  Location _location;
 
   static final DateFormat DEFAULT_FMT = new DateFormat('MMMyy');
   static final DateFormat fmt = DEFAULT_FMT;
@@ -28,38 +27,44 @@ class Month extends Interval
   /// The default timezone is UTC.
   /// Specify the timezone for the month
   /// if you want to split/aggregate months.
-  Month(int year, int month, {this.location})
-      : super(new DateTime(year, month),
-            new DateTime(year, month + 1)) {
+  Month(int year, int month, {Location location})
+      : super(new DateTime(year, month), new DateTime(year, month + 1)) {
     _value = year * 12 + month;
     _year = year;
     _month = month;
-    location ??= UTC;
+    if (location == null)
+      _location = UTC;
+    else
+      _location = location;
   }
 
-  /// Parse a string into a Month.  The default format is 'MMMyy'.
-  static Month parse(String s, {DateFormat fmt}) {
+  /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
+  static Month parse(String s, {DateFormat fmt, Location location}) {
     fmt ??= DEFAULT_FMT;
-    return new Month.fromDateTime(fmt.parse(s));
+    location ??= UTC;
+    return new Month.fromTZDateTime(
+        new TZDateTime.from(fmt.parse(s), location));
   }
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
-  Month.fromDateTime(DateTime datetime, {this.location})
+  Month.fromTZDateTime(TZDateTime datetime)
       : super(new DateTime(datetime.year, datetime.month),
             new DateTime(datetime.year, datetime.month + 1)) {
     _value = datetime.year * 12 + datetime.month;
     _year = datetime.year;
     _month = datetime.month;
-    location ??= UTC;
+    _location = datetime.location;
   }
 
   int _calcYear(int x) => (x - 1) ~/ 12;
   int _calcMonth(int x) => (x - 1) % 12 + 1;
 
+  Location get location => _location;
+
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
   DateTime get start => new TZDateTime(location, _year, _month);
-  DateTime get end => new TZDateTime(location, _year, _month+1);
+  DateTime get end => new TZDateTime(location, _year, _month + 1);
 
   /// Get the first day of the month.
   Date get startDate => new Date(_year, _month, 1);
@@ -99,8 +104,7 @@ class Month extends Interval
   }
 
   /// Days of the month as list.
-  /// TODO: add a location for dates!
-  List<Date> days() => splitLeft((dt) => new Date.fromDateTime(dt));
+  List<Date> days() => splitLeft((dt) => new Date.fromTZDateTime(dt));
 
   String toString() => fmt.format(start);
 
