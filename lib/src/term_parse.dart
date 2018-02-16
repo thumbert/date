@@ -2,6 +2,7 @@ library term_parse;
 
 import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
+import 'package:timezone/timezone.dart';
 
 Set<String> _mon = new Set.from([
   'Jan',
@@ -68,8 +69,8 @@ class TermGrammarDefinition extends GrammarDefinition {
   token(Parser p) => p.flatten().trim();
   simpleDayToken() => ref(dayToken) & ref(monthToken) & ref(yearToken);
   simpleMonthToken() => ref(monthToken) & ref(yearToken);
-  simpleQuarterToken() => ref(quarterToken());
-   simpleToken() => ref(simpleMonthToken) | ref(simpleDayToken); // | ref(simpleQuarterToken());
+  simpleQuarterToken() => quarterToken();
+   simpleToken() => ref(simpleMonthToken) | ref(simpleDayToken) | simpleQuarterToken();
 
   compoundDayToken() => ref(simpleDayToken) & char('-') & ref(simpleDayToken);
   compoundMonthToken() =>
@@ -80,7 +81,7 @@ class TermGrammarDefinition extends GrammarDefinition {
   dayToken() => token(digit().repeat(1, 2));
   monthToken() => token(letter().repeat(3, 9));
   yearToken() => token(digit().repeat(2, 4));
-  quarterToken() => token(char('Q') & digit() & char(',')) & yearToken();
+  quarterToken() => token(char('Q') & digit()) & char(',') & yearToken();
 }
 
 /// Parse a term
@@ -102,7 +103,14 @@ class TermParserDefinition extends TermGrammarDefinition {
             _toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
       });
   simpleQuarterToken() => super.simpleQuarterToken().map((List<String> each) {
-    print(each);
+    int year = _toYear(each[2]);
+    int quarter = int.parse(each[0].substring(1));
+    if (quarter < 1 || quarter > 4)
+      throw new ArgumentError('Invalid quarter: ${each.join()}');
+    int month = 3*(quarter-1)+1;
+    TZDateTime start = new TZDateTime.utc(year, month);
+    TZDateTime end = new TZDateTime.utc(year, month+3);
+    return new Interval(start, end);
   });
 
   compoundMonthToken() => super.compoundMonthToken().map((List<String> each) {
@@ -116,6 +124,8 @@ class TermParserDefinition extends TermGrammarDefinition {
         return new Interval(start, end);
       });
 }
+
+
 
 /// Convert a month token to a month value.
 int _toMonth(String m) {
