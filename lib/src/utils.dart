@@ -1,6 +1,5 @@
 library utils;
 
-import 'hour.dart';
 import 'interval.dart';
 
 /// Given a list of intervals return another list of contiguous intervals.

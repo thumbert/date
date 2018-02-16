@@ -61,12 +61,6 @@ testInterval() {
       expect(i3.overlap(i4), new Interval(i3.start, i3.end));
     });
 
-    test('interval hashCode', () {
-      Interval i1 =
-          new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
-      //print(i1.hashCode);
-    });
-
     test('instant (degenerate) interval is allowed', () {
       Interval i = new Interval(new DateTime(2015), new DateTime(2015));
       expect(i.isInstant(), true);

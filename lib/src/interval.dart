@@ -1,7 +1,6 @@
 library interval;
 
 import 'package:func/func.dart';
-import 'package:timezone/timezone.dart';
 
 class Interval {
   DateTime _start;
@@ -41,10 +40,10 @@ class Interval {
   }
 
   /// Tests whether this interval has an overlapping part with this interval.
-  bool _hasOverlap(Interval other) {
-    if ((end.isAfter(other.start)) || (other.end.isAfter(this.start))) return true;
-    return false;
-  }
+//  bool _hasOverlap(Interval other) {
+//    if ((end.isAfter(other.start)) || (other.end.isAfter(this.start))) return true;
+//    return false;
+//  }
 
   /// Return the overlap between two intervals.  If there is no overlap, throw.
   Interval overlap(Interval other) {
