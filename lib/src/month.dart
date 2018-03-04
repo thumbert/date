@@ -67,18 +67,18 @@ class Month extends Interval
   DateTime get end => new TZDateTime(location, _year, _month + 1);
 
   /// Get the first day of the month.
-  Date get startDate => new Date(_year, _month, 1);
+  Date get startDate => new Date(_year, _month, 1, location: _location);
 
   /// Get the last day of the month.
   Date get endDate => next.startDate.subtract(1);
 
   Month get previous =>
-      new Month(_calcYear(_value - 1), _calcMonth(_value - 1));
-  Month get next => new Month(_calcYear(_value + 1), _calcMonth(_value + 1));
+      new Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: _location);
+  Month get next => new Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
   Month add(int months) =>
-      new Month(_calcYear(_value + months), _calcMonth(_value + months));
+      new Month(_calcYear(_value + months), _calcMonth(_value + months), location: _location);
   Month subtract(int months) =>
-      new Month(_calcYear(_value - months), _calcMonth(_value - months));
+      new Month(_calcYear(_value - months), _calcMonth(_value - months), location: _location);
 
   bool isBefore(Month other) => _value < other._value;
   bool isAfter(Month other) => _value > other._value;
@@ -98,8 +98,6 @@ class Month extends Interval
     } else {
       res = 1;
     }
-    ;
-
     return res;
   }
 

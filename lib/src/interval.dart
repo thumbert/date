@@ -43,7 +43,7 @@ class Interval {
       return false;
   }
 
-  /// Tests whether this interval contains this Datetime.
+  /// Tests whether this interval contains this interval.
   bool containsInterval(Interval interval) {
     if ((start.isBefore(interval.start) ||
             start.isAtSameMomentAs(interval.start)) &&
