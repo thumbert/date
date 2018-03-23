@@ -177,7 +177,7 @@ class Date extends Interval
     _dayOfWeek = jx;
   }
 
-  /// Return the day of the year.
+  /// Return the day of the year.  1-Jan is day 1 of the year. 
   int dayOfYear() => value - new Date(_year, 1, 1).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.
