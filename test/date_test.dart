@@ -64,6 +64,12 @@ test_date() {
       expect(new Date(2004, 12, 31).dayOfYear(), 366);
     });
 
+    test("Is weekend", () {
+      expect(new Date(2018, 4, 14).isWeekend(), true);
+      expect(new Date(2018, 4, 15).isWeekend(), true);
+      expect(new Date(2018, 4, 16).isWeekend(), false);
+    });
+
 
     test('next/previous day', (){
       expect(new Date(2015, 2, 28).next, new Date(2015,3,1));

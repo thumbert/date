@@ -181,7 +181,7 @@ class Date extends Interval
   int dayOfYear() => value - new Date(_year, 1, 1).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.
-  bool isWeekend() => [0, 6].contains(weekday);
+  bool isWeekend() => weekday >= 6 ? true : false;
 
   /// Convert to a regular SDK [DateTime] object at midnight.
   DateTime toDateTime({isUtc: false}) {
