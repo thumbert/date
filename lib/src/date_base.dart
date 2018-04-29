@@ -29,9 +29,9 @@ class Date extends Interval
   static DateFormat fmt = DEFAULT_FMT;
 
   /// Return today's date.
-  static Date today() {
+  static Date today({Location location}) {
     DateTime now = new DateTime.now();
-    return new Date(now.year, now.month, now.day);
+    return new Date(now.year, now.month, now.day, location: location);
   }
 
   /// Construct a [Date] from parts.
