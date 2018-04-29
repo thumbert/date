@@ -43,8 +43,10 @@ class Date extends Interval
     _day = day;
     _simpleValidation();
     _calcValue();
-    if (location == null) _location = UTC;
-    else _location = location;
+    if (location == null)
+      _location = UTC;
+    else
+      _location = location;
   }
 
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
@@ -62,13 +64,13 @@ class Date extends Interval
   /// Construct a date given the number of days since the origin 1970-01-01.
   /// Can't make this a constructor because I have problems setting the start/end
   /// of the superclass in the correct local timezone.
-  static Date fromJulianDay(int value) {
+  static Date fromJulianDay(int value, {Location location}) {
     var startZ = new DateTime.fromMillisecondsSinceEpoch(
         1000 * 24 * 3600 * value,
         isUtc: true);
-    return new Date(startZ.year, startZ.month, startZ.day);
+    location = location ?? UTC;
+    return new Date(startZ.year, startZ.month, startZ.day, location: location);
   }
-
 
   ///Constructs a new [Date] instance based on [formattedString].
   ///Throws a [FormatException] if the input cannot be parsed.
@@ -123,31 +125,30 @@ class Date extends Interval
         _ORIGIN;
   }
 
-
   Location get location => _location;
 
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
   DateTime get start => new TZDateTime(location, _year, _month, _day);
-  DateTime get end => new TZDateTime(location, _year, _month, _day+1);
+  DateTime get end => new TZDateTime(location, _year, _month, _day + 1);
 
   /// Return the previous day.
-  Date get previous => Date.fromJulianDay(_value - 1);
+  Date get previous => Date.fromJulianDay(_value - 1, location: _location);
 
   /// Return the next day.
-  Date get next => Date.fromJulianDay(value + 1);
+  Date get next => Date.fromJulianDay(value + 1, location: _location);
 
   /// Add a number of days to this date.
-  Date add(int step) => Date.fromJulianDay(_value + step);
+  Date add(int step) => Date.fromJulianDay(_value + step, location: _location);
 
   /// Subtract a number of days from this date.
-  Date subtract(int step) => Date.fromJulianDay(value - step);
+  Date subtract(int step) => Date.fromJulianDay(value - step, location: _location);
 
   /// Get the beginning of the month.
-  Date get beginningOfMonth => new Date(_year, _month, 1);
+  Date get beginningOfMonth => new Date(_year, _month, 1, location: _location);
 
   /// Get the [Month] this [Date] belongs to.
-  Month currentMonth() => new Month(_year, _month);
+  Month currentMonth() => new Month(_year, _month, location: _location);
 
   bool isBefore(Date other) => _value < other._value;
   bool isAfter(Date other) => _value > other._value;
@@ -176,7 +177,7 @@ class Date extends Interval
     _dayOfWeek = jx;
   }
 
-  /// Return the day of the year.
+  /// Return the day of the year.  1-Jan is day 1 of the year. 
   int dayOfYear() => value - new Date(_year, 1, 1).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.

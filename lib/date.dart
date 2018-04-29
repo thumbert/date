@@ -9,5 +9,6 @@ export 'src/hour.dart';
 export 'src/interval.dart';
 export 'src/month.dart';
 export 'src/myy.dart';
+export 'src/term_parse.dart';
 export 'src/time_iterable.dart';
 export 'src/utils.dart';

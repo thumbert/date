@@ -11,7 +11,8 @@ class Interval {
     _start = start;
     _end = end;
     if (end.isBefore(start))
-      throw new ArgumentError('Start DateTime needs to be before end DateTime.');
+      throw new ArgumentError(
+          'Start DateTime needs to be before end DateTime.');
   }
 
   /// Construct an interval of a given [duration] starting at a [start] DateTime.
@@ -34,9 +35,21 @@ class Interval {
 
   /// Tests whether this interval contains this Datetime.
   bool containsTime(DateTime time) {
-    if (start.isBefore(time) && end.isAfter(time)) return true;
-    else if (time.isAtSameMomentAs(start)) return true;
-    else return false;
+    if (start.isBefore(time) && end.isAfter(time))
+      return true;
+    else if (time.isAtSameMomentAs(start))
+      return true;
+    else
+      return false;
+  }
+
+  /// Tests whether this interval contains this interval.
+  bool containsInterval(Interval interval) {
+    if ((start.isBefore(interval.start) ||
+            start.isAtSameMomentAs(interval.start)) &&
+        (end.isAfter(interval.end) || end.isAtSameMomentAs(interval.end)))
+      return true;
+    return false;
   }
 
   /// Tests whether this interval has an overlapping part with this interval.
@@ -64,16 +77,15 @@ class Interval {
 
   bool isInstant() => start.isAtSameMomentAs(end);
 
-  bool operator ==(Interval other) => other != null && _start == other.start
-      && _end == other.end;
+  bool operator ==(Interval other) =>
+      other != null && _start == other.start && _end == other.end;
 
   /// see the pairing function http://szudzik.com/ElegantPairing.pdf
   int get hashCode {
-    int res = end.millisecondsSinceEpoch*(end.millisecondsSinceEpoch + 1) +
-      start.millisecondsSinceEpoch;
+    int res = end.millisecondsSinceEpoch * (end.millisecondsSinceEpoch + 1) +
+        start.millisecondsSinceEpoch;
     return res;
   }
-
 
   /// Split this interval into a list of abutting intervals according to
   /// function [f].  The function [f] operates on the start(left) of
@@ -82,17 +94,17 @@ class Interval {
   /// f = (x) => new Hour.beginning(x)
   /// <p>or, to split a month into days use
   /// f = (x) => new Date(x.year, x.month, x.day)
-  List<Interval> splitLeft(Func1<DateTime,Interval> f) {
+  List<Interval> splitLeft(Func1<DateTime, Interval> f) {
     List res = [];
     Interval current = f(start);
-    while ((current.end.millisecondsSinceEpoch).compareTo(end.millisecondsSinceEpoch) < 1) {
+    while ((current.end.millisecondsSinceEpoch)
+            .compareTo(end.millisecondsSinceEpoch) <
+        1) {
       res.add(current);
       current = f(current.end);
     }
     return res;
   }
 
-
   String toString() => isInstant() ? start.toString() : '[$_start, $end)';
 }
-

@@ -47,6 +47,28 @@ testInterval() {
       expect(i3.abuts(i1), true);
     });
 
+    test('interval contains time ', () {
+      Interval i1 = new Interval(new DateTime(2015), new DateTime(2015, 1, 2));
+      expect(i1.containsTime(new DateTime(2015)), true);
+      expect(i1.containsTime(new DateTime(2015, 1, 2)), false);
+      expect(i1.containsTime(new DateTime(2015, 1, 1, 15)), true);
+    });
+
+    test('interval contains another interval', () {
+      Interval i1 = new Interval(new DateTime(2015), new DateTime(2015, 1, 2));
+      Interval i2 =
+          new Interval(new DateTime(2015), new DateTime(2015, 1, 1, 15));
+      Interval i3 =
+          new Interval(new DateTime(2014), new DateTime(2015, 1, 1, 15));
+      Interval i4 =
+        new Interval(new DateTime(2015, 1, 1, 10), new DateTime(2015, 1, 2));
+
+      expect(i1.containsInterval(i2), true);
+      expect(i1.containsInterval(i1), true);
+      expect(i1.containsInterval(i3), false);
+      expect(i1.containsInterval(i4), true);
+    });
+
     test('interval overlap', () {
       Interval i1 =
           new Interval(new DateTime(2015, 1, 1), new DateTime(2015, 1, 2));
@@ -66,7 +88,6 @@ testInterval() {
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000');
     });
-
 
     test('splitting into hours across hour boundary, returns two hours', () {
       TZDateTime start = new TZDateTime(location, 2017, 1, 1);
@@ -107,7 +128,8 @@ testInterval() {
     test('Split 3 months into days using splitLeft', () {
       var interval =
           new Interval(new DateTime(2017, 1, 1), new DateTime(2017, 4, 1));
-      var days = interval.splitLeft((dt) => new Date(dt.year, dt.month, dt.day));
+      var days =
+          interval.splitLeft((dt) => new Date(dt.year, dt.month, dt.day));
       expect(days.length, 90);
     });
     test('Split one year with TZDateTime into months using splitLeft', () {
@@ -118,8 +140,6 @@ testInterval() {
           .splitLeft((dt) => new Month(dt.year, dt.month, location: location));
       expect(months.length, 12);
     });
-
-
 
     test('Make contiguous intervals', () {
       var i1 = new Interval(new TZDateTime(location, 2017, 1, 1),
@@ -144,6 +164,6 @@ main() {
       '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b.tzf';
   initializeTimeZoneSync(tzdb);
 
- // soloTest();
+  // soloTest();
   testInterval();
 }
