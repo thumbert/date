@@ -28,7 +28,7 @@ class Month extends Interval
   /// Specify the timezone for the month
   /// if you want to split/aggregate months.
   Month(int year, int month, {Location location})
-      : super(new DateTime(year, month), new DateTime(year, month + 1)) {
+      : super(new TZDateTime.utc(year, month), new TZDateTime.utc(year, month + 1)) {
     _value = year * 12 + month;
     _year = year;
     _month = month;
@@ -48,8 +48,8 @@ class Month extends Interval
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
-      : super(new DateTime(datetime.year, datetime.month),
-            new DateTime(datetime.year, datetime.month + 1)) {
+      : super(new TZDateTime.utc(datetime.year, datetime.month),
+            new TZDateTime.utc(datetime.year, datetime.month + 1)) {
     _value = datetime.year * 12 + datetime.month;
     _year = datetime.year;
     _month = datetime.month;

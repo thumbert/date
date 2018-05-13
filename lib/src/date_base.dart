@@ -36,8 +36,8 @@ class Date extends Interval
 
   /// Construct a [Date] from parts.
   Date(int year, int month, int day, {Location location})
-      : super(new DateTime.utc(year, month, day),
-            new DateTime.utc(year, month, day + 1)) {
+      : super(new TZDateTime.utc(year, month, day),
+            new TZDateTime.utc(year, month, day + 1)) {
     _year = year;
     _month = month;
     _day = day;
@@ -52,8 +52,8 @@ class Date extends Interval
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
   /// datetime.
   Date.fromTZDateTime(TZDateTime datetime)
-      : super(new DateTime.utc(datetime.year, datetime.month, datetime.day),
-            new DateTime.utc(datetime.year, datetime.month, datetime.day + 1)) {
+      : super(new TZDateTime.utc(datetime.year, datetime.month, datetime.day),
+            new TZDateTime.utc(datetime.year, datetime.month, datetime.day + 1)) {
     _year = datetime.year;
     _month = datetime.month;
     _day = datetime.day;

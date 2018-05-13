@@ -1,13 +1,14 @@
 library interval;
 
+import 'package:timezone/timezone.dart';
 import 'package:func/func.dart';
 
 class Interval {
-  DateTime _start;
-  DateTime _end;
+  TZDateTime _start;
+  TZDateTime _end;
 
   /// An implementation of a time interval. The interval is ClosedOpen [start, end).
-  Interval(DateTime start, DateTime end) {
+  Interval(TZDateTime start, TZDateTime end) {
     _start = start;
     _end = end;
     if (end.isBefore(start))
@@ -16,7 +17,7 @@ class Interval {
   }
 
   /// Construct an interval of a given [duration] starting at a [start] DateTime.
-  Interval.beginning(DateTime start, Duration duration) {
+  Interval.beginning(TZDateTime start, Duration duration) {
     _start = start;
     _end = start.add(duration);
   }
@@ -34,7 +35,7 @@ class Interval {
   }
 
   /// Tests whether this interval contains this Datetime.
-  bool containsTime(DateTime time) {
+  bool containsTime(TZDateTime time) {
     if (start.isBefore(time) && end.isAfter(time))
       return true;
     else if (time.isAtSameMomentAs(start))
@@ -94,7 +95,7 @@ class Interval {
   /// f = (x) => new Hour.beginning(x)
   /// <p>or, to split a month into days use
   /// f = (x) => new Date(x.year, x.month, x.day)
-  List<Interval> splitLeft(Func1<DateTime, Interval> f) {
+  List<Interval> splitLeft(Func1<TZDateTime, Interval> f) {
     List res = [];
     Interval current = f(start);
     while ((current.end.millisecondsSinceEpoch)
