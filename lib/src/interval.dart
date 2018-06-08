@@ -22,8 +22,8 @@ class Interval {
     _end = start.add(duration);
   }
 
-  DateTime get start => _start;
-  DateTime get end => _end;
+  TZDateTime get start => _start;
+  TZDateTime get end => _end;
 
   /// Does this interval abut with the other interval?
   bool abuts(Interval other) {
