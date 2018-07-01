@@ -15,8 +15,9 @@ class Month extends Interval
   int _month; // between Jan=1 to Dec=12
   Location _location;
 
-  static final DateFormat DEFAULT_FMT = new DateFormat('MMMyy');
-  static final DateFormat fmt = DEFAULT_FMT;
+  static final DateFormat _defaultFmt = new DateFormat('MMMyy');
+  static final DateFormat _isoFmt = new DateFormat('yyyy-MM');
+
 
   static Month current({DateTime datetime}) {
     datetime ??= new DateTime.now();
@@ -40,7 +41,7 @@ class Month extends Interval
 
   /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
   static Month parse(String s, {DateFormat fmt, Location location}) {
-    fmt ??= DEFAULT_FMT;
+    fmt ??= _defaultFmt;
     location ??= UTC;
     return new Month.fromTZDateTime(
         new TZDateTime.from(fmt.parse(s), location));
@@ -104,7 +105,13 @@ class Month extends Interval
   /// Days of the month as list.
   List<Date> days() => splitLeft((dt) => new Date.fromTZDateTime(dt));
 
-  String toString() => fmt.format(start);
+  String toString({DateFormat fmt}) {
+    fmt ??= _defaultFmt;
+    return fmt.format(start);
+  }
+
+  String toIso8601String() => _isoFmt.format(start);
+
 
   Interval toInterval() => new Interval(start, end);
 

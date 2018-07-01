@@ -34,6 +34,12 @@ testInterval() {
       expect(i1 == i2, true);
       expect(i1 == i3, false);
     });
+    test('create interval ending', () {
+      var start = new TZDateTime(location, 2015, 1, 1);
+      var end = new TZDateTime(location, 2015, 1, 2);
+      Interval i1 = new Interval(start, end);
+      expect(new Interval.ending(end, new Duration(days: 1)), i1);
+    });
 
     test('interval abuts', () {
       Interval i1 = new Interval(new TZDateTime(location, 2015, 1, 1),

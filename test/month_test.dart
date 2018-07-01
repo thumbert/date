@@ -82,6 +82,11 @@ test_month() {
       expect(m1.isAfter(m2), true);
     });
 
+    test('month format', () {
+      Month m1 = new Month(2015,6);
+      expect(m1.toString(), 'Jun15');
+      expect(m1.toIso8601String(), '2015-06');
+    });
   });
 }
 

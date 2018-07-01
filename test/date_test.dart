@@ -18,7 +18,7 @@ test_date() {
   String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
   initializeTimeZoneSync(tzdb);
 
-  group("Test Date: ", () {
+  group("Test Date:", () {
     test("From year month day to Julian day", () {
       expect(new Date(1970, 1, 1).value, 0);
       expect(new Date(2014, 1, 1).value, 16071);

@@ -16,10 +16,16 @@ class Interval {
           'Start DateTime needs to be before end DateTime.');
   }
 
-  /// Construct an interval of a given [duration] starting at a [start] DateTime.
+  /// Construct an interval of a given [duration] starting at a [start] TZDateTime.
   Interval.beginning(TZDateTime start, Duration duration) {
     _start = start;
     _end = start.add(duration);
+  }
+
+  /// Construct an interval of a given [duration] ending at a [start] TZDateTime.
+  Interval.ending(TZDateTime end, Duration duration) {
+    _end = end;
+    _start = end.subtract(duration);
   }
 
   TZDateTime get start => _start;
@@ -52,12 +58,6 @@ class Interval {
       return true;
     return false;
   }
-
-  /// Tests whether this interval has an overlapping part with this interval.
-//  bool _hasOverlap(Interval other) {
-//    if ((end.isAfter(other.start)) || (other.end.isAfter(this.start))) return true;
-//    return false;
-//  }
 
   /// Return the overlap between two intervals.  If there is no overlap, throw.
   Interval overlap(Interval other) {
