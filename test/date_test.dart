@@ -89,15 +89,14 @@ test_date() {
     });
 
     test("Change the date display format", () {
-      Date.fmt = new DateFormat("dMMMyy");
-      expect(new Date(2014, 1, 1).toString(), "1Jan14");
+      var fmt = new DateFormat("dMMMyy");
+      expect(new Date(2014, 1, 1).toString(fmt), "1Jan14");
     });
 
     test("Sort dates", (){
       var x = [new Date(2014,8,1), new Date(2014,12,1),
       new Date(2014,2,1)];
       x.sort();
-      Date.fmt = Date.DEFAULT_FMT;
       expect(x.map((d) => d.toString()).join(","),
       "2014-02-01,2014-08-01,2014-12-01");
     });

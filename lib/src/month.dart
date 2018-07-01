@@ -18,7 +18,6 @@ class Month extends Interval
   static final DateFormat _defaultFmt = new DateFormat('MMMyy');
   static final DateFormat _isoFmt = new DateFormat('yyyy-MM');
 
-
   static Month current({DateTime datetime}) {
     datetime ??= new DateTime.now();
     return new Month(datetime.year, datetime.month);
@@ -105,11 +104,13 @@ class Month extends Interval
   /// Days of the month as list.
   List<Date> days() => splitLeft((dt) => new Date.fromTZDateTime(dt));
 
-  String toString({DateFormat fmt}) {
+  /// Format a month.  The default format is MMMyy.
+  String toString([DateFormat fmt]) {
     fmt ??= _defaultFmt;
     return fmt.format(start);
   }
 
+  /// Format a month using the yyyy-MM format.
   String toIso8601String() => _isoFmt.format(start);
 
 

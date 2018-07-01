@@ -21,12 +21,9 @@ class Date extends Interval
   Location _location;
 
   /// Default string format is the ISO `yyyy-MM-dd`.
-  static final DateFormat DEFAULT_FMT = new DateFormat('yyyy-MM-dd');
+  static final DateFormat _defaultFmt = new DateFormat('yyyy-MM-dd');
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
   static final Duration D1 = new Duration(days: 1);
-
-  /// Use this [DateFormat] to change the `toString()` output of this date.
-  static DateFormat fmt = DEFAULT_FMT;
 
   /// Return today's date.
   static Date today({Location location}) {
@@ -191,7 +188,10 @@ class Date extends Interval
       return new DateTime(year, month, day);
   }
 
-  String toString() => fmt.format(new DateTime(_year, _month, _day));
+  String toString([DateFormat fmt]) {
+    fmt ??= _defaultFmt;
+    return fmt.format(new DateTime(_year, _month, _day));
+  }
 
   Interval toInterval() => new Interval(start, end);
 
