@@ -36,7 +36,9 @@ class MonthGrammarDefinition extends GrammarDefinition {
   value() => ref(simpleToken);
 
   monthToken() =>
-      jan() | feb() | mar() | apr() | may() | sep() | oct() | nov() | dec();
+    jan() | feb() | mar() | apr() | 
+    may() | jun() | jul() | aug() |
+    sep() | oct() | nov() | dec();
   yearToken() => token(digit().repeat(2, 4));
   yyyymmToken() => token(digit().repeat(4,4) & char('-').optional() & digit().repeat(2, 2));
 
