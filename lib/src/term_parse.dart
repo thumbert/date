@@ -52,7 +52,9 @@ class TermGrammarDefinition extends GrammarDefinition {
 
   dayToken() => token(digit().repeat(1, 2));
   monthToken() =>
-      jan() | feb() | mar() | apr() | may() | sep() | oct() | nov() | dec();
+    jan() | feb() | mar() | apr() | 
+    may() | jun() | jul() | aug() |
+    sep() | oct() | nov() | dec();
   yearToken() => token(digit().repeat(2, 4));
   quarterToken() => token(char('Q') & digit()) & char(',') & yearToken();
   calYearToken() => token((string('CAL') | string('Cal'))) & yearToken();
