@@ -126,7 +126,7 @@ class TermParser extends GrammarParser {
 class TermParserDefinition extends TermGrammarDefinition {
   const TermParserDefinition();
 
-  simpleMonthToken() => super.simpleMonthToken().map((List<String> each) {
+  simpleMonthToken() => super.simpleMonthToken().map((List each) {
         return new Month(_toYear(each[1]), _toMonth(each[0]));
       });
   simpleMonthCodeToken() => super.simpleMonthCodeToken().map((String each) {
@@ -134,11 +134,11 @@ class TermParserDefinition extends TermGrammarDefinition {
             _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]);
       });
 
-  simpleDayToken() => super.simpleDayToken().map((List<String> each) {
+  simpleDayToken() => super.simpleDayToken().map((List each) {
         return new Date(
             _toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
       });
-  simpleQuarterToken() => super.simpleQuarterToken().map((List<String> each) {
+  simpleQuarterToken() => super.simpleQuarterToken().map((List each) {
         int year = _toYear(each[2]);
         int quarter = int.parse(each[0].substring(1));
         if (quarter < 1 || quarter > 4)
@@ -148,19 +148,19 @@ class TermParserDefinition extends TermGrammarDefinition {
         TZDateTime end = new TZDateTime.utc(year, month + 3);
         return new Interval(start, end);
       });
-  simpleCalYearToken() => super.simpleCalYearToken().map((List<String> each) {
+  simpleCalYearToken() => super.simpleCalYearToken().map((List each) {
         int year = _toYear(each[1]);
         TZDateTime start = new TZDateTime.utc(year);
         TZDateTime end = new TZDateTime.utc(year + 1);
         return new Interval(start, end);
       });
 
-  compoundMonthToken() => super.compoundMonthToken().map((List<String> each) {
+  compoundMonthToken() => super.compoundMonthToken().map((List each) {
         DateTime start = (each[0] as Month).start;
         DateTime end = (each[2] as Month).end;
         return new Interval(start, end);
       });
-  compoundDayToken() => super.compoundDayToken().map((List<String> each) {
+  compoundDayToken() => super.compoundDayToken().map((List each) {
         DateTime start = (each[0] as Date).start;
         DateTime end = (each[2] as Date).end;
         return new Interval(start, end);

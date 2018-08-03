@@ -14,6 +14,7 @@ pubspec.lock
 build/
 dartdoc-viewer/
 doc/
+.dart_tool/
 
 *.iml
 *.js

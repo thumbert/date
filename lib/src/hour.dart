@@ -54,7 +54,11 @@ class Hour extends Interval implements TimeOrdering<Hour>, ComparableWithAdd<Hou
 
   bool isAfter(Hour other) => start.isAfter(other.start);
 
-  bool operator ==(Hour other) => other != null && start == other.start;
+  bool operator ==(dynamic other) {
+    if (other is! Hour) return false;
+    Hour hour = other;
+    return start == hour.start;
+  }
 
   int compareTo(Hour other) => this.start.compareTo(other.start);
 

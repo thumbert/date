@@ -13,11 +13,7 @@ import 'package:date/src/time_iterable.dart';
 import 'package:date/src/month.dart';
 
 
-test_date() {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  initializeTimeZoneSync(tzdb);
-
+testDate() {
   group("Test Date:", () {
     test("From year month day to Julian day", () {
       expect(new Date(1970, 1, 1).value, 0);
@@ -128,34 +124,34 @@ test_date() {
   });
 }
 
-test_dateIterable() {
+testDateIterable() {
   group('Test TimeIterable: ', () {
     test('daily for 5 days', () {
-      TimeIterable range = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5));
+      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5));
       expect(range.length, 5);
       expect(range.last, new Date(2015,1,5));
     });
 
     test('daily iterable start/end gets correct hours', () {
-      List x = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5)).toList();
-      List startHours = x.map((Date day) => day.start.hour).toList();
+      List<Date> x = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5)).toList();
+      List startHours = x.map((day) => day.start.hour).toList();
       expect(startHours.every((v) => v == 0), true);
     });
 
     test('daily for 5 days, backwards by one day', () {
-      TimeIterable range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
+      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
       expect(range.length, 5);
       expect(range.last, new Date(2015,1,1));
     });
 
     test('weekly for 3 weeks', () {
-      TimeIterable range = new TimeIterable(new Date(2015,9,1), new Date(2015,9,20), step: 7);
+      TimeIterable<Date> range = new TimeIterable(new Date(2015,9,1), new Date(2015,9,20), step: 7);
       expect(range.length, 3);
       expect(range.last, new Date(2015,9,15));
     });
 
     test('monthly for 12 months', () {
-      TimeIterable range = new TimeIterable(new Month(2015,1), new Month(2015,12));
+      TimeIterable<Month> range = new TimeIterable(new Month(2015,1), new Month(2015,12));
       expect(range.length, 12);
       expect(range.elementAt(4), new Month(2015,5));
     });
@@ -166,7 +162,11 @@ test_dateIterable() {
 
 
 
-main() {
-  test_date();
-  test_dateIterable();
+main() async {
+  Map env = Platform.environment;
+  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
+  await initializeTimeZone(tzdb);
+
+  await testDate();
+  await testDateIterable();
 }

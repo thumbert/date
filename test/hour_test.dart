@@ -8,7 +8,7 @@ import 'package:date/src/time_iterable.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/src/env.dart';
 
-hour_test() {
+hourTest() {
   Location location = getLocation('US/Eastern');  // 'US/Mountain', 'US/Central', 'US/Pacific'
   group('Test Hour:', () {
     test('create hour', (){
@@ -24,12 +24,12 @@ hour_test() {
     });
 
     test('hour iterable around DST', () {
-      TimeIterable it1 = new TimeIterable(
+      TimeIterable<Hour> it1 = new TimeIterable(
           new Hour.beginning(new TZDateTime(location, 2015, 3, 8, 0)),
           new Hour.beginning(new TZDateTime(location, 2015, 3, 8, 5)));
       expect(it1.length, 5);  // spring forward
 
-      TimeIterable it2 = new TimeIterable(
+      TimeIterable<Hour> it2 = new TimeIterable(
           new Hour.beginning(new TZDateTime(location, 2015, 11, 1, 0)),
           new Hour.beginning(new TZDateTime(location, 2015, 11, 1, 5)));
       expect(it2.length, 7);  // fall back
@@ -56,8 +56,8 @@ hour_test() {
 main() async {
   Map env = Platform.environment;
   String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  initializeTimeZoneSync(tzdb);
+  await initializeTimeZone(tzdb);
 
-  hour_test();
+  await hourTest();
 }
 

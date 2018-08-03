@@ -156,7 +156,7 @@ testInterval() {
       var i2 = new Interval(new TZDateTime(location, 2017, 1, 1, 6),
           new TZDateTime(location, 2017, 1, 1, 8));
       var i3 = new Hour.beginning(new TZDateTime(location, 2017, 1, 1, 9));
-      List hours = []
+      var hours = <Interval>[]
         ..addAll(i1.splitLeft((x) => new Hour.beginning(x)))
         ..addAll(i2.splitLeft((x) => new Hour.beginning(x)))
         ..add(i3);
@@ -167,12 +167,12 @@ testInterval() {
   });
 }
 
-main() {
+main() async {
   Map env = Platform.environment;
   String tzdb = env['HOME'] +
       '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b.tzf';
-  initializeTimeZoneSync(tzdb);
+  await initializeTimeZone(tzdb);
 
   // soloTest();
-  testInterval();
+  await testInterval();
 }

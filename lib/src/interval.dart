@@ -1,7 +1,6 @@
 library interval;
 
 import 'package:timezone/timezone.dart';
-import 'package:func/func.dart';
 
 class Interval {
   TZDateTime _start;
@@ -78,8 +77,11 @@ class Interval {
 
   bool isInstant() => start.isAtSameMomentAs(end);
 
-  bool operator ==(Interval other) =>
-      other != null && _start == other.start && _end == other.end;
+  bool operator ==(dynamic other) {
+    if (other is! Interval) return false;
+    Interval interval = other;
+    return _start == interval.start && _end == interval.end;
+  }
 
   /// see the pairing function http://szudzik.com/ElegantPairing.pdf
   int get hashCode {
@@ -95,8 +97,8 @@ class Interval {
   /// f = (x) => new Hour.beginning(x)
   /// <p>or, to split a month into days use
   /// f = (x) => new Date(x.year, x.month, x.day)
-  List<Interval> splitLeft(Func1<TZDateTime, Interval> f) {
-    List res = [];
+  List<Interval> splitLeft(Interval Function(TZDateTime) f) {
+    List<Interval> res = [];
     Interval current = f(start);
     while ((current.end.millisecondsSinceEpoch)
             .compareTo(end.millisecondsSinceEpoch) <

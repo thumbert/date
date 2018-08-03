@@ -63,8 +63,8 @@ class Month extends Interval
 
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
-  DateTime get start => new TZDateTime(location, _year, _month);
-  DateTime get end => new TZDateTime(location, _year, _month + 1);
+  TZDateTime get start => new TZDateTime(location, _year, _month);
+  TZDateTime get end => new TZDateTime(location, _year, _month + 1);
 
   /// Get the first day of the month.
   Date get startDate => new Date(_year, _month, 1, location: _location);
@@ -82,7 +82,11 @@ class Month extends Interval
 
   bool isBefore(Month other) => _value < other._value;
   bool isAfter(Month other) => _value > other._value;
-  bool operator ==(Month other) => other != null && _value == other._value;
+  bool operator ==(dynamic other) {
+    if (other is! Month) return false;
+    Month month = other;
+    return _value == month._value;
+  }
 
   int get hashCode => _value;
 
@@ -102,7 +106,7 @@ class Month extends Interval
   }
 
   /// Days of the month as list.
-  List<Date> days() => splitLeft((dt) => new Date.fromTZDateTime(dt));
+  List<Date> days() => splitLeft((dt) => new Date.fromTZDateTime(dt)).cast<Date>();
 
   /// Format a month.  The default format is MMMyy.
   String toString([DateFormat fmt]) {
@@ -116,6 +120,6 @@ class Month extends Interval
 
   Interval toInterval() => new Interval(start, end);
 
-  TimeIterator get dateIterator =>
+  TimeIterator<Date> get dateIterator =>
       new TimeIterator(startDate, endDate, step: 1);
 }

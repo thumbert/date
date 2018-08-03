@@ -109,7 +109,7 @@ class MonthParser extends GrammarParser {
 class MonthParserDefinition extends MonthGrammarDefinition {
   const MonthParserDefinition();
 
-  simpleMonthToken() => super.simpleMonthToken().map((List<String> each) {
+  simpleMonthToken() => super.simpleMonthToken().map((List each) {
     return new Month(_toYear(each[1]), _toMonth(each[0]));
   });
   simpleMonthCodeToken() => super.simpleMonthCodeToken().map((String each) {

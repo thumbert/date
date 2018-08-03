@@ -7,7 +7,7 @@ import 'interval.dart';
 /// will combine into Interval [2017-01-01 01:00:00 -> 2017-01-01 03:00:00)
 /// The input intervals [x] needs to be sorted.
 List<Interval> makeContiguousIntervals(List<Interval> x) {
-  List res = [];
+  var res = <Interval>[];
   if (x.isEmpty) return [];
   Interval current = x.first;
   for (int i = 1; i < x.length; i++) {

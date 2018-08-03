@@ -8,10 +8,7 @@ import 'package:date/src/month.dart';
 import 'package:date/src/time_iterable.dart';
 
 
-test_month() {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  initializeTimeZoneSync(tzdb);
+testMonth() {
   Location local = getLocation('US/Eastern');
 
   group("Test Month:", () {
@@ -58,7 +55,7 @@ test_month() {
     });
 
     test("Generate list of months", () {
-      TimeIterable it = new TimeIterable(new Month(2015,1), new Month(2015,12));
+      TimeIterable<Month> it = new TimeIterable(new Month(2015,1), new Month(2015,12));
       expect(it.length, 12);
     });
 
@@ -70,7 +67,7 @@ test_month() {
     });
 
     test('Get the days of the month', () {
-      TimeIterable it = new TimeIterable(new Month(2015,1), new Month(2015,12));
+      TimeIterable<Month> it = new TimeIterable(new Month(2015,1), new Month(2015,12));
       List days = it.map((Month m) => m.days().length).toList();
       expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
     });
@@ -90,4 +87,10 @@ test_month() {
   });
 }
 
-main() => test_month();
+main() async {
+  Map env = Platform.environment;
+  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
+  await initializeTimeZone(tzdb);
+
+  await testMonth();
+}

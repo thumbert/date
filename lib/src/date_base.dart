@@ -126,8 +126,8 @@ class Date extends Interval
 
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
-  DateTime get start => new TZDateTime(location, _year, _month, _day);
-  DateTime get end => new TZDateTime(location, _year, _month, _day + 1);
+  TZDateTime get start => new TZDateTime(location, _year, _month, _day);
+  TZDateTime get end => new TZDateTime(location, _year, _month, _day + 1);
 
   /// Return the previous day.
   Date get previous => Date.fromJulianDay(_value - 1, location: _location);
@@ -149,7 +149,11 @@ class Date extends Interval
 
   bool isBefore(Date other) => _value < other._value;
   bool isAfter(Date other) => _value > other._value;
-  bool operator ==(Date other) => other != null && other._value == _value;
+  bool operator ==(dynamic other) {
+    if (other is! Date) return false;
+    Date date = other;
+    return date._value == _value;
+  }
   int compareTo(Date other) => this.value.compareTo(other.value);
   int get hashCode => _value;
 

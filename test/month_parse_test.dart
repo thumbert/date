@@ -31,10 +31,10 @@ parseMonthTest() {
 
 
 
-main() {
+main() async {
   Map env = Platform.environment;
   String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  initializeTimeZoneSync(tzdb);
+  await initializeTimeZone(tzdb);
 
   //print(new TermParser().parse('Jan 17').value);
 
@@ -44,7 +44,7 @@ main() {
 
 
 
-  parseMonthTest();
+  await parseMonthTest();
 
 
 }
