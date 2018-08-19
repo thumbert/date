@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.2.0 ()
+## 2.2.0 (released 2018-08-18)
 - Make the package Dart 2 compliant.
 
 ## 2.1.0 (released 2018-07-01)
