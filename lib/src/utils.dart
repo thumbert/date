@@ -22,6 +22,24 @@ List<Interval> makeContiguousIntervals(List<Interval> x) {
   return res;
 }
 
+/// Get the next [n] days starting on Date [fromDate] (inclusive).
+List<Date> getNextNDays(int n, Date fromDate) {
+  var out = <Date>[];
+  for (int i=0; i<n; i++) {
+    out.add(fromDate.add(i));
+  }
+  return out;
+}
+
+
+/// Get the last [n] days ending on Date [fromDate] (inclusive).
+List<Date> getLastNDays(int n, Date fromDate) {
+  var out = <Date>[];
+  for (int i=n-1; i>=0; i--) {
+    out.add(fromDate.subtract(i));
+  }
+  return out;
+}
 
 
 /// Check if a DateTime is a beginning of an hour
