@@ -42,8 +42,8 @@ class Month extends Interval
   static Month parse(String s, {DateFormat fmt, Location location}) {
     fmt ??= _defaultFmt;
     location ??= UTC;
-    return new Month.fromTZDateTime(
-        new TZDateTime.from(fmt.parse(s), location));
+    var dt = fmt.parseUtc(s);
+    return Month(dt.year, dt.month, location: location);
   }
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
@@ -74,7 +74,27 @@ class Month extends Interval
 
   Month get previous =>
       new Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: _location);
+
+  /// Return the previous [n] months ending on [ending] month.
+  List<Month> previousN(int n, Month ending) {
+    var out = <Month>[];
+    for (int i=n-1; i>=0; i--) {
+      out.add(ending.subtract(i));
+    }
+    return out;
+  }
+
   Month get next => new Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
+
+  /// Return the next [n] months starting on [from] month.
+  List<Month> nextN(int n, Month from) {
+    var out = <Month>[];
+    for (int i=0; i<n; i++) {
+      out.add(from.add(i));
+    }
+    return out;
+  }
+
   Month add(int months) =>
       new Month(_calcYear(_value + months), _calcMonth(_value + months), location: _location);
   Month subtract(int months) =>

@@ -132,8 +132,26 @@ class Date extends Interval
   /// Return the previous day.
   Date get previous => Date.fromJulianDay(_value - 1, location: _location);
 
+  /// Return the previous [n] days ending on [ending] date.
+  List<Date> previousN(int n, Date ending) {
+    var out = <Date>[];
+    for (int i=n-1; i>=0; i--) {
+      out.add(ending.subtract(i));
+    }
+    return out;
+  }
+
   /// Return the next day.
   Date get next => Date.fromJulianDay(value + 1, location: _location);
+
+  /// Return the next [n] days starting on [from] date.
+  List<Date> nextN(int n, Date from) {
+    var out = <Date>[];
+    for (int i=0; i<n; i++) {
+      out.add(from.add(i));
+    }
+    return out;
+  }
 
   /// Add a number of days to this date.
   Date add(int step) => Date.fromJulianDay(_value + step, location: _location);

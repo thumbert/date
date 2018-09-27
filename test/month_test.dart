@@ -1,6 +1,7 @@
 library test_month;
 
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart';
@@ -79,11 +80,19 @@ testMonth() {
       expect(m1.isAfter(m2), true);
     });
 
-    test('month format', () {
+    test('month format (default)', () {
       Month m1 = new Month(2015,6);
       expect(m1.toString(), 'Jun15');
       expect(m1.toIso8601String(), '2015-06');
     });
+
+    test('month parse (other format)', () {
+      DateFormat isoFmt = new DateFormat('yyyy-MM');
+      Month m1 = Month.parse('2017-07', fmt: isoFmt, location: local);
+      expect(m1, Month(2017, 7, location: local));
+    });
+
+
   });
 }
 
