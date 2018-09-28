@@ -75,22 +75,22 @@ class Month extends Interval
   Month get previous =>
       new Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: _location);
 
-  /// Return the previous [n] months ending on [ending] month.
-  List<Month> previousN(int n, Month ending) {
+  /// Return the previous [n] months ending on this month.
+  List<Month> previousN(int n) {
     var out = <Month>[];
-    for (int i=n-1; i>=0; i--) {
-      out.add(ending.subtract(i));
+    for (int i=n; i>0; i--) {
+      out.add(this.subtract(i));
     }
     return out;
   }
 
   Month get next => new Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
 
-  /// Return the next [n] months starting on [from] month.
-  List<Month> nextN(int n, Month from) {
+  /// Return the next [n] months starting on this month.
+  List<Month> nextN(int n) {
     var out = <Month>[];
-    for (int i=0; i<n; i++) {
-      out.add(from.add(i));
+    for (int i=1; i<=n; i++) {
+      out.add(this.add(i));
     }
     return out;
   }

@@ -78,6 +78,13 @@ testDate() {
       expect(new Date(2015,2,28).currentMonth().previous.startDate, new Date(2015,1,1));
     });
 
+    test('nextN/previousN days', (){
+      var date = new Date(2015, 2, 3);
+      expect(date.nextN(3), [date.add(1), date.add(2), date.add(3)]);
+      expect(date.previousN(3), [date.subtract(3), date.subtract(2), date.subtract(1)]);
+    });
+
+
     test('add/subtract days', () {
       expect(new Date(2015,1,1).add(1), new Date(2015,1,2));
       expect(new Date(2015,1,1).subtract(1), new Date(2014,12,31));
