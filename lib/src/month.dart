@@ -105,7 +105,7 @@ class Month extends Interval
   bool operator ==(dynamic other) {
     if (other is! Month) return false;
     Month month = other;
-    return _value == month._value;
+    return _value == month._value && location == month.location;
   }
 
   int get hashCode => _value;

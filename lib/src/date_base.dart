@@ -168,10 +168,11 @@ class Date extends Interval
 
   bool isBefore(Date other) => _value < other._value;
   bool isAfter(Date other) => _value > other._value;
+
   bool operator ==(dynamic other) {
     if (other is! Date) return false;
     Date date = other;
-    return date._value == _value;
+    return date._value == _value && location == date.location;
   }
   int compareTo(Date other) => this.value.compareTo(other.value);
   int get hashCode => _value;
