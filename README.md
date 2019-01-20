@@ -18,9 +18,8 @@ date is taken from the R package [chron](http://CRAN.R-project.org/package=chron
 A class to represent the time interval between a start and end time instant.  
 For example, define a year interval and split it into hours. 
 ```dart
-var year = new Interval(new TZDateTime(location, 2016),
-          new TZDateTime(location, 2017));
-var hours = year.splitLeft((dt) => new Hour.beginning(dt));
+var year = Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
+var hours = year.splitLeft((dt) => Hour.beginning(dt));
 ```
 
 
@@ -30,8 +29,8 @@ Construct a `Date`:
 ```dart
 import 'package:date/date.dart';
 
-Date dt1 = new Date(2015,1,16);    // in UTC time zone
-Date dt2 = Date.parse('20150106');
+var dt1 = Date(2015,1,16);    // in UTC time zone
+var dt2 = Date.parse('20150106');
 ```
 
 Operate on dates:
@@ -39,14 +38,14 @@ Operate on dates:
 print(dt1.next);
 print(dt1.previous);
 
-dt2.add(1) == new Date(2015,1,17);
-dt2.subtract(1) == new Date(2015,1,14);
+dt2.add(1) == Date(2015,1,17);
+dt2.subtract(1) == Date(2015,1,14);
 ```
 
 Generate a sequence of dates:
 ```dart
-TimeIterable it = new TimeIterable(new Date(2015,1,1), new Date(2016,1,1).previous);
-List days = it.toList();
+var it = TimeIterable(Date(2015,1,1), Date(2016,1,1).previous);
+var days = it.toList();
 ```
 
 ## Month class
@@ -54,7 +53,7 @@ List days = it.toList();
 Construct a `Month`:
 ```dart
 import 'package:date/date.dart';
-Month m = new Month(2017,3);  // in UTC time zone
+var m = Month(2017,3);  // in UTC time zone
 ```
 
 
