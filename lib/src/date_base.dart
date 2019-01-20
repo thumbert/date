@@ -107,6 +107,9 @@ class Date extends Interval
   /// julian date
   int get value => _value;
 
+  /// The calculation to go from the triple (year, month, day) to a Julian
+  /// date is taken from the R package
+  /// [chron](http://CRAN.R-project.org/package=chron).
   void _calcValue() {
     // code from julian date in the S book (p.269)
     var y = _year + (_month > 2 ? 0 : -1);
