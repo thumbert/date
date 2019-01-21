@@ -7,12 +7,14 @@ class Interval {
   TZDateTime _end;
 
   /// An implementation of a time interval. The interval is ClosedOpen [start, end).
+  /// The [start] and the [end] should be in the same time zone location.
   Interval(TZDateTime start, TZDateTime end) {
     _start = start;
     _end = end;
     if (end.isBefore(start))
-      throw new ArgumentError(
-          'Start DateTime needs to be before end DateTime.');
+      throw ArgumentError('Start is not before the end DateTime.');
+    if (start.location != end.location)
+      throw ArgumentError('Start and end need to be in the same timezone');
   }
 
   /// Construct an interval of a given [duration] starting at a [start] TZDateTime.
@@ -110,4 +112,19 @@ class Interval {
   }
 
   String toString() => isInstant() ? start.toString() : '[$_start, $end)';
+
+  /// Creates a new interval ending with the specified end instant.
+  /// If [end] is not specified, it means now.
+  Interval withEnd([TZDateTime end]) {
+    end ??= TZDateTime.now(this.end.location);
+    return Interval(start, end);
+  }
+
+
+  /// Creates a new interval with the specified start instant.
+  /// If [start] is not specified, it means now.
+  Interval withStart([TZDateTime start]) {
+    start ??= TZDateTime.now(this.start.location);
+    return Interval(start, end);
+  }
 }
