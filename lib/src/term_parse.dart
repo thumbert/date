@@ -16,8 +16,11 @@ final TermParser _parser = TermParser();
 ///   the last 2 years.
 /// If the tzLocation is not specified, return the interval in UTC timezone,
 /// otherwise, return the interval in the time zone specified.
+/// Throws an [ArgumentError] if the parsing fails.
 Interval parseTerm(String term, {Location tzLocation}) {
   var res = _parser.parse(term);
+  if (res.isFailure)
+    throw ArgumentError('Couldn\'t parse term $term.');
   var interval = res.value as Interval;
   if (tzLocation != null) {
     var start = interval.start;
