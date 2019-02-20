@@ -59,8 +59,13 @@ parseTermTest() {
     test('A day range: 1jan17-3feb17', () {
       expect(parseTerm('1jan17-3feb17'),
           new Interval(new TZDateTime.utc(2017,1), new TZDateTime.utc(2017,2,4)));
-
     });
+    test('A day range in US/Eastern timezone: 1jan17-3feb17', () {
+      var location = getLocation('US/Eastern');
+      expect(parseTerm('1jan17-3feb17', tzLocation: location),
+          Interval(TZDateTime(location, 2017,1), TZDateTime(location, 2017,2,4)));
+    });
+
   });
 }
 

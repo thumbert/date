@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
-final TermParser _parser = new TermParser();
+final TermParser _parser = TermParser();
 
 // Decided not to support the ISO8601 duration parser.
 
@@ -14,9 +14,19 @@ final TermParser _parser = new TermParser();
 /// day ranges: 1Jan17-3Jan17, month ranges: Jul17-Aug17.
 /// Or a term relative to current moment: '-1m' represents the last month, '-2y',
 ///   the last 2 years.
-Interval parseTerm(String term) {
+/// If the tzLocation is not specified, return the interval in UTC timezone,
+/// otherwise, return the interval in the time zone specified.
+Interval parseTerm(String term, {Location tzLocation}) {
   var res = _parser.parse(term);
-  return res.value;
+  var interval = res.value as Interval;
+  if (tzLocation != null) {
+    var start = interval.start;
+    var end = interval.end;
+    interval = Interval(
+        TZDateTime(tzLocation, start.year, start.month, start.day),
+        TZDateTime(tzLocation, end.year, end.month, end.day));
+  }
+  return interval;
 }
 
 class TermGrammar extends GrammarParser {
@@ -52,9 +62,18 @@ class TermGrammarDefinition extends GrammarDefinition {
 
   dayToken() => token(digit().repeat(1, 2));
   monthToken() =>
-    jan() | feb() | mar() | apr() | 
-    may() | jun() | jul() | aug() |
-    sep() | oct() | nov() | dec();
+      jan() |
+      feb() |
+      mar() |
+      apr() |
+      may() |
+      jun() |
+      jul() |
+      aug() |
+      sep() |
+      oct() |
+      nov() |
+      dec();
   yearToken() => token(digit().repeat(2, 4));
   quarterToken() => token(char('Q') & digit()) & char(',') & yearToken();
   calYearToken() => token((string('CAL') | string('Cal'))) & yearToken();
@@ -127,43 +146,42 @@ class TermParserDefinition extends TermGrammarDefinition {
   const TermParserDefinition();
 
   simpleMonthToken() => super.simpleMonthToken().map((List each) {
-        return new Month(_toYear(each[1]), _toMonth(each[0]));
+        return Month(_toYear(each[1]), _toMonth(each[0]));
       });
   simpleMonthCodeToken() => super.simpleMonthCodeToken().map((String each) {
-        return new Month(
+        return Month(
             _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]);
       });
 
   simpleDayToken() => super.simpleDayToken().map((List each) {
-        return new Date(
-            _toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
+        return Date(_toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
       });
   simpleQuarterToken() => super.simpleQuarterToken().map((List each) {
         int year = _toYear(each[2]);
         int quarter = int.parse(each[0].substring(1));
         if (quarter < 1 || quarter > 4)
-          throw new ArgumentError('Invalid quarter: ${each.join()}');
+          throw ArgumentError('Invalid quarter: ${each.join()}');
         int month = 3 * (quarter - 1) + 1;
-        TZDateTime start = new TZDateTime.utc(year, month);
-        TZDateTime end = new TZDateTime.utc(year, month + 3);
+        TZDateTime start = TZDateTime.utc(year, month);
+        TZDateTime end = TZDateTime.utc(year, month + 3);
         return new Interval(start, end);
       });
   simpleCalYearToken() => super.simpleCalYearToken().map((List each) {
         int year = _toYear(each[1]);
-        TZDateTime start = new TZDateTime.utc(year);
-        TZDateTime end = new TZDateTime.utc(year + 1);
+        TZDateTime start = TZDateTime.utc(year);
+        TZDateTime end = TZDateTime.utc(year + 1);
         return new Interval(start, end);
       });
 
   compoundMonthToken() => super.compoundMonthToken().map((List each) {
         DateTime start = (each[0] as Month).start;
         DateTime end = (each[2] as Month).end;
-        return new Interval(start, end);
+        return Interval(start, end);
       });
   compoundDayToken() => super.compoundDayToken().map((List each) {
         DateTime start = (each[0] as Date).start;
         DateTime end = (each[2] as Date).end;
-        return new Interval(start, end);
+        return Interval(start, end);
       });
 
   relativeToken() => super.relativeToken().map((List each) {
@@ -193,7 +211,6 @@ class TermParserDefinition extends TermGrammarDefinition {
         return res;
       });
 }
-
 
 /// Convert a month token to a month value.
 int _toMonth(String m) {
@@ -235,7 +252,6 @@ Map<String, int> _monthCode = {
   'X': 11,
   'Z': 12,
 };
-
 
 Set<String> _mon = new Set.from([
   'Jan',
