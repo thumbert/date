@@ -8,13 +8,17 @@ final TermParser _parser = TermParser();
 
 // Decided not to support the ISO8601 duration parser.
 
-/// Parse a limited number of String inputs into intervals using a parser.
+/// Parse a limited number of String inputs into a datetime interval.
 /// Supported tokens are:
 /// <p>days: 1Jan17, months: 'Jan17', 'F18', years: 'Cal17', quarters: 'Q3,18',
-/// day ranges: 1Jan17-3Jan17, month ranges: Jul17-Aug17.
-/// Or a term relative to current moment: '-1m' represents the last month, '-2y',
-///   the last 2 years.
-/// If the tzLocation is not specified, return the interval in UTC timezone,
+/// day ranges: 1Jan17-3Jan17, or month ranges: Jul17-Aug17.
+///
+/// <p>Or a term relative to the current moment.  For example:
+/// '-10d' the last 10 days, '+10d' the next 10 days,
+/// '-3m' represents approximately the last three months,
+/// '-2y', represents approximately the last 2 years.
+///
+/// <p>If the tzLocation is not specified, return the interval in UTC timezone,
 /// otherwise, return the interval in the time zone specified.
 /// Throws an [ArgumentError] if the parsing fails.
 Interval parseTerm(String term, {Location tzLocation}) {
@@ -192,7 +196,7 @@ class TermParserDefinition extends TermGrammarDefinition {
         Interval res;
         Date start = Date.today(location: UTC);
         Date end;
-        List aux = []
+        var aux = []
           ..add(each[0])
           ..addAll(each[1] as List);
         int step = int.parse(aux.join());
@@ -200,6 +204,8 @@ class TermParserDefinition extends TermGrammarDefinition {
           end = start.add((step * 30.5).round());
         } else if (each[2] == 'y') {
           end = start.add((step * 365.25).round());
+        } else if (each[2] == 'd') {
+          end = start.add(step);
         } else {
           throw new ArgumentError('Unsupported relative token ${each[2]}');
         }

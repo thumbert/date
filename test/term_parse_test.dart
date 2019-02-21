@@ -43,11 +43,27 @@ parseTermTest() {
       expect(parseTerm('Cal 2017'),
           new Interval(new TZDateTime.utc(2017), new TZDateTime.utc(2018)));
     });
-//    test('A relative token: -1m, -1y', () {  /// DON't know how to test them
-//      //Date today = Date.today(location: UTC);
-//      expect(parseTerm('-1b'), matcher)
-//    });
-
+    test('A relative token: -3d', () {
+      var today = Date.today(location: UTC);
+      var interval = parseTerm('-3d');
+      var start = today.subtract(3).start;
+      var exp = Interval(start, today.end);
+      expect(interval, exp);
+    });
+    test('A relative token: -2m', () {
+      var today = Date.today(location: UTC);
+      var interval = parseTerm('-2m');
+      var start = today.subtract(61).start;
+      var exp = Interval(start, today.end);
+      expect(interval, exp);
+    });
+    test('A relative token: -1y', () {
+      var today = Date.today(location: UTC);
+      var interval = parseTerm('-1y');
+      var start = today.subtract(365).start;
+      var exp = Interval(start, today.end);
+      expect(interval, exp);
+    });
     test('A month range: jan17-feb17, jan17 - feb17, jan17-Feb17', () {
       expect(parseTerm('jan17-feb17'),
           new Interval(new TZDateTime.utc(2017,1), new TZDateTime.utc(2017,3)));
