@@ -36,7 +36,7 @@ testInterval() {
     test('create interval ending', () {
       var start = TZDateTime(location, 2015, 1, 1);
       var end = TZDateTime(location, 2015, 1, 2);
-      Interval i1 = Interval(start, end);
+      var i1 = Interval(start, end);
       expect(Interval.ending(end, Duration(days: 1)), i1);
     });
     test('interval withStart, interval withEnd', () {
@@ -102,6 +102,18 @@ testInterval() {
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000-0500');
     });
+
+    test('compareTo another interval', () {
+      var i1 = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
+      var i2 = Interval(TZDateTime.utc(2016), TZDateTime.utc(2017));
+      var i3 = Interval(TZDateTime.utc(2015), TZDateTime.utc(2017));
+      expect(i1.compareTo(i2), -1);
+      expect(i2.compareTo(i1), 1);
+      expect(i1.compareTo(i1), 0);
+      expect(i1.compareTo(i3), -1);
+      expect(i3.compareTo(i2), -1);
+    });
+
 
     test('splitting into hours across hour boundary, returns two hours', () {
       TZDateTime start = TZDateTime(location, 2017, 1, 1);

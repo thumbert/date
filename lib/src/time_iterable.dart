@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:date/src/date_base.dart';
 import 'time_ordering.dart';
 
+@Deprecated('Not really needed.  To be removed in version 3.0.0')
 class TimeIterable<E extends ComparableWithAdd<E>> extends Object
     with IterableMixin<E> {
   E start;

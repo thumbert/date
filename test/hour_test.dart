@@ -24,28 +24,19 @@ hourTest() {
     });
 
     test('hour iterable around DST', () {
-      TimeIterable<Hour> it1 = new TimeIterable(
-          new Hour.beginning(new TZDateTime(location, 2015, 3, 8, 0)),
-          new Hour.beginning(new TZDateTime(location, 2015, 3, 8, 5)));
-      expect(it1.length, 5);  // spring forward
+      var it1 = Interval(TZDateTime(location, 2015, 3, 8, 0),
+          TZDateTime(location, 2015, 3, 8, 6));
+      expect(it1.splitLeft((dt) => Hour.beginning(dt)).length, 5);  // spring forward
 
-      TimeIterable<Hour> it2 = new TimeIterable(
-          new Hour.beginning(new TZDateTime(location, 2015, 11, 1, 0)),
-          new Hour.beginning(new TZDateTime(location, 2015, 11, 1, 5)));
-      expect(it2.length, 7);  // fall back
-    });
-
-    test('there are 8784 hours in year 2016 (leap year)', () {
-      Hour start = new Hour.beginning(new TZDateTime(location, 2016));
-      Hour end = new Hour.ending(new TZDateTime(location, 2017));
-      List hours = new TimeIterable(start, end).toList();
-      expect(hours.length, 8784);
+      var it2 = Interval(TZDateTime(location, 2015, 11, 1, 0),
+          TZDateTime(location, 2015, 11, 1, 6));
+      expect(it2.splitLeft((dt) => Hour.beginning(dt)).length, 7);  // fall back
     });
 
     test('split an year into hours', () {
-      var year = new Interval(new TZDateTime(location, 2016),
-          new TZDateTime(location, 2017));
-      var hours = year.splitLeft((dt) => new Hour.beginning(dt));
+      var year = Interval(TZDateTime(location, 2016),
+          TZDateTime(location, 2017));
+      var hours = year.splitLeft((dt) => Hour.beginning(dt));
       expect(hours.length, 8784);
     });
 

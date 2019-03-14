@@ -5,6 +5,10 @@ abstract class TimeOrdering<E> {
   bool isAfter(E that);
 }
 
+abstract class Additive<E> {
+  E add(int i);
+}
+
 /// Just a union so I can extend it
 abstract class ComparableWithAdd<E> extends Comparable<E> {
   E add(int i);

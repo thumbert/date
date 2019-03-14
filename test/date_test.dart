@@ -131,49 +131,46 @@ testDate() {
   });
 }
 
-testDateIterable() {
-  group('Test TimeIterable: ', () {
-    test('daily for 5 days', () {
-      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5));
-      expect(range.length, 5);
-      expect(range.last, new Date(2015,1,5));
-    });
-
-    test('daily iterable start/end gets correct hours', () {
-      List<Date> x = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5)).toList();
-      List startHours = x.map((day) => day.start.hour).toList();
-      expect(startHours.every((v) => v == 0), true);
-    });
-
-    test('daily for 5 days, backwards by one day', () {
-      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
-      expect(range.length, 5);
-      expect(range.last, new Date(2015,1,1));
-    });
-
-    test('weekly for 3 weeks', () {
-      TimeIterable<Date> range = new TimeIterable(new Date(2015,9,1), new Date(2015,9,20), step: 7);
-      expect(range.length, 3);
-      expect(range.last, new Date(2015,9,15));
-    });
-
-    test('monthly for 12 months', () {
-      TimeIterable<Month> range = new TimeIterable(new Month(2015,1), new Month(2015,12));
-      expect(range.length, 12);
-      expect(range.elementAt(4), new Month(2015,5));
-    });
-
-
-  });
-}
+//testDateIterable() {
+//  group('Test TimeIterable: ', () {
+//    test('daily for 5 days', () {
+//      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5));
+//      expect(range.length, 5);
+//      expect(range.last, new Date(2015,1,5));
+//    });
+//
+//    test('daily iterable start/end gets correct hours', () {
+//      List<Date> x = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5)).toList();
+//      List startHours = x.map((day) => day.start.hour).toList();
+//      expect(startHours.every((v) => v == 0), true);
+//    });
+//
+//    test('daily for 5 days, backwards by one day', () {
+//      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
+//      expect(range.length, 5);
+//      expect(range.last, new Date(2015,1,1));
+//    });
+//
+//    test('weekly for 3 weeks', () {
+//      TimeIterable<Date> range = new TimeIterable(new Date(2015,9,1), new Date(2015,9,20), step: 7);
+//      expect(range.length, 3);
+//      expect(range.last, new Date(2015,9,15));
+//    });
+//
+//    test('monthly for 12 months', () {
+//      TimeIterable<Month> range = new TimeIterable(new Month(2015,1), new Month(2015,12));
+//      expect(range.length, 12);
+//      expect(range.elementAt(4), new Month(2015,5));
+//    });
+//
+//
+//  });
+//}
 
 
 
 main() async {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  await initializeTimeZone(tzdb);
-
+  await initializeTimeZone();
   await testDate();
-  await testDateIterable();
+//  await testDateIterable();
 }

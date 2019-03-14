@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.0 (released 2019-03-14)
+- Mark TimeIterable as deprecated.  After using the package for a 
+while, this class is not really needed.  
+ - Add compareTo method for the Interval class.  
+
 ## 2.2.0 (released 2018-08-18)
 - Make the package Dart 2 compliant.
 

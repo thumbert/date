@@ -2,7 +2,7 @@ library interval;
 
 import 'package:timezone/timezone.dart';
 
-class Interval {
+class Interval implements Comparable<Interval>{
   TZDateTime _start;
   TZDateTime _end;
 
@@ -83,6 +83,12 @@ class Interval {
     if (other is! Interval) return false;
     Interval interval = other;
     return _start == interval.start && _end == interval.end;
+  }
+
+  int compareTo(Interval other) {
+    var rS = start.compareTo(other.start);
+    if (rS != 0) return rS;
+    return end.compareTo(other.end);
   }
 
   /// see the pairing function http://szudzik.com/ElegantPairing.pdf

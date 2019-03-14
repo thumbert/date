@@ -12,7 +12,7 @@ import 'interval.dart';
 ///A simple Date class.  No worries about the time of the day, time zones, etc.
 ///Days are counted as integers from an origin, set to '1970-01-01'.
 class Date extends Interval
-    implements TimeOrdering<Date>, ComparableWithAdd<Date> {
+    implements TimeOrdering<Date>, Additive<Date> {
   int _year;
   int _month;
   int _day;
@@ -177,7 +177,7 @@ class Date extends Interval
     Date date = other;
     return date._value == _value && location == date.location;
   }
-  int compareTo(Date other) => this.value.compareTo(other.value);
+  //int compareTo(Date other) => this.value.compareTo(other.value);
   int get hashCode => _value;
 
   /// Return the day of the week.  Mon=1, ... Sat=6, Sun=7.

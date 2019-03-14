@@ -9,7 +9,7 @@ import 'package:timezone/timezone.dart';
 
 /// Class representing a calendar Month implemented as an Interval.
 class Month extends Interval
-    implements TimeOrdering<Month>, ComparableWithAdd<Month> {
+    implements TimeOrdering<Month>, Additive<Month> {
   int _value;
   int _year;
   int _month; // between Jan=1 to Dec=12
@@ -113,18 +113,6 @@ class Month extends Interval
   int get year => _year;
   int get month => _month;
 
-  int compareTo(Month other) {
-    int res;
-    if (this._value < other._value) {
-      res = -1;
-    } else if (this._value == other._value) {
-      res = 0;
-    } else {
-      res = 1;
-    }
-    return res;
-  }
-
   /// Days of the month as list.
   List<Date> days() => splitLeft((dt) => new Date.fromTZDateTime(dt)).cast<Date>();
 
@@ -137,9 +125,5 @@ class Month extends Interval
   /// Format a month using the yyyy-MM format.
   String toIso8601String() => _isoFmt.format(start);
 
-
   Interval toInterval() => new Interval(start, end);
-
-  TimeIterator<Date> get dateIterator =>
-      new TimeIterator(startDate, endDate, step: 1);
 }

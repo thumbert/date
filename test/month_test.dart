@@ -1,12 +1,11 @@
 library test_month;
 
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart';
 import 'package:date/src/month.dart';
-import 'package:date/src/time_iterable.dart';
+import 'package:date/src/interval.dart';
 
 
 testMonth() {
@@ -52,33 +51,37 @@ testMonth() {
       expect(m3.toString(), 'Dec15');
       Month m4 = m3.add(1).subtract(1);
       expect("Dec15: (${m4.year}, ${m4.month})", "Dec15: (2015, 12)");
-      expect(m1.subtract(11), new Month(2014, 12));
+      expect(m1.subtract(11), Month(2014, 12));
     });
 
     test("Generate list of months", () {
-      TimeIterable<Month> it = new TimeIterable(new Month(2015,1), new Month(2015,12));
-      expect(it.length, 12);
-    });
-
-    test('Date iterator', () {
-      Month m = new Month(2015, 1);
-      TimeIterator it = m.dateIterator;
-      it.moveNext();
-      expect(it.current, m.startDate);
+      var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
+      var months = it.splitLeft((dt) => Month.fromTZDateTime(dt));
+      expect(months.length, 12);
     });
 
     test('Get the days of the month', () {
-      TimeIterable<Month> it = new TimeIterable(new Month(2015,1), new Month(2015,12));
-      List days = it.map((Month m) => m.days().length).toList();
+      var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
+      var days = it.splitLeft((dt) => Month.fromTZDateTime(dt))
+          .cast<Month>()
+          .map((m) => m.days().length).toList();
       expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
     });
 
-    test('compare months', (){
-      Month m1 = new Month(2015,6);
-      Month m2 = new Month(2015,2);
+    test('time ordering for months', (){
+      var m1 = Month(2015,6);
+      var m2 = Month(2015,2);
       expect(m1.isBefore(m2), false);
       expect(m1.isAfter(m2), true);
     });
+
+    test('compareTo months', (){
+      var m1 = Month(2015,6);
+      var m2 = Month(2015,2);
+      expect(m1.compareTo(m2), 1);
+      expect(m1.compareTo(m1), 0);
+    });
+
 
     test('month format (default)', () {
       Month m1 = new Month(2015,6);
@@ -97,9 +100,6 @@ testMonth() {
 }
 
 main() async {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  await initializeTimeZone(tzdb);
-
+  await initializeTimeZone();
   await testMonth();
 }
