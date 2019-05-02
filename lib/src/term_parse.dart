@@ -1,5 +1,6 @@
 library term_parse;
 
+import 'package:intl/intl.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
@@ -23,8 +24,7 @@ final TermParser _parser = TermParser();
 /// Throws an [ArgumentError] if the parsing fails.
 Interval parseTerm(String term, {Location tzLocation}) {
   var res = _parser.parse(term);
-  if (res.isFailure)
-    throw ArgumentError('Couldn\'t parse term $term.');
+  if (res.isFailure) throw ArgumentError('Couldn\'t parse term $term.');
   var interval = res.value as Interval;
   if (tzLocation != null) {
     var start = interval.start;
@@ -34,6 +34,39 @@ Interval parseTerm(String term, {Location tzLocation}) {
         TZDateTime(tzLocation, end.year, end.month, end.day));
   }
   return interval;
+}
+
+/// A convenience function to go from an interval to a String.  The output
+/// doesn't contain the tz information anymore.
+///
+/// Works only for one day, day ranges, one month, and month ranges.
+///
+String prettyTerm(Interval interval) {
+  if (!isMidnight(interval.start))
+    throw ArgumentError('Interval start needs to be at midnight');
+  if (!isMidnight(interval.end))
+    throw ArgumentError('Interval end needs to be at midnight');
+
+  var fmt = DateFormat("dMMMyy");
+  var nDays = interval.end.difference(interval.start).inDays;
+  var start = Date.fromTZDateTime(interval.start);
+  if (nDays == 1) return start.toString(fmt);
+
+  if (isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.end)) {
+    var mStart = Month.fromTZDateTime(interval.start);
+    var mEnd = Month.fromTZDateTime(interval.end);
+    if (mStart == mEnd.previous) {
+      // it's exactly one month
+      return mStart.toString();
+    } else {
+      // it's a month range
+      return '${mStart.toString()}-${mEnd.previous.toString()}';
+    }
+  } else {
+    // it's a day range
+    var end = Date.fromTZDateTime(interval.end).previous;
+    return '${start.toString(fmt)}-${end.toString(fmt)}';
+  }
 }
 
 class TermGrammar extends GrammarParser {

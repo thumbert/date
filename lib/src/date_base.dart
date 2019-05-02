@@ -21,9 +21,9 @@ class Date extends Interval
   Location _location;
 
   /// Default string format is the ISO `yyyy-MM-dd`.
-  static final DateFormat _defaultFmt = new DateFormat('yyyy-MM-dd');
+  static final DateFormat _defaultFmt = DateFormat('yyyy-MM-dd');
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
-  static final Duration D1 = new Duration(days: 1);
+  static final Duration D1 = Duration(days: 1);
 
   /// Return today's date.
   static Date today({Location location}) {
@@ -217,16 +217,16 @@ class Date extends Interval
 
   String toString([DateFormat fmt]) {
     fmt ??= _defaultFmt;
-    return fmt.format(new DateTime(_year, _month, _day));
+    return fmt.format(DateTime(_year, _month, _day));
   }
 
-  Interval toInterval() => new Interval(start, end);
+  Interval toInterval() => Interval(start, end);
 
   _simpleValidation() {
     if (_month > 12 || _month < 1)
-      throw new FormatException('Invalid month value $_month', _month);
+      throw FormatException('Invalid month value $_month', _month);
     if (_day > 31 || _day < 1)
-      throw new FormatException('Invalid day value $_day', _day);
+      throw FormatException('Invalid day value $_day', _day);
   }
 }
 

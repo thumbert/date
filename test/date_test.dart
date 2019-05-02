@@ -3,14 +3,11 @@
 
 library test.date;
 
-import 'dart:io';
 import 'package:test/test.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
 import 'package:timezone/standalone.dart';
 import 'package:date/date.dart';
-import 'package:date/src/time_iterable.dart';
-import 'package:date/src/month.dart';
 
 
 testDate() {
@@ -131,41 +128,6 @@ testDate() {
   });
 }
 
-//testDateIterable() {
-//  group('Test TimeIterable: ', () {
-//    test('daily for 5 days', () {
-//      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5));
-//      expect(range.length, 5);
-//      expect(range.last, new Date(2015,1,5));
-//    });
-//
-//    test('daily iterable start/end gets correct hours', () {
-//      List<Date> x = new TimeIterable(new Date(2015,1,1), new Date(2015,1,5)).toList();
-//      List startHours = x.map((day) => day.start.hour).toList();
-//      expect(startHours.every((v) => v == 0), true);
-//    });
-//
-//    test('daily for 5 days, backwards by one day', () {
-//      TimeIterable<Date> range = new TimeIterable(new Date(2015,1,5), new Date(2015,1,1), step: -1);
-//      expect(range.length, 5);
-//      expect(range.last, new Date(2015,1,1));
-//    });
-//
-//    test('weekly for 3 weeks', () {
-//      TimeIterable<Date> range = new TimeIterable(new Date(2015,9,1), new Date(2015,9,20), step: 7);
-//      expect(range.length, 3);
-//      expect(range.last, new Date(2015,9,15));
-//    });
-//
-//    test('monthly for 12 months', () {
-//      TimeIterable<Month> range = new TimeIterable(new Month(2015,1), new Month(2015,12));
-//      expect(range.length, 12);
-//      expect(range.elementAt(4), new Month(2015,5));
-//    });
-//
-//
-//  });
-//}
 
 
 
