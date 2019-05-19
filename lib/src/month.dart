@@ -1,7 +1,6 @@
 library month;
 
 import 'package:intl/intl.dart';
-import 'package:date/src/time_iterable.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/time_ordering.dart';
 import 'package:date/src/interval.dart';
@@ -84,7 +83,7 @@ class Month extends Interval
     return out;
   }
 
-  Month get next => new Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
+  Month get next => Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
 
   /// Return the next [n] months starting on this month.
   List<Month> nextN(int n) {
