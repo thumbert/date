@@ -22,14 +22,14 @@ List<Interval> makeContiguousIntervals(List<Interval> x) {
   return res;
 }
 
-
-
 /// Check if a DateTime is a beginning of an hour
 bool isBeginningOfHour(DateTime dt) {
-  if (dt.minute !=0 || dt.second !=0 || dt.millisecond !=0)
+  if (dt.millisecondsSinceEpoch/1000 % 3600 !=0)
     return false;
   return true;
 }
+
+
 
 /// Check if a DateTime is beginning of a day.
 bool isBeginningOfDay(DateTime dt) {

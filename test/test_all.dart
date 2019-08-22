@@ -1,6 +1,5 @@
 library test_all;
 
-import 'dart:io';
 import 'package:timezone/standalone.dart';
 import 'date_test.dart' as dateTest;
 import 'hour_test.dart' as hourTest;
@@ -13,7 +12,6 @@ main() async {
   await initializeTimeZone();
 
   dateTest.testDate();
-  //dateTest.testDateIterable();
 
   hourTest.hourTest();
   intervalTest.testInterval();

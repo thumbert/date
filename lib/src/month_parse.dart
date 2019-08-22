@@ -168,20 +168,6 @@ Map<String, int> _monthCode = {
 };
 
 
-Set<String> _mon = new Set.from([
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-]);
 
 Map _monthIdx = {
   'jan': 1,

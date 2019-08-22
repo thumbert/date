@@ -1,10 +1,10 @@
 library test.hour_test;
 
 import 'dart:io';
+import 'package:date/date.dart';
 import 'package:test/test.dart';
 import 'package:date/src/hour.dart';
 import 'package:date/src/interval.dart';
-import 'package:date/src/time_iterable.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timezone/src/env.dart';
 
@@ -40,15 +40,19 @@ hourTest() {
       expect(hours.length, 8784);
     });
 
+    test('isBeginningOfHour', (){
+      var dt1 = TZDateTime(location, 2018, 1, 1, 6);
+      expect(isBeginningOfHour2(dt1), true);
+      expect(isBeginningOfHour2(TZDateTime(location, 2018, 1, 1, 6, 1)), false);
+
+    });
+
   });
 }
 
 
 main() async {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] + '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  await initializeTimeZone(tzdb);
-
+  await initializeTimeZone();
   await hourTest();
 }
 
