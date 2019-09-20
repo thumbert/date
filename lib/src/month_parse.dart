@@ -10,11 +10,11 @@ final MonthParser _parser = new MonthParser();
 /// Parse a limited number of String inputs into a month term using a parser.
 /// Supported tokens are:
 /// <p>'Jan18', 'January 2018', 'Jan 2018', 'F18', '2018-01', '201801'
-Interval parseMonth(String term, {Location location}) {
+Month parseMonth(String term, {Location location}) {
   location ??= UTC;
   var res = _parser.parse(term);
   Month month = res.value;
-  return new Month(month.year, month.month, location: location);
+  return Month(month.year, month.month, location: location);
 }
 
 class MonthGrammar extends GrammarParser {
