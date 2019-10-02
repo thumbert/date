@@ -42,8 +42,8 @@ hourTest() {
 
     test('isBeginningOfHour', (){
       var dt1 = TZDateTime(location, 2018, 1, 1, 6);
-      expect(isBeginningOfHour2(dt1), true);
-      expect(isBeginningOfHour2(TZDateTime(location, 2018, 1, 1, 6, 1)), false);
+      expect(isBeginningOfHour(dt1), true);
+      expect(isBeginningOfHour(TZDateTime(location, 2018, 1, 1, 6, 1)), false);
 
     });
 
