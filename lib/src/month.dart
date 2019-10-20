@@ -62,17 +62,17 @@ class Month extends Interval
 
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
-  TZDateTime get start => new TZDateTime(location, _year, _month);
-  TZDateTime get end => new TZDateTime(location, _year, _month + 1);
+  TZDateTime get start => TZDateTime(location, _year, _month);
+  TZDateTime get end => TZDateTime(location, _year, _month + 1);
 
   /// Get the first day of the month.
-  Date get startDate => new Date(_year, _month, 1, location: _location);
+  Date get startDate => Date(_year, _month, 1, location: _location);
 
   /// Get the last day of the month.
   Date get endDate => next.startDate.subtract(1);
 
   Month get previous =>
-      new Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: _location);
+      Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: _location);
 
   /// Return the previous [n] months ending on this month.
   List<Month> previousN(int n) {
@@ -93,6 +93,21 @@ class Month extends Interval
     }
     return out;
   }
+
+  /// Return all months starting from this month up to [month] inclusive.
+  /// If [month] is before [this] throw.
+  List<Month> upTo(Month month) {
+    if (month.isBefore(this))
+      throw ArgumentError('Month $month is before $this');
+    var out = <Month>[];
+    var nextM = this;
+    while (!month.isBefore(nextM)) {
+      out.add(nextM);
+      nextM = nextM.add(1);
+    }
+    return out;
+  }
+
 
   Month add(int months) =>
       new Month(_calcYear(_value + months), _calcMonth(_value + months), location: _location);

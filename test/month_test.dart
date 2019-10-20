@@ -39,14 +39,27 @@ testMonth() {
     });
 
     test("Next/previous months", () {
-      expect(new Month(2014, 1).next, new Month(2014, 2));
-      expect(new Month(2014, 1).previous, new Month(2013, 12));
-      expect(new Month(2014, 1).add(6), new Month(2014, 7));
-      expect(new Month(2015, 11).next, new Month(2015, 12));
+      expect(Month(2014, 1).next, Month(2014, 2));
+      expect(Month(2014, 1).previous, Month(2013, 12));
+      expect(Month(2014, 1).add(6), Month(2014, 7));
+      expect(Month(2015, 11).next, Month(2015, 12));
+    });
+
+    test('nextN, previousN, upTo', () {
+      var m = Month(2017, 3);
+      var prevMonths = m.previousN(12);
+      expect(prevMonths.length, 12);
+      expect(prevMonths.first, Month(2016, 3));
+      var nextMonths = m.nextN(12);
+      expect(nextMonths.length, 12);
+      expect(nextMonths.first, Month(2017, 4));
+      var upToMonths = m.upTo(Month(2017, 12));
+      expect(upToMonths.length, 10);
+      expect(upToMonths.last, Month(2017, 12));
     });
 
     test("Add/subtract months", () {
-      Month m1 = new Month(2015, 11);
+      Month m1 = Month(2015, 11);
       Month m3 = m1.add(1);
       expect(m3.toString(), 'Dec15');
       Month m4 = m3.add(1).subtract(1);
