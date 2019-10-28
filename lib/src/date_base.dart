@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'month.dart';
 import 'time_ordering.dart';
 import 'interval.dart';
+import 'hour.dart';
 
 ///A simple Date class.  No worries about the time of the day, time zones, etc.
 ///Days are counted as integers from an origin, set to '1970-01-01'.
@@ -49,8 +50,8 @@ class Date extends Interval
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
   /// datetime.
   Date.fromTZDateTime(TZDateTime datetime)
-      : super(new TZDateTime.utc(datetime.year, datetime.month, datetime.day),
-            new TZDateTime.utc(datetime.year, datetime.month, datetime.day + 1)) {
+      : super(TZDateTime.utc(datetime.year, datetime.month, datetime.day),
+            TZDateTime.utc(datetime.year, datetime.month, datetime.day + 1)) {
     _year = datetime.year;
     _month = datetime.month;
     _day = datetime.day;
@@ -62,11 +63,11 @@ class Date extends Interval
   /// Can't make this a constructor because I have problems setting the start/end
   /// of the superclass in the correct local timezone.
   static Date fromJulianDay(int value, {Location location}) {
-    var startZ = new DateTime.fromMillisecondsSinceEpoch(
+    var startZ = DateTime.fromMillisecondsSinceEpoch(
         1000 * 24 * 3600 * value,
         isUtc: true);
     location = location ?? UTC;
-    return new Date(startZ.year, startZ.month, startZ.day, location: location);
+    return Date(startZ.year, startZ.month, startZ.day, location: location);
   }
 
   ///Constructs a new [Date] instance based on [formattedString].
@@ -82,16 +83,16 @@ class Date extends Interval
   /// Examples: "19700101", "-0004-12-24", "81030-04-01".
   ///
   static Date parse(String formattedString, {Location location}) {
-    final RegExp re = new RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
+    final RegExp re = RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
 
     Match match = re.firstMatch(formattedString);
     if (match != null) {
       int years = int.parse(match[1]);
       int month = int.parse(match[2]);
       int day = int.parse(match[3]);
-      return new Date(years, month, day, location: location);
+      return Date(years, month, day, location: location);
     } else {
-      throw new FormatException("Invalid date format", formattedString);
+      throw FormatException("Invalid date format", formattedString);
     }
   }
 
@@ -214,6 +215,9 @@ class Date extends Interval
     else
       return new DateTime(year, month, day);
   }
+
+  /// Get all the hours in this day
+  List<Hour> hours() => splitLeft((dt) => Hour.beginning(dt)).cast<Hour>();
 
   String toString([DateFormat fmt]) {
     fmt ??= _defaultFmt;

@@ -125,6 +125,12 @@ testDate() {
       expect(x.compareTo(y), -1);
     });
 
+    test('get hours in day', (){
+      var hours = Date(2019, 1, 1).hours();
+      expect(hours.length, 24);
+      expect(hours.first, Hour.beginning(TZDateTime.utc(2019)));
+    });
+
   });
 }
 
