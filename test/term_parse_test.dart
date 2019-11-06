@@ -61,6 +61,22 @@ parseTermTest() {
       var exp = Interval(start, today.end);
       expect(interval, exp);
     });
+    test('A relative token: -1y+1y', () {
+      var today = Date.today(location: UTC);
+      var interval = parseTerm('-1y+1y');
+      var start = today.subtract(365).start;
+      var end = today.add(365).end;
+      var exp = Interval(start, end);
+      expect(interval, exp);
+    });
+    test('A relative token: -1d+3d', () {
+      var today = Date.today(location: UTC);
+      var interval = parseTerm('-1d+3d');
+      var start = today.subtract(1).start;
+      var end = today.add(3).end;
+      var exp = Interval(start, end);
+      expect(interval, exp);
+    });
     test('A month range: jan17-feb17, jan17 - feb17, jan17-Feb17', () {
       expect(
           parseTerm('jan17-feb17'),
@@ -88,7 +104,6 @@ parseTermTest() {
           Interval(
               TZDateTime(location, 2017, 1), TZDateTime(location, 2017, 2, 4)));
     });
-
     test('prettyTerm tests', () {
       expect(prettyTerm(Date(2018, 1, 1)), '1Jan18');
       expect(prettyTerm(Month(2018, 1)), 'Jan18');
@@ -104,16 +119,12 @@ parseTermTest() {
           prettyTerm(Interval(
               TZDateTime.utc(2018,1), TZDateTime.utc(2018,5))),
           'Jan18-Apr18');
-
     });
   });
 }
 
 main() async {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] +
-      '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b_all.tzf';
-  initializeTimeZone(tzdb);
+  await initializeTimeZone();
 
   //print(new TermParser().parse('Jan 17').value);
 

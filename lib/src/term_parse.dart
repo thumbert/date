@@ -93,7 +93,8 @@ class TermGrammarDefinition extends GrammarDefinition {
   compoundDayToken() => ref(simpleDayToken) & char('-') & ref(simpleDayToken);
   compoundMonthToken() =>
       ref(simpleMonthToken) & char('-') & ref(simpleMonthToken);
-  compoundToken() => compoundMonthToken() | compoundDayToken();
+  compoundRelativeToken() => relativeToken() & relativeToken();
+  compoundToken() => compoundMonthToken() | compoundDayToken() | compoundRelativeToken();
 
   relativeToken() => token(char('-') | char('+')) & digit().plus() & letter();
 
@@ -219,10 +220,17 @@ class TermParserDefinition extends TermGrammarDefinition {
         return Interval(start, end);
       });
   compoundDayToken() => super.compoundDayToken().map((List each) {
-        DateTime start = (each[0] as Date).start;
-        DateTime end = (each[2] as Date).end;
+        var start = (each[0] as Date).start;
+        var end = (each[2] as Date).end;
         return Interval(start, end);
       });
+
+  compoundRelativeToken() => super.compoundRelativeToken().map((each) {
+//    print(each);
+    var start = (each[0] as Interval).start;
+    var end = (each[1] as Interval).end;
+    return Interval(start, end);
+  });
 
   relativeToken() => super.relativeToken().map((List each) {
         //print(each);
@@ -295,20 +303,6 @@ Map<String, int> _monthCode = {
   'Z': 12,
 };
 
-//Set<String> _mon = new Set.from([
-//  'Jan',
-//  'Feb',
-//  'Mar',
-//  'Apr',
-//  'May',
-//  'Jun',
-//  'Jul',
-//  'Aug',
-//  'Sep',
-//  'Oct',
-//  'Nov',
-//  'Dec'
-//]);
 
 Map _monthIdx = {
   'jan': 1,
