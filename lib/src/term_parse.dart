@@ -18,6 +18,9 @@ final TermParser _parser = TermParser();
 /// '-10d' the last 10 days, '+10d' the next 10 days,
 /// '-3m' represents approximately the last three months,
 /// '-2y', represents approximately the last 2 years.
+/// '-2y+1y', a compound relative, from -2 year ago to 1 year into the future.
+/// The following units are supported: y or Y for years, m or M for months,
+/// d or D for days.
 ///
 /// <p>If the tzLocation is not specified, return the interval in UTC timezone,
 /// otherwise, return the interval in the time zone specified.
@@ -241,19 +244,20 @@ class TermParserDefinition extends TermGrammarDefinition {
           ..add(each[0])
           ..addAll(each[1] as List);
         int step = int.parse(aux.join());
-        if (each[2] == 'm') {
+        String unit = each[2];
+        if (unit.toLowerCase() == 'm') {
           end = start.add((step * 30.5).round());
-        } else if (each[2] == 'y') {
+        } else if (unit.toLowerCase() == 'y') {
           end = start.add((step * 365.25).round());
-        } else if (each[2] == 'd') {
+        } else if (unit.toLowerCase() == 'd') {
           end = start.add(step);
         } else {
-          throw new ArgumentError('Unsupported relative token ${each[2]}');
+          throw ArgumentError('Unsupported relative token: $unit');
         }
         if (start.isBefore(end)) {
-          res = new Interval(start.start, end.end);
+          res = Interval(start.start, end.end);
         } else if (start.isAfter(end)) {
-          res = new Interval(end.start, start.end);
+          res = Interval(end.start, start.end);
         } else {
           res = start;
         }

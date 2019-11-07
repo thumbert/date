@@ -61,6 +61,13 @@ parseTermTest() {
       var exp = Interval(start, today.end);
       expect(interval, exp);
     });
+    test('A relative token: -1Y', () {
+      var today = Date.today(location: UTC);
+      var interval = parseTerm('-1Y');
+      var start = today.subtract(365).start;
+      var exp = Interval(start, today.end);
+      expect(interval, exp);
+    });
     test('A relative token: -1y+1y', () {
       var today = Date.today(location: UTC);
       var interval = parseTerm('-1y+1y');
