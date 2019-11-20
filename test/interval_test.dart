@@ -57,7 +57,6 @@ testInterval() {
       expect(i1.abuts(i3), true);
       expect(i3.abuts(i1), true);
     });
-
     test('interval contains time ', () {
       Interval i1 = Interval(
           TZDateTime(location, 2015), TZDateTime(location, 2015, 1, 2));
@@ -65,7 +64,6 @@ testInterval() {
       expect(i1.containsTime(TZDateTime(location, 2015, 1, 2)), false);
       expect(i1.containsTime(TZDateTime(location, 2015, 1, 1, 15)), true);
     });
-
     test('interval contains another interval', () {
       Interval i1 = Interval(
           TZDateTime(location, 2015), TZDateTime(location, 2015, 1, 2));
@@ -81,7 +79,6 @@ testInterval() {
       expect(i1.containsInterval(i3), false);
       expect(i1.containsInterval(i4), true);
     });
-
     test('interval overlap', () {
       Interval i1 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
@@ -95,12 +92,22 @@ testInterval() {
           TZDateTime(location, 2015, 1, 4));
       expect(i3.overlap(i4), Interval(i3.start, i3.end));
     });
-
     test('instant (degenerate) interval is allowed', () {
       Interval i =
           Interval(TZDateTime(location, 2015), TZDateTime(location, 2015));
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000-0500');
+    });
+    test('calculate the covering of several intervals', () {
+      var i1 = Interval(
+          TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
+      var i2 = Interval(TZDateTime(location, 2015, 1, 1, 15),
+          TZDateTime(location, 2015, 1, 3));
+      var i3 = Interval(
+          TZDateTime(location, 2015, 1, 2), TZDateTime(location, 2015, 1, 3));
+      var i4 = Interval(TZDateTime(location, 2015, 1, 1, 15),
+          TZDateTime(location, 2015, 1, 4));
+      expect(Interval.covering([i1, i2, i3, i4]), Interval(i1.start, i4.end));
     });
 
     test('compareTo another interval', () {

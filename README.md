@@ -5,8 +5,10 @@ classes for a date, month, hour.
 
  
 ## Interval class
-A class to represent the time interval between a start and end time instant.  
-For example, define a year interval and split it into hours. 
+A class to represent the time interval between a start (closed) and end (open) time 
+instant; in mathematical notation: [start, end).  
+
+For example, define a year interval and split it into a list of hours. 
 ```dart
 var year = Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
 var hours = year.splitLeft((dt) => Hour.beginning(dt)).cast<Hour>();
@@ -35,11 +37,6 @@ dt2.add(1) == Date(2015,1,17);
 dt2.subtract(1) == Date(2015,1,14);
 ```
 
-Generate a sequence of dates:
-```dart
-var it = TimeIterable(Date(2015,1,1), Date(2016,1,1).previous);
-var days = it.toList();
-```
 
 ## Month class
 Construct a `Month`:

@@ -29,6 +29,18 @@ class Interval implements Comparable<Interval>{
     _start = end.subtract(duration);
   }
 
+  /// Find the smallest interval covering all the input intervals.
+  static Interval covering(Iterable<Interval> xs) {
+    if (xs.isEmpty) throw ArgumentError('Input list should not be empty!');
+    var res = xs.first;
+    if (xs.length == 1) return res;
+    for (var x in xs.skip(1)) {
+      if (x.start.isBefore(res.start)) res = Interval(x.start, res.end);
+      if (x.end.isAfter(res.end)) res = Interval(res.start, x.end);
+    }
+    return res;
+  }
+
   TZDateTime get start => _start;
   TZDateTime get end => _end;
 
