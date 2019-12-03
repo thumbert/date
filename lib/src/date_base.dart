@@ -157,6 +157,21 @@ class Date extends Interval
     }
     return out;
   }
+    
+  /// Return all dates starting from this date up to [date] inclusive.
+  /// If [date] is before [this] throw.
+  List<Date> upTo(Date date) {
+    if (date.isBefore(this))
+      throw ArgumentError('Date $date is before $this');
+    var out = <Date>[];
+    var nextD = this;
+    while (!date.isBefore(nextD)) {
+      out.add(nextD);
+      nextD = nextD.add(1);
+    }
+    return out;
+  }  
+    
 
   /// Add a number of days to this date.
   Date add(int step) => Date.fromJulianDay(_value + step, location: _location);
