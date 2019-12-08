@@ -85,13 +85,17 @@ testInterval() {
       Interval i2 = Interval(TZDateTime(location, 2015, 1, 1, 15),
           TZDateTime(location, 2015, 1, 3));
       expect(i1.overlap(i2), Interval(i2.start, i1.end));
+      expect(i1.overlap(i2), i2.overlap(i1));
 
       Interval i3 = Interval(
           TZDateTime(location, 2015, 1, 2), TZDateTime(location, 2015, 1, 3));
       Interval i4 = Interval(TZDateTime(location, 2015, 1, 1, 15),
           TZDateTime(location, 2015, 1, 4));
       expect(i3.overlap(i4), Interval(i3.start, i3.end));
+      expect(i3.overlap(i4), i4.overlap(i3));
     });
+
+
     test('instant (degenerate) interval is allowed', () {
       Interval i =
           Interval(TZDateTime(location, 2015), TZDateTime(location, 2015));
