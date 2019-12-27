@@ -14,6 +14,19 @@ var year = Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
 var hours = year.splitLeft((dt) => Hour.beginning(dt)).cast<Hour>();
 ```
 
+Calculate the overlap of two intervals with ```i1.overlap(i2)```.  If there is 
+no overlap, return ```null```.
+
+To calculate the minimum interval that covers an iterable of intervals, use 
+```dart
+var coveringInterval = Interval.covering([i1, i2, i3]);
+``` 
+
+
+
+  
+
+
 ## Hour class
 A class to represent a given hour.
 ```dart

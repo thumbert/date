@@ -1,6 +1,7 @@
 library test.elec.interval;
 
 import 'dart:io';
+import 'package:date/date.dart';
 import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
 import 'package:date/src/interval.dart';
@@ -21,7 +22,6 @@ soloTest() {
 
 testInterval() {
   var location = getLocation('US/Eastern');
-
   group('Test Interval:', () {
     test('interval', () {
       Interval i1 = Interval(
@@ -42,9 +42,10 @@ testInterval() {
     test('interval withStart, interval withEnd', () {
       var start = TZDateTime(location, 2015, 1, 10);
       var end = TZDateTime(location, 2015, 1, 20);
-      var i1 = Month(2015,1, location: location);
-      expect(i1.withStart(start), Interval(start, TZDateTime(location, 2015,2)));
-      expect(i1.withEnd(end), Interval(TZDateTime(location, 2015,1), end));
+      var i1 = Month(2015, 1, location: location);
+      expect(
+          i1.withStart(start), Interval(start, TZDateTime(location, 2015, 2)));
+      expect(i1.withEnd(end), Interval(TZDateTime(location, 2015, 1), end));
     });
     test('interval abuts', () {
       Interval i1 = Interval(
@@ -94,7 +95,11 @@ testInterval() {
       expect(i3.overlap(i4), Interval(i3.start, i3.end));
       expect(i3.overlap(i4), i4.overlap(i3));
     });
-
+    test('interval overlap, no overlap returns null', () {
+      var i1 = parseTerm('1Jan19-5Jan19');
+      var i2 = parseTerm('15Jan19-25Jan19');
+      expect(i1.overlap(i2), null);
+    });
 
     test('instant (degenerate) interval is allowed', () {
       Interval i =
@@ -102,6 +107,7 @@ testInterval() {
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000-0500');
     });
+
     test('calculate the covering of several intervals', () {
       var i1 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
@@ -114,6 +120,49 @@ testInterval() {
       expect(Interval.covering([i1, i2, i3, i4]), Interval(i1.start, i4.end));
     });
 
+    test('difference 1 interval, middle overlap', () {
+      var one = parseTerm('1Jan19-5Jan19');
+      expect(one.difference([parseTerm('2Jan19-3Jan19')]), [
+        Interval(TZDateTime.utc(2019), TZDateTime.utc(2019, 1, 2)),
+        parseTerm('4Jan19-5Jan19')
+      ]);
+    });
+    test('difference 1 interval, all overlap', () {
+      var one = parseTerm('1Jan19-5Jan19');
+      expect(one.difference([parseTerm('3Mar19-10Mar19')]), [one]);
+    });
+    test('difference 1 interval, left overlap', () {
+      var one = parseTerm('1Jan19-5Jan19');
+      expect(one.difference([parseTerm('3Jan19-18Jan19')]), [
+        Interval(TZDateTime.utc(2019), TZDateTime.utc(2019, 1, 3)),
+      ]);
+    });
+    test('difference 1 interval, right overlap', () {
+      var one = parseTerm('1Jan19-5Jan19');
+      expect(one.difference([parseTerm('24Dec18-3Jan19')]), [
+        Interval(TZDateTime.utc(2019, 1, 4), TZDateTime.utc(2019, 1, 6)),
+      ]);
+    });
+    test('difference 1 interval, no difference', () {
+      var one = parseTerm('1Jan19-5Jan19');
+      expect(one.difference([parseTerm('24Dec18-13Jan19')]), []);
+    });
+    test('difference multiple intervals', () {
+      var one = parseTerm('1Jan19-5Jan19');
+      var two = parseTerm('8Jan19-11Jan19');
+      var three = parseTerm('14Jan19-18Jan19');
+      var four = parseTerm('20Jan19-22Jan19');
+      var interval = parseTerm('3Jan19-15Jan19');
+      var res = interval.difference([one, two, three, four]);
+      expect(res, [
+        parseTerm('6Jan19-7Jan19'),
+        parseTerm('12Jan19-13Jan19'),
+      ]);
+    });
+
+
+
+
     test('compareTo another interval', () {
       var i1 = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
       var i2 = Interval(TZDateTime.utc(2016), TZDateTime.utc(2017));
@@ -124,7 +173,6 @@ testInterval() {
       expect(i1.compareTo(i3), -1);
       expect(i3.compareTo(i2), -1);
     });
-
 
     test('splitting into hours across hour boundary, returns two hours', () {
       TZDateTime start = TZDateTime(location, 2017, 1, 1);

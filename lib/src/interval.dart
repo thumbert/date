@@ -72,7 +72,54 @@ class Interval implements Comparable<Interval>{
     return false;
   }
 
-  /// Return the overlap between two intervals.  If there is no overlap, throw.
+  /// Calculate the difference (in the sense of sets) between this interval
+  /// and an iterable of intervals.  The resulting list can contain one or
+  /// multiple intervals.  If there is no overlap between this interval and
+  /// any of the input [intervals], return the original interval.
+  /// If there is perfect covering return an empty list.
+  List<Interval> difference(Iterable<Interval> intervals) {
+    var out = <Interval>[this];
+    for (var interval in intervals) {
+      var newOut = <Interval>[];
+      for (var one in out) {
+        newOut.addAll(one._difference1(interval));
+      }
+      out = List.from(newOut);
+    }
+    return out;
+  }
+
+  /// Return an empty list when there is no difference, that is when
+  /// [other] overlaps [this].
+  List<Interval> _difference1(Interval other) {
+    var out = <Interval>[];
+    if (other.containsInterval(this)) return out;
+    if (this.containsInterval(other)) {
+      // other interval inside
+      out.add(Interval(start, other.start));
+      out.add(Interval(other.end, end));
+
+    } else if (this.overlap(other) == null) {
+      // there is no overlap, totally distinct
+      out.add(this);
+
+    } else if (end.isAfter(other.start) && start.isBefore(other.start)) {
+        // there is a left remainder
+        out.add(Interval(start, other.start));
+
+    } else if (start.isBefore(other.end) && end.isAfter(other.end)) {
+        // there is a right remainder
+        out.add(Interval(other.end, end));
+
+    } else {
+      throw ArgumentError('What difference? $this and $other');
+    }
+
+    return out;
+  }
+
+  /// Return the overlap between two intervals.  If there is no overlap, 
+  /// return [null].
   Interval overlap(Interval other) {
     DateTime iStart;
     if (start.isBefore(other.start)) {
@@ -86,7 +133,8 @@ class Interval implements Comparable<Interval>{
     } else {
       iEnd = end;
     }
-    return new Interval(iStart, iEnd);
+    if (iEnd.isBefore(iStart)) return null;
+    return Interval(iStart, iEnd);
   }
 
   bool isInstant() => start.isAtSameMomentAs(end);
