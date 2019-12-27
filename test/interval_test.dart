@@ -1,6 +1,5 @@
 library test.elec.interval;
 
-import 'dart:io';
 import 'package:date/date.dart';
 import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
@@ -119,6 +118,33 @@ testInterval() {
           TZDateTime(location, 2015, 1, 4));
       expect(Interval.covering([i1, i2, i3, i4]), Interval(i1.start, i4.end));
     });
+
+    test('fuse intervals, 1', () {
+      var d1 = Date(2019,1,1);
+      var d2 = Date(2019,1,2);
+      var d3 = Date(2019,1,3);
+      var d4 = Date(2019,1,7);
+      var d5 = Date(2019,1,8);
+      var res = Interval.fuse([d1, d2, d3, d4, d5]);
+      expect(res, [
+        parseTerm('1Jan19-3Jan19'),
+        parseTerm('7Jan19-8Jan19'),
+      ]);
+    });
+
+    test('fuse intervals, 2', () {
+      var d1 = Date(2019,1,1);
+      var d2 = Date(2019,1,2);
+      var d3 = Date(2019,1,3);
+      var d4 = Date(2019,1,4);
+      var d5 = Date(2019,1,8);
+      var res = Interval.fuse([d1, d2, d3, d4, d5]);
+      expect(res, [
+        parseTerm('1Jan19-4Jan19'),
+        Date(2019,1,8),
+      ]);
+    });
+
 
     test('difference 1 interval, middle overlap', () {
       var one = parseTerm('1Jan19-5Jan19');
@@ -244,11 +270,6 @@ testInterval() {
 }
 
 main() async {
-  Map env = Platform.environment;
-  String tzdb = env['HOME'] +
-      '/.pub-cache/hosted/pub.dartlang.org/timezone-0.4.3/lib/data/2015b.tzf';
-  await initializeTimeZone(tzdb);
-
-  // soloTest();
+  await initializeTimeZone();
   await testInterval();
 }

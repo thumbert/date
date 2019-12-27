@@ -1,5 +1,6 @@
 library interval;
 
+import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
 class Interval implements Comparable<Interval>{
@@ -40,6 +41,33 @@ class Interval implements Comparable<Interval>{
     }
     return res;
   }
+
+  /// Fuse an iterable of intervals by coalescing adjacent intervals to get
+  /// the smallest number of intervals possible.  Only fuse intervals that abut.
+  /// Throw if any of the input intervals are overlapping.
+  ///
+  static List<Interval> fuse(Iterable<Interval> xs) {
+    var input = xs.toList()..sort();
+    if (input.length == 0) return <Interval>[];
+    if (input.length == 1) return input.toList();
+    var out = <Interval>[];
+    var previous = input.first;
+    for (var x in input.skip(1)) {
+      if (x.start == previous.end) {
+        // be an optimist
+        previous = previous.withEnd(x.end);
+      } else if (x.start.isAfter(previous.end)) {
+        // need to start another fuse interval
+        out.add(previous);
+        previous = x;
+      } else {
+        throw ArgumentError('Intervals $previous and $x are overlapping');
+      }
+    }
+    out.add(previous);
+    return out;
+  }
+
 
   TZDateTime get start => _start;
   TZDateTime get end => _end;

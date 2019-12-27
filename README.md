@@ -19,10 +19,13 @@ no overlap, return ```null```.
 
 To calculate the minimum interval that covers an iterable of intervals, use 
 ```dart
-var coveringInterval = Interval.covering([i1, i2, i3]);
+Interval coveringInterval = Interval.covering([i1, i2, i3]);
 ``` 
 
-
+You can fuse together intervals using the static method 
+```dart
+List<Interval> fusedIntervals = Interval.fuse([i1, i2, i3, i4, i5]);
+```
 
   
 
