@@ -201,11 +201,12 @@ testInterval() {
     });
 
     test('splitting into hours across hour boundary, returns two hours', () {
-      TZDateTime start = TZDateTime(location, 2017, 1, 1);
-      TZDateTime end = TZDateTime(location, 2017, 1, 1, 2, 15);
-      Interval interval = Interval(start, end);
-      List res = interval.splitLeft((x) => Hour.beginning(x));
+      var start = TZDateTime(location, 2017, 1, 1);
+      var end = TZDateTime(location, 2017, 1, 1, 2, 15);
+      var interval = Interval(start, end);
+      var res = interval.splitLeft((x) => Hour.beginning(x));
       expect(res.length, 2);
+      expect(res.first is Hour, true);
     });
     test(
         'splitting into hours an interval less than an hour, returns an empty list',

@@ -1,9 +1,8 @@
 library interval;
 
-import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
-class Interval implements Comparable<Interval>{
+class Interval implements Comparable<Interval> {
   TZDateTime _start;
   TZDateTime _end;
 
@@ -68,7 +67,6 @@ class Interval implements Comparable<Interval>{
     return out;
   }
 
-
   TZDateTime get start => _start;
   TZDateTime get end => _end;
 
@@ -126,19 +124,15 @@ class Interval implements Comparable<Interval>{
       // other interval inside
       out.add(Interval(start, other.start));
       out.add(Interval(other.end, end));
-
     } else if (this.overlap(other) == null) {
       // there is no overlap, totally distinct
       out.add(this);
-
     } else if (end.isAfter(other.start) && start.isBefore(other.start)) {
-        // there is a left remainder
-        out.add(Interval(start, other.start));
-
+      // there is a left remainder
+      out.add(Interval(start, other.start));
     } else if (start.isBefore(other.end) && end.isAfter(other.end)) {
-        // there is a right remainder
-        out.add(Interval(other.end, end));
-
+      // there is a right remainder
+      out.add(Interval(other.end, end));
     } else {
       throw ArgumentError('What difference? $this and $other');
     }
@@ -146,7 +140,7 @@ class Interval implements Comparable<Interval>{
     return out;
   }
 
-  /// Return the overlap between two intervals.  If there is no overlap, 
+  /// Return the overlap between two intervals.  If there is no overlap,
   /// return [null].
   Interval overlap(Interval other) {
     DateTime iStart;
@@ -192,10 +186,10 @@ class Interval implements Comparable<Interval>{
   /// <p>For example to split an year into hours use
   /// f = (x) => new Hour.beginning(x)
   /// <p>or, to split a month into days use
-  /// f = (x) => new Date(x.year, x.month, x.day)
-  List<Interval> splitLeft(Interval Function(TZDateTime) f) {
-    List<Interval> res = [];
-    Interval current = f(start);
+  /// f = (x) => Date(x.year, x.month, x.day)
+  List<K> splitLeft<K extends Interval>(K Function(TZDateTime) f) {
+    var res = <K>[];
+    var current = f(start);
     while ((current.end.millisecondsSinceEpoch)
             .compareTo(end.millisecondsSinceEpoch) <
         1) {
@@ -213,7 +207,6 @@ class Interval implements Comparable<Interval>{
     end ??= TZDateTime.now(this.end.location);
     return Interval(start, end);
   }
-
 
   /// Creates a new interval with the specified start instant.
   /// If [start] is not specified, it means now.
