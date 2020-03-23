@@ -10,118 +10,117 @@ import 'package:timezone/standalone.dart';
 import 'package:date/date.dart';
 
 
-testDate() {
-  group("Test Date:", () {
-    test("From year month day to Julian day", () {
-      expect(new Date(1970, 1, 1).value, 0);
-      expect(new Date(2014, 1, 1).value, 16071);
-      expect(new Date(1900, 1, 1).value, -25567);
-      expect(new Date(2100, 1, 1).value, 47482);
+void testDate() {
+  group('Test Date:', () {
+    test('From year month day to Julian day', () {
+      expect(Date(1970, 1, 1).value, 0);
+      expect(Date(2014, 1, 1).value, 16071);
+      expect(Date(1900, 1, 1).value, -25567);
+      expect(Date(2100, 1, 1).value, 47482);
     });
 
     test('Constructor from TZDateTime for DST', (){
-      Location eastern = getLocation('US/Eastern');
-      var dst = new Date.fromTZDateTime(new TZDateTime(eastern,2017,3,12));
-      expect(dst.end, new TZDateTime(eastern,2017,3,13));
+      var eastern = getLocation('US/Eastern');
+      var dst = Date.fromTZDateTime(TZDateTime(eastern,2017,3,12));
+      expect(dst.end, TZDateTime(eastern,2017,3,13));
     });
 
     test('Parse a string', (){
-      expect(Date.parse('20150101'), new Date(2015,1,1));
-      expect(Date.parse('2015-01-03'), new Date(2015,1,3));
-      expect(Date.parse('2015-0103'), new Date(2015,1,3));
-      expect(Date.parse('20150229'), new Date(2015,3,1));  // !!! same as DateTime
+      expect(Date.parse('20150101'), Date(2015,1,1));
+      expect(Date.parse('2015-01-03'), Date(2015,1,3));
+      expect(Date.parse('2015-0103'), Date(2015,1,3));
+      expect(Date.parse('20150229'), Date(2015,3,1));  // !!! same as DateTime
     });
 
-    test("From Julian day to year month day", () {
-      Date d = new Date(2014, 5, 15);
+    test('From Julian day to year month day', () {
+      var d = Date(2014, 5, 15);
       expect([d.year, d.month, d.day], [2014, 5, 15]);
-      Date d2 = Date.fromJulianDay(d.value);
+      var d2 = Date.fromJulianDay(d.value);
       expect([d2.year, d2.month, d2.day], [2014, 5, 15]);
       expect(d2.value, 16205);
     });
 
-    test("Day of week (Mon=1, ... Sat=6, Sun=7)", () {
-      expect(new Date(2014, 12, 19).weekday, 5);
-      expect(new Date(2014, 1, 1).weekday, 3);
-      expect(new Date(2014, 2, 1).weekday, 6);
-      expect(new Date(2014, 3, 3).weekday, 1);
-      expect(new Date(2014, 4, 15).weekday, 2);
-      expect(new Date(2014, 6, 15).weekday, 7);
-      expect(new Date(2014, 8, 14).weekday, 4);
+    test('Day of week (Mon=1, ... Sat=6, Sun=7)', () {
+      expect(Date(2014, 12, 19).weekday, 5);
+      expect(Date(2014, 1, 1).weekday, 3);
+      expect(Date(2014, 2, 1).weekday, 6);
+      expect(Date(2014, 3, 3).weekday, 1);
+      expect(Date(2014, 4, 15).weekday, 2);
+      expect(Date(2014, 6, 15).weekday, 7);
+      expect(Date(2014, 8, 14).weekday, 4);
     });
 
-    test("Day of the year", () {
-      expect(new Date(2015, 1, 1).dayOfYear(), 1);
-      expect(new Date(2015, 12, 31).dayOfYear(), 365);
-      expect(new Date(2000, 12, 31).dayOfYear(), 366);
-      expect(new Date(2004, 12, 31).dayOfYear(), 366);
+    test('Day of the year', () {
+      expect(Date(2015, 1, 1).dayOfYear(), 1);
+      expect(Date(2015, 12, 31).dayOfYear(), 365);
+      expect(Date(2000, 12, 31).dayOfYear(), 366);
+      expect(Date(2004, 12, 31).dayOfYear(), 366);
     });
 
-    test("Is weekend", () {
-      expect(new Date(2018, 4, 14).isWeekend(), true);
-      expect(new Date(2018, 4, 15).isWeekend(), true);
-      expect(new Date(2018, 4, 16).isWeekend(), false);
+    test('Is weekend', () {
+      expect(Date(2018, 4, 14).isWeekend(), true);
+      expect(Date(2018, 4, 15).isWeekend(), true);
+      expect(Date(2018, 4, 16).isWeekend(), false);
     });
 
 
     test('next/previous day', (){
-      expect(new Date(2015, 2, 28).next, new Date(2015,3,1));
-      expect(new Date(2015, 1, 1).previous, new Date(2014,12,31));
+      expect(Date(2015, 2, 28).next, Date(2015,3,1));
+      expect(Date(2015, 1, 1).previous, Date(2014,12,31));
     });
 
     test('current/next/previous month', (){
-      expect(new Date(2015,2,28).beginningOfMonth, new Date(2015,2,1));
-      expect(new Date(2015,2,28).currentMonth().next.startDate, new Date(2015,3,1));
-      expect(new Date(2015,2,28).currentMonth().previous.startDate, new Date(2015,1,1));
+      expect(Date(2015,2,28).beginningOfMonth, Date(2015,2,1));
+      expect(Date(2015,2,28).currentMonth().next.startDate, Date(2015,3,1));
+      expect(Date(2015,2,28).currentMonth().previous.startDate, Date(2015,1,1));
     });
 
     test('nextN/previousN days', (){
-      var date = new Date(2015, 2, 3);
+      var date = Date(2015, 2, 3);
       expect(date.nextN(3), [date.add(1), date.add(2), date.add(3)]);
       expect(date.previousN(3), [date.subtract(3), date.subtract(2), date.subtract(1)]);
     });
 
 
     test('add/subtract days', () {
-      expect(new Date(2015,1,1).add(1), new Date(2015,1,2));
-      expect(new Date(2015,1,1).subtract(1), new Date(2014,12,31));
-      expect(new Date(2015,1,1).add(-1), new Date(2014,12,31));
+      expect(Date(2015,1,1).add(1), Date(2015,1,2));
+      expect(Date(2015,1,1).subtract(1), Date(2014,12,31));
+      expect(Date(2015,1,1).add(-1), Date(2014,12,31));
     });
 
-    test("Change the date display format", () {
-      var fmt = new DateFormat("dMMMyy");
-      expect(new Date(2014, 1, 1).toString(fmt), "1Jan14");
+    test('Change the date display format', () {
+      var fmt = DateFormat('dMMMyy');
+      expect(Date(2014, 1, 1).toString(fmt), '1Jan14');
     });
 
-    test("Sort dates", (){
-      var x = [new Date(2014,8,1), new Date(2014,12,1),
-      new Date(2014,2,1)];
+    test('Sort dates', (){
+      var x = [Date(2014,8,1), Date(2014,12,1), Date(2014,2,1)];
       x.sort();
-      expect(x.map((d) => d.toString()).join(","),
-      "2014-02-01,2014-08-01,2014-12-01");
+      expect(x.map((d) => d.toString()).join(','),
+      '2014-02-01,2014-08-01,2014-12-01');
     });
 
-    test("toSet() on a list of Dates", () {
-      var x = [new Date(2014,1,1), new Date(2014,1,1)];
+    test('toSet() on a list of Dates', () {
+      var x = [Date(2014,1,1), Date(2014,1,1)];
       expect(x.toSet().toList().length, 1);
     });
 
     test('start/end of a Date', () {
-      var x = new Date(2016,1,1);
+      var x = Date(2016,1,1);
       expect(x.start.toString(), '2016-01-01 00:00:00.000Z');
       expect(x.end.toString(), '2016-01-02 00:00:00.000Z');
     });
 
     test('start/end of a Date after you add one day', () {
-      var x = new Date(2016,1,1);
+      var x = Date(2016,1,1);
       var y = x.add(1);
       expect(y.start.toString(), '2016-01-02 00:00:00.000Z');
       expect(y.end.toString(), '2016-01-03 00:00:00.000Z');
     });
 
     test('compare Dates', (){
-      var x = new Date(2016, 1, 1);
-      var y = new Date(2017, 3, 3);
+      var x = Date(2016, 1, 1);
+      var y = Date(2017, 3, 3);
       expect(x.compareTo(y), -1);
     });
 
@@ -137,7 +136,7 @@ testDate() {
 
 
 
-main() async {
+void main() async {
   await initializeTimeZone();
   await testDate();
 //  await testDateIterable();

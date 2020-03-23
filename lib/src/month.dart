@@ -14,12 +14,12 @@ class Month extends Interval
   int _month; // between Jan=1 to Dec=12
   Location _location;
 
-  static final DateFormat _defaultFmt = new DateFormat('MMMyy');
-  static final DateFormat _isoFmt = new DateFormat('yyyy-MM');
+  static final DateFormat _defaultFmt = DateFormat('MMMyy');
+  static final DateFormat _isoFmt = DateFormat('yyyy-MM');
 
   static Month current({DateTime datetime}) {
-    datetime ??= new DateTime.now();
-    return new Month(datetime.year, datetime.month);
+    datetime ??= DateTime.now();
+    return Month(datetime.year, datetime.month);
   }
 
   /// Creates a new [Month] object.  Months are [Interval]s.
@@ -27,14 +27,15 @@ class Month extends Interval
   /// Specify the timezone for the month
   /// if you want to split/aggregate months.
   Month(int year, int month, {Location location})
-      : super(new TZDateTime.utc(year, month), new TZDateTime.utc(year, month + 1)) {
+      : super(TZDateTime.utc(year, month), TZDateTime.utc(year, month + 1)) {
     _value = year * 12 + month;
     _year = year;
     _month = month;
-    if (location == null)
+    if (location == null) {
       _location = UTC;
-    else
+    } else {
       _location = location;
+    }
   }
 
   /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
@@ -47,8 +48,8 @@ class Month extends Interval
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
-      : super(new TZDateTime.utc(datetime.year, datetime.month),
-            new TZDateTime.utc(datetime.year, datetime.month + 1)) {
+      : super(TZDateTime.utc(datetime.year, datetime.month),
+            TZDateTime.utc(datetime.year, datetime.month + 1)) {
     _value = datetime.year * 12 + datetime.month;
     _year = datetime.year;
     _month = datetime.month;
@@ -62,7 +63,9 @@ class Month extends Interval
 
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
+  @override
   TZDateTime get start => TZDateTime(location, _year, _month);
+  @override
   TZDateTime get end => TZDateTime(location, _year, _month + 1);
 
   /// Get the first day of the month.
@@ -77,8 +80,8 @@ class Month extends Interval
   /// Return the previous [n] months ending on this month.
   List<Month> previousN(int n) {
     var out = <Month>[];
-    for (int i=n; i>0; i--) {
-      out.add(this.subtract(i));
+    for (var i=n; i>0; i--) {
+      out.add(subtract(i));
     }
     return out;
   }
@@ -88,8 +91,8 @@ class Month extends Interval
   /// Return the next [n] months starting on this month.
   List<Month> nextN(int n) {
     var out = <Month>[];
-    for (int i=1; i<=n; i++) {
-      out.add(this.add(i));
+    for (var i=1; i<=n; i++) {
+      out.add(add(i));
     }
     return out;
   }
@@ -97,8 +100,9 @@ class Month extends Interval
   /// Return all months starting from this month up to [month] inclusive.
   /// If [month] is before [this] throw.
   List<Month> upTo(Month month) {
-    if (month.isBefore(this))
+    if (month.isBefore(this)) {
       throw ArgumentError('Month $month is before $this');
+    }
     var out = <Month>[];
     var nextM = this;
     while (!month.isBefore(nextM)) {
@@ -109,19 +113,24 @@ class Month extends Interval
   }
 
 
+  @override
   Month add(int months) =>
-      new Month(_calcYear(_value + months), _calcMonth(_value + months), location: _location);
+      Month(_calcYear(_value + months), _calcMonth(_value + months), location: _location);
   Month subtract(int months) =>
-      new Month(_calcYear(_value - months), _calcMonth(_value - months), location: _location);
+      Month(_calcYear(_value - months), _calcMonth(_value - months), location: _location);
 
+  @override
   bool isBefore(Month other) => _value < other._value;
+  @override
   bool isAfter(Month other) => _value > other._value;
+  @override
   bool operator ==(dynamic other) {
     if (other is! Month) return false;
     Month month = other;
     return _value == month._value && location == month.location;
   }
 
+  @override
   int get hashCode => _value;
 
   int get year => _year;
@@ -131,6 +140,7 @@ class Month extends Interval
   List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt)).cast<Date>();
 
   /// Format a month.  The default format is MMMyy.
+  @override
   String toString([DateFormat fmt]) {
     fmt ??= _defaultFmt;
     return fmt.format(start);
@@ -139,5 +149,5 @@ class Month extends Interval
   /// Format a month using the yyyy-MM format.
   String toIso8601String() => _isoFmt.format(start);
 
-  Interval toInterval() => new Interval(start, end);
+  Interval toInterval() => Interval(start, end);
 }
