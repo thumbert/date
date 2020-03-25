@@ -218,17 +218,18 @@ class Date extends Interval
   }
 
   /// Return the day of the year.  1-Jan is day 1 of the year. 
-  int dayOfYear() => value - new Date(_year, 1, 1).value + 1;
+  int dayOfYear() => value - Date(_year, 1, 1).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => weekday >= 6 ? true : false;
 
   /// Convert to a regular SDK [DateTime] object at midnight.
   DateTime toDateTime({isUtc: false}) {
-    if (isUtc)
-      return new DateTime.utc(year, month, day);
-    else
-      return new DateTime(year, month, day);
+    if (isUtc) {
+      return DateTime.utc(year, month, day);
+    } else {
+      return DateTime(year, month, day);
+    }
   }
 
   /// Get all the hours in this day

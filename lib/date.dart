@@ -13,3 +13,5 @@ export 'src/myy.dart';
 export 'src/term_parse.dart';
 export 'src/time_iterable.dart';
 export 'src/utils.dart';
+export 'src/week.dart';
+

@@ -137,7 +137,7 @@ class Month extends Interval
   int get month => _month;
 
   /// Days of the month as list.
-  List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt)).cast<Date>();
+  List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt));
 
   /// Format a month.  The default format is MMMyy.
   @override
