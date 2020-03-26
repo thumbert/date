@@ -9,10 +9,10 @@ import 'interval.dart';
 List<Interval> makeContiguousIntervals(List<Interval> x) {
   var res = <Interval>[];
   if (x.isEmpty) return [];
-  Interval current = x.first;
-  for (int i = 1; i < x.length; i++) {
+  var current = x.first;
+  for (var i = 1; i < x.length; i++) {
     if (x[i].abuts(current)) {
-      current = new Interval(current.start, x[i].end);
+      current = Interval(current.start, x[i].end);
     } else {
       res.add(current);
       current = x[i];
@@ -24,8 +24,9 @@ List<Interval> makeContiguousIntervals(List<Interval> x) {
 
 /// Check if a DateTime is a beginning of an hour
 bool isBeginningOfHour(DateTime dt) {
-  if (dt.millisecondsSinceEpoch/1000 % 3600 !=0)
+  if (dt.millisecondsSinceEpoch/1000 % 3600 !=0) {
     return false;
+  }
   return true;
 }
 
@@ -33,8 +34,9 @@ bool isBeginningOfHour(DateTime dt) {
 
 /// Check if a DateTime is beginning of a day.
 bool isBeginningOfDay(DateTime dt) {
-  if (dt.hour !=0 || !isBeginningOfHour(dt))
+  if (dt.hour !=0 || !isBeginningOfHour(dt)) {
     return false;
+  }
   return true;
 }
 
@@ -43,16 +45,18 @@ bool isMidnight(DateTime dt) => isBeginningOfDay(dt);
 
 /// Check if a DateTime is beginning of a month.
 bool isBeginningOfMonth(DateTime dt) {
-  if (dt.day != 1 || !isBeginningOfDay(dt) )
+  if (dt.day != 1 || !isBeginningOfDay(dt) ) {
     return false;
+  }
   return true;
 }
 
 
 /// Check if a DateTime is beginning of the year.
 bool isBeginningOfYear(DateTime dt) {
-  if (dt.month !=1 || !isBeginningOfMonth(dt))
+  if (dt.month !=1 || !isBeginningOfMonth(dt)) {
     return false;
+  }
   return true;
 }
 
