@@ -11,10 +11,12 @@ class Interval implements Comparable<Interval> {
   Interval(TZDateTime start, TZDateTime end) {
     _start = start;
     _end = end;
-    if (end.isBefore(start))
+    if (end.isBefore(start)) {
       throw ArgumentError('Start is not before the end DateTime.');
-    if (start.location != end.location)
+    }
+    if (start.location != end.location) {
       throw ArgumentError('Start and end need to be in the same timezone');
+    }
   }
 
   /// Construct an interval of a given [duration] starting at a [start] TZDateTime.
@@ -46,9 +48,9 @@ class Interval implements Comparable<Interval> {
   /// Throw if any of the input intervals are overlapping.
   ///
   static List<Interval> fuse(Iterable<Interval> xs) {
+    if (xs.isEmpty) return <Interval>[];
+    if (xs.length == 1) return xs.toList();
     var input = xs.toList()..sort();
-    if (input.length == 0) return <Interval>[];
-    if (input.length == 1) return input.toList();
     var out = <Interval>[];
     var previous = input.first;
     for (var x in input.skip(1)) {
@@ -67,34 +69,53 @@ class Interval implements Comparable<Interval> {
     return out;
   }
 
+  /// Calculate the union of intervals in a set sense.  It is different than
+  /// [fuse] in that the input intervals [xs] can be overlapping and not sorted.
+  /// The returning list contains sorted non-overlapping intervals.
+  static List<Interval> union(List<Interval> xs) {
+    if (xs.isEmpty) return <Interval>[];
+    if (xs.length == 1) return xs.toList();
+    xs.sort();
+    var us = <Interval>[xs.first];
+    for (var x in xs.skip(1)) {
+      var last = us.last;
+      if (x.start.isAfter(last.end)) {
+        // disjoint
+        us.add(x);
+      } else {
+        if (x.end.isAfter(last.end)) {
+          us.last = Interval(last.start, x.end);
+        }
+      }
+    }
+
+    return us;
+  }
+
   TZDateTime get start => _start;
   TZDateTime get end => _end;
 
   /// Does this interval abut with the other interval?
-  bool abuts(Interval other) {
-    bool res = false;
-    if (end == other.start || start == other.end) {
-      res = true;
-    }
-    return res;
-  }
+  bool abuts(Interval other) => _start == other.end || _end == other.start;
 
   /// Tests whether this interval contains this Datetime.
   bool containsTime(TZDateTime time) {
-    if (start.isBefore(time) && end.isAfter(time))
+    if (start.isBefore(time) && end.isAfter(time)) {
       return true;
-    else if (time.isAtSameMomentAs(start))
+    } else if (time.isAtSameMomentAs(start)) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   /// Tests whether this interval contains this interval.
   bool containsInterval(Interval interval) {
     if ((start.isBefore(interval.start) ||
             start.isAtSameMomentAs(interval.start)) &&
-        (end.isAfter(interval.end) || end.isAtSameMomentAs(interval.end)))
+        (end.isAfter(interval.end) || end.isAtSameMomentAs(interval.end))) {
       return true;
+    }
     return false;
   }
 
@@ -120,11 +141,11 @@ class Interval implements Comparable<Interval> {
   List<Interval> _difference1(Interval other) {
     var out = <Interval>[];
     if (other.containsInterval(this)) return out;
-    if (this.containsInterval(other)) {
+    if (containsInterval(other)) {
       // other interval inside
       out.add(Interval(start, other.start));
       out.add(Interval(other.end, end));
-    } else if (this.overlap(other) == null) {
+    } else if (overlap(other) == null) {
       // there is no overlap, totally distinct
       out.add(this);
     } else if (end.isAfter(other.start) && start.isBefore(other.start)) {
@@ -141,32 +162,35 @@ class Interval implements Comparable<Interval> {
   }
 
   /// Return the overlap between two intervals.  If there is no overlap,
-  /// return [null].
+  /// or if the two intervals are adjoining, return [null].
   Interval overlap(Interval other) {
-    DateTime iStart;
+    TZDateTime iStart;
     if (start.isBefore(other.start)) {
       iStart = other.start;
     } else {
       iStart = start;
     }
-    DateTime iEnd;
+    TZDateTime iEnd;
     if (end.isAfter(other.end)) {
       iEnd = other.end;
     } else {
       iEnd = end;
     }
-    if (iEnd.isBefore(iStart)) return null;
+    if (iEnd.isBefore(iStart) || abuts(other)) return null;
     return Interval(iStart, iEnd);
   }
 
   bool isInstant() => start.isAtSameMomentAs(end);
 
+  @override
   bool operator ==(dynamic other) {
     if (other is! Interval) return false;
     Interval interval = other;
     return _start == interval.start && _end == interval.end;
   }
 
+  /// Sort by start, if the start is identical, sort by end.
+  @override
   int compareTo(Interval other) {
     var rS = start.compareTo(other.start);
     if (rS != 0) return rS;
@@ -174,8 +198,9 @@ class Interval implements Comparable<Interval> {
   }
 
   /// see the pairing function http://szudzik.com/ElegantPairing.pdf
+  @override
   int get hashCode {
-    int res = end.millisecondsSinceEpoch * (end.millisecondsSinceEpoch + 1) +
+    var res = end.millisecondsSinceEpoch * (end.millisecondsSinceEpoch + 1) +
         start.millisecondsSinceEpoch;
     return res;
   }
@@ -199,6 +224,7 @@ class Interval implements Comparable<Interval> {
     return res;
   }
 
+  @override
   String toString() => isInstant() ? start.toString() : '[$_start, $end)';
 
   /// Creates a new interval ending with the specified end instant.

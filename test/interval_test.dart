@@ -9,7 +9,7 @@ import 'package:date/src/month.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/utils.dart';
 
-soloTest() {
+void soloTest() {
   test('Split one year with TZDateTime into months using splitLeft', () {
     var location = getLocation('Europe/Istanbul');
     var year = Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
@@ -19,15 +19,15 @@ soloTest() {
   });
 }
 
-testInterval() {
+void tests() {
   var location = getLocation('US/Eastern');
   group('Test Interval:', () {
     test('interval', () {
-      Interval i1 = Interval(
+      var i1 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
-      Interval i2 = Interval(
+      var i2 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
-      Interval i3 = Interval(
+      var i3 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 3));
       expect(i1 == i2, true);
       expect(i1 == i3, false);
@@ -47,61 +47,72 @@ testInterval() {
       expect(i1.withEnd(end), Interval(TZDateTime(location, 2015, 1), end));
     });
     test('interval abuts', () {
-      Interval i1 = Interval(
+      var i1 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
-      Interval i2 = Interval(
+      var i2 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
-      Interval i3 = Interval(
+      var i3 = Interval(
           TZDateTime(location, 2015, 1, 2), TZDateTime(location, 2015, 1, 3));
       expect(i1.abuts(i2), false);
       expect(i1.abuts(i3), true);
       expect(i3.abuts(i1), true);
     });
     test('interval contains time ', () {
-      Interval i1 = Interval(
+      var i1 = Interval(
           TZDateTime(location, 2015), TZDateTime(location, 2015, 1, 2));
       expect(i1.containsTime(TZDateTime(location, 2015)), true);
       expect(i1.containsTime(TZDateTime(location, 2015, 1, 2)), false);
       expect(i1.containsTime(TZDateTime(location, 2015, 1, 1, 15)), true);
     });
     test('interval contains another interval', () {
-      Interval i1 = Interval(
+      var i1 = Interval(
           TZDateTime(location, 2015), TZDateTime(location, 2015, 1, 2));
-      Interval i2 = Interval(
+      var i2 = Interval(
           TZDateTime(location, 2015), TZDateTime(location, 2015, 1, 1, 15));
-      Interval i3 = Interval(
+      var i3 = Interval(
           TZDateTime(location, 2014), TZDateTime(location, 2015, 1, 1, 15));
-      Interval i4 = Interval(TZDateTime(location, 2015, 1, 1, 10),
+      var i4 = Interval(TZDateTime(location, 2015, 1, 1, 10),
           TZDateTime(location, 2015, 1, 2));
-
       expect(i1.containsInterval(i2), true);
       expect(i1.containsInterval(i1), true);
       expect(i1.containsInterval(i3), false);
       expect(i1.containsInterval(i4), true);
     });
-    test('interval overlap', () {
-      Interval i1 = Interval(
+    test('adjacent intervals', () {
+      var i1 = parseTerm('Jan19');
+      var i2 = parseTerm('Feb19');
+      expect(i1.abuts(i2), true);
+      expect(i1.abuts(parseTerm('Mar19')), false);
+    });
+    test('overlap of two intervals', () {
+      var i1 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
-      Interval i2 = Interval(TZDateTime(location, 2015, 1, 1, 15),
+      var i2 = Interval(TZDateTime(location, 2015, 1, 1, 15),
           TZDateTime(location, 2015, 1, 3));
       expect(i1.overlap(i2), Interval(i2.start, i1.end));
       expect(i1.overlap(i2), i2.overlap(i1));
 
-      Interval i3 = Interval(
+      var i3 = Interval(
           TZDateTime(location, 2015, 1, 2), TZDateTime(location, 2015, 1, 3));
-      Interval i4 = Interval(TZDateTime(location, 2015, 1, 1, 15),
+      var i4 = Interval(TZDateTime(location, 2015, 1, 1, 15),
           TZDateTime(location, 2015, 1, 4));
       expect(i3.overlap(i4), Interval(i3.start, i3.end));
       expect(i3.overlap(i4), i4.overlap(i3));
     });
-    test('interval overlap, no overlap returns null', () {
+    test('intervals with no overlap returns null', () {
       var i1 = parseTerm('1Jan19-5Jan19');
       var i2 = parseTerm('15Jan19-25Jan19');
       expect(i1.overlap(i2), null);
     });
+    test('overlap of two adjacent intervals returns null', () {
+      var i1 = parseTerm('Jan19');
+      var i2 = parseTerm('Feb19');
+      expect(i1.overlap(i2), null);
+    });
 
-    test('instant (degenerate) interval is allowed', () {
-      Interval i =
+
+    test('instant (degenerate) intervals are allowed', () {
+      var i =
           Interval(TZDateTime(location, 2015), TZDateTime(location, 2015));
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000-0500');
@@ -145,7 +156,11 @@ testInterval() {
       ]);
     });
 
-
+    test('difference 2 intervals adjacent', () {
+      var m1 = parseTerm('Jan19');
+      var m2 = parseTerm('Feb19');
+      expect(m1.difference([m2]), [m1]);
+    });
     test('difference 1 interval, middle overlap', () {
       var one = parseTerm('1Jan19-5Jan19');
       expect(one.difference([parseTerm('2Jan19-3Jan19')]), [
@@ -186,8 +201,36 @@ testInterval() {
       ]);
     });
 
+    test('union, non overlapping intervals', () {
+      var xs = [
+        Date(2019, 1, 1),
+        Date(2019, 1, 2),
+        Date(2019, 1, 4),
+      ];
+      expect(Interval.union(xs),
+          [parseTerm('1Jan19-2Jan19'), Date(2019, 1, 4)]);
+    });
 
+    test('union, some overlapping intervals', () {
+      var xs = [
+        Date(2019, 1, 3),
+        parseTerm('1Jan19-3Jan19'),
+        Date(2019, 1, 5),
+      ];
+      expect(Interval.union(xs),
+          [parseTerm('1Jan19-3Jan19'), Date(2019, 1, 5)]);
+    });
 
+    test('union, more overlapping intervals', () {
+      var xs = [
+        Date(2019, 1, 5),
+        parseTerm('1Jan19-3Jan19'),
+        parseTerm('4Jan19-5Jan19'),
+        Date(2019, 1, 4),
+      ];
+      expect(Interval.union(xs),
+          [parseTerm('1Jan19-5Jan19')]);
+    });
 
     test('compareTo another interval', () {
       var i1 = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
@@ -200,6 +243,16 @@ testInterval() {
       expect(i3.compareTo(i2), -1);
     });
 
+    test('sort a List of Intervals', () {
+      var i1 = parseTerm('Jan19-Mar19');
+      var i2 = parseTerm('Jan19-Dec19');
+      var i3 = parseTerm('Nov18-Feb19');
+      var xs = [i1, i2, i3];
+      xs.sort();
+      expect(xs, [i3, i1, i2]);
+    });
+
+
     test('splitting into hours across hour boundary, returns two hours', () {
       var start = TZDateTime(location, 2017, 1, 1);
       var end = TZDateTime(location, 2017, 1, 1, 2, 15);
@@ -211,25 +264,25 @@ testInterval() {
     test(
         'splitting into hours an interval less than an hour, returns an empty list',
         () {
-      TZDateTime start = TZDateTime(location, 2017, 1, 1, 1, 10);
-      TZDateTime end = TZDateTime(location, 2017, 1, 1, 1, 15);
-      Interval interval = Interval(start, end);
-      List res = interval.splitLeft((x) => Hour.beginning(x));
+      var start = TZDateTime(location, 2017, 1, 1, 1, 10);
+      var end = TZDateTime(location, 2017, 1, 1, 1, 15);
+      var interval = Interval(start, end);
+      var res = interval.splitLeft((x) => Hour.beginning(x));
       expect(res.length, 0);
     });
     test('splitting into hours an exact hour, returns the hour', () {
-      TZDateTime start = TZDateTime(location, 2017, 1, 1, 0);
-      TZDateTime end = TZDateTime(location, 2017, 1, 1, 1);
-      Interval interval = Interval(start, end);
-      List res = interval.splitLeft((x) => Hour.beginning(x));
+      var start = TZDateTime(location, 2017, 1, 1, 0);
+      var end = TZDateTime(location, 2017, 1, 1, 1);
+      var interval = Interval(start, end);
+      var res = interval.splitLeft((x) => Hour.beginning(x));
       expect(res.length, 1);
     });
     test('split three hours into 36 5-min intervals', () {
-      TZDateTime start = TZDateTime(location, 2017, 1, 1, 0);
-      TZDateTime end = TZDateTime(location, 2017, 1, 1, 3);
-      Interval interval = Interval(start, end);
-      Duration min5 = Duration(minutes: 5);
-      List res = interval.splitLeft((x) => Interval.beginning(x, min5));
+      var start = TZDateTime(location, 2017, 1, 1, 0);
+      var end = TZDateTime(location, 2017, 1, 1, 3);
+      var interval = Interval(start, end);
+      var min5 = Duration(minutes: 5);
+      var res = interval.splitLeft((x) => Interval.beginning(x, min5));
       expect(res.length, 36);
     });
     test('Split 1 month into days using splitLeft', () {
@@ -245,7 +298,7 @@ testInterval() {
       expect(days.length, 90);
     });
     test('Split one year with TZDateTime into months using splitLeft', () {
-      Location location = getLocation('Europe/Istanbul');
+      var location = getLocation('Europe/Istanbul');
       var year =
           Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
       var months =
@@ -259,10 +312,10 @@ testInterval() {
       var i2 = Interval(TZDateTime(location, 2017, 1, 1, 6),
           TZDateTime(location, 2017, 1, 1, 8));
       var i3 = Hour.beginning(TZDateTime(location, 2017, 1, 1, 9));
-      var hours = <Interval>[]
-        ..addAll(i1.splitLeft((x) => Hour.beginning(x)))
-        ..addAll(i2.splitLeft((x) => Hour.beginning(x)))
-        ..add(i3);
+      var hours = <Interval>[
+        ...i1.splitLeft((x) => Hour.beginning(x)),
+        ...i2.splitLeft((x) => Hour.beginning(x)),
+        i3];
       var res = makeContiguousIntervals(hours);
       expect(res, [i1, i2, i3]);
       expect(makeContiguousIntervals([i3]), [i3]);
@@ -270,7 +323,7 @@ testInterval() {
   });
 }
 
-main() async {
+void main() async {
   await initializeTimeZone();
-  await testInterval();
+  await tests();
 }
