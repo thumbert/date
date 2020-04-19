@@ -31,7 +31,6 @@ bool isBeginningOfHour(DateTime dt) {
 }
 
 
-
 /// Check if a DateTime is beginning of a day.
 bool isBeginningOfDay(DateTime dt) {
   if (dt.hour !=0 || !isBeginningOfHour(dt)) {

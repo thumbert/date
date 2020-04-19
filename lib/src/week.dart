@@ -20,7 +20,7 @@ class Week extends Interval implements TimeOrdering<Week> {
       : super(TZDateTime(location, year), TZDateTime(location, year)) {
     _value = 100*year + week;
     location ??= UTC;
-    _start = _weekStart(year, week, location);
+    _start = weekStart(year, week, location);
     _end = _start.add(_1W);
   }
 
@@ -29,8 +29,11 @@ class Week extends Interval implements TimeOrdering<Week> {
     year = datetime.year;
     location = datetime.location;
     week = weekOfYear(datetime);
+    if (week == 1 && datetime.month == 12) {
+      if ([1,2,3,4].contains(datetime.weekday)) year += 1;
+    }
     _value = 100*year + week;
-    _start = _weekStart(year, week, location);
+    _start = weekStart(year, week, location);
     _end = _start.add(_1W);
   }
 
@@ -58,12 +61,12 @@ class Week extends Interval implements TimeOrdering<Week> {
   /// Return an [int] between 1 and 52 || 53 depending on the year.
   static int weekOfYear(TZDateTime dt) {
     var date = Date(dt.year, dt.month, dt.day, location: dt.location);
-    var w1Start = _weekStart(dt.year, 1, dt.location);
-    var w1Start2 = _weekStart(dt.year+1, 1, dt.location);
+    var w1Start = weekStart(dt.year, 1, dt.location);
+    var w1Start2 = weekStart(dt.year+1, 1, dt.location);
     if (!dt.isBefore(w1Start2)) w1Start = w1Start2;
     if (dt.isBefore(w1Start)) {
       // it's last week of the previous year
-      w1Start = _weekStart(dt.year-1, 1, dt.location);
+      w1Start = weekStart(dt.year-1, 1, dt.location);
     }
     var start = Date.fromTZDateTime(w1Start);
     var diff = date.value - start.value;
@@ -73,7 +76,7 @@ class Week extends Interval implements TimeOrdering<Week> {
 
 
   /// Return the start of week
-  static TZDateTime _weekStart(int year, int week, Location location) {
+  static TZDateTime weekStart(int year, int week, Location location) {
     var boy = TZDateTime(location, year);
     if ([5,6,7].contains(boy.weekday)) {
       /// on Fri, Sat, Sun => it's on last week of the previous year

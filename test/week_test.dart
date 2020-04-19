@@ -1,5 +1,6 @@
 library test.week_test;
 
+import 'package:date/date.dart';
 import 'package:date/src/week.dart';
 import 'package:test/test.dart';
 import 'package:timezone/data/latest.dart';
@@ -8,6 +9,26 @@ import 'package:timezone/timezone.dart';
 void tests() {
   group('Week tests:', () {
     var location = getLocation('US/Eastern');
+    test('week from TZDateTime, 2019-12-30 00:00:00', () {
+      var dt = TZDateTime(location, 2019, 12, 30);
+      var week = Week.fromTZDateTime(dt);
+      expect(week, Week.parse('2020-W01', location));
+    });
+
+    test('weekStart', () {
+      var dt = Week.weekStart(2020, 1, UTC);
+      expect(dt, TZDateTime.utc(2019, 12, 30));
+    });
+    test('week from TZDateTime, 2019-01-01 00:00:00', () {
+      var dt = TZDateTime(location, 2019);
+      var week = Week.fromTZDateTime(dt);
+      expect(week, Week.parse('2019-W01', location));
+    });
+    test('week 1, 2019', () {
+      var week1 = Week(2019, 1, location);
+      expect(week1.start, TZDateTime(location, 2018, 12, 31));
+      expect(week1.end, TZDateTime(location, 2019, 1, 7));
+    });
     test('week 1, 2020', () {
       var week1 = Week(2020, 1, location);
       expect(week1.start, TZDateTime(location, 2019, 12, 30));
@@ -60,8 +81,11 @@ void tests() {
       expect(Week.parse('2020-W24', UTC), Week(2020, 24, UTC));
       expect(Week.parse('2020W01', UTC), Week(2020, 1, UTC));
     });
-
-
+    test('number of hours in 2019-W01', () {
+      var term = Week.parse('2019-W01', location);
+      var hours = term.splitLeft((dt) => Hour.beginning(dt));
+      expect(hours.length, 168);
+    });
   });
 }
 
