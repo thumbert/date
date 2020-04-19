@@ -14,7 +14,6 @@ void tests() {
       var week = Week.fromTZDateTime(dt);
       expect(week, Week.parse('2020-W01', location));
     });
-
     test('weekStart', () {
       var dt = Week.weekStart(2020, 1, UTC);
       expect(dt, TZDateTime.utc(2019, 12, 30));

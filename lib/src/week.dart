@@ -16,6 +16,8 @@ class Week extends Interval implements TimeOrdering<Week> {
 
   /// ISO 8601 week
   /// see https://en.wikipedia.org/wiki/ISO_8601#Week_dates
+  /// No check is made to make sure that the values for [week] are valid.
+  /// So prefer the [Week.fromTZDateTime] constructor.
   Week(this.year, this.week, this.location)
       : super(TZDateTime(location, year), TZDateTime(location, year)) {
     _value = 100*year + week;
