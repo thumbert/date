@@ -9,10 +9,33 @@ import 'package:timezone/timezone.dart';
 void tests() {
   group('Week tests:', () {
     var location = getLocation('US/Eastern');
-    test('week from TZDateTime, 2019-12-30 00:00:00', () {
-      var dt = TZDateTime(location, 2019, 12, 30);
-      var week = Week.fromTZDateTime(dt);
-      expect(week, Week.parse('2020-W01', location));
+    test('2016 weeks from TZDateTime', () {
+      expect(Week.fromTZDateTime(TZDateTime(location, 2016, 1, 1)),
+          Week.parse('2015-W53', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2015, 12, 28)),
+          Week.parse('2015-W53', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2016, 1, 3, 23)),
+          Week.parse('2015-W53', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2016, 1, 4)),
+          Week.parse('2016-W01', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2016, 12, 26)),
+          Week.parse('2016-W52', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2017, 1, 1, 23)),
+          Week.parse('2016-W52', location));
+    });
+    test('2019 weeks from TZDateTime', () {
+      expect(Week.fromTZDateTime(TZDateTime(location, 2018, 12, 30)),
+          Week.parse('2018-W52', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2018, 12, 31)),
+          Week.parse('2019-W01', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2019, 1, 1)),
+          Week.parse('2019-W01', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2019, 12, 23)),
+          Week.parse('2019-W52', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2019, 12, 29)),
+          Week.parse('2019-W52', location));
+      expect(Week.fromTZDateTime(TZDateTime(location, 2019, 12, 30)),
+          Week.parse('2020-W01', location));
     });
     test('weekStart', () {
       var dt = Week.weekStart(2020, 1, UTC);

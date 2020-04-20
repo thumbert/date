@@ -7,6 +7,7 @@ import 'interval_test.dart' as interval;
 import 'month_test.dart' as month;
 import 'term_parse_test.dart' as term_parse;
 import 'month_parse_test.dart' as month_parse;
+import 'utils_test.dart' as utils;
 import 'week_test.dart' as week;
 
 void main() async {
@@ -16,7 +17,9 @@ void main() async {
   hour.hourTest();
   interval.tests();
   month.testMonth();
-  term_parse.parseTermTest();
   month_parse.parseMonthTest();
+  term_parse.parseTermTest();
+  utils.tests();
   week.tests();
+
 }

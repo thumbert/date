@@ -26,18 +26,31 @@ class Week extends Interval implements TimeOrdering<Week> {
     _end = _start.add(_1W);
   }
 
+  /// Implement https://en.wikipedia.org/wiki/ISO_week_date#Calculating_the_week_number_from_a_month_and_day_of_the_month_or_ordinal_date
   Week.fromTZDateTime(TZDateTime datetime)
       : super(TZDateTime(datetime.location, datetime.year), TZDateTime(datetime.location, datetime.year)){
     year = datetime.year;
     location = datetime.location;
-    week = weekOfYear(datetime);
-    if (week == 1 && datetime.month == 12) {
-      if ([1,2,3,4].contains(datetime.weekday)) year += 1;
+
+    var doy = dayOfYear(year, datetime.month, datetime.day);
+    var res = (doy - datetime.weekday + 10) ~/ 7;
+    if (res == 0) {
+      // in previous year
+      year -= 1;
+      week = weekOfYear(datetime);
+    } else if (res == 53) {
+      // need to check if not in week 1 of following year
+      week = weekOfYear(datetime);
+      if (week == 1) year += 1;
+    } else {
+      week = res;
     }
     _value = 100*year + week;
     _start = weekStart(year, week, location);
     _end = _start.add(_1W);
   }
+
+
 
   /// Parse the ISO format yyyy-Www or yyyyWww
   static Week parse(String x, Location location) {

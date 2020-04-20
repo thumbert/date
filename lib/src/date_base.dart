@@ -28,23 +28,24 @@ class Date extends Interval
 
   /// Return today's date.
   static Date today({Location location}) {
-    DateTime now = new DateTime.now();
-    return new Date(now.year, now.month, now.day, location: location);
+    var now = DateTime.now();
+    return Date(now.year, now.month, now.day, location: location);
   }
 
   /// Construct a [Date] from parts.
   Date(int year, int month, int day, {Location location})
-      : super(new TZDateTime.utc(year, month, day),
-            new TZDateTime.utc(year, month, day + 1)) {
+      : super(TZDateTime.utc(year, month, day),
+            TZDateTime.utc(year, month, day + 1)) {
     _year = year;
     _month = month;
     _day = day;
     _simpleValidation();
     _calcValue();
-    if (location == null)
+    if (location == null) {
       _location = UTC;
-    else
+    } else {
       _location = location;
+    }
   }
 
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
@@ -83,16 +84,16 @@ class Date extends Interval
   /// Examples: "19700101", "-0004-12-24", "81030-04-01".
   ///
   static Date parse(String formattedString, {Location location}) {
-    final RegExp re = RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
+    final re = RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
 
     Match match = re.firstMatch(formattedString);
     if (match != null) {
-      int years = int.parse(match[1]);
-      int month = int.parse(match[2]);
-      int day = int.parse(match[3]);
+      var years = int.parse(match[1]);
+      var month = int.parse(match[2]);
+      var day = int.parse(match[3]);
       return Date(years, month, day, location: location);
     } else {
-      throw FormatException("Invalid date format", formattedString);
+      throw FormatException('Invalid date format', formattedString);
     }
   }
 
@@ -130,8 +131,10 @@ class Date extends Interval
 
   /// Get the datetime corresponding to the beginning of this month.
   /// The default timezone is UTC unless specified otherwise.
-  TZDateTime get start => new TZDateTime(location, _year, _month, _day);
-  TZDateTime get end => new TZDateTime(location, _year, _month, _day + 1);
+  @override
+  TZDateTime get start => TZDateTime(location, _year, _month, _day);
+  @override
+  TZDateTime get end => TZDateTime(location, _year, _month, _day + 1);
 
   /// Return the previous day.
   Date get previous => Date.fromJulianDay(_value - 1, location: _location);
@@ -139,8 +142,8 @@ class Date extends Interval
   /// Return the previous [n] days ending on this date.
   List<Date> previousN(int n) {
     var out = <Date>[];
-    for (int i=n; i>0; i--) {
-      out.add(this.subtract(i));
+    for (var i=n; i>0; i--) {
+      out.add(subtract(i));
     }
     return out;
   }
@@ -152,8 +155,8 @@ class Date extends Interval
   /// than 0.
   List<Date> nextN(int n) {
     var out = <Date>[];
-    for (int i=1; i<=n; i++) {
-      out.add(this.add(i));
+    for (var i=1; i<=n; i++) {
+      out.add(add(i));
     }
     return out;
   }
@@ -161,8 +164,9 @@ class Date extends Interval
   /// Return all dates starting from this date up to [date] inclusive.
   /// If [date] is before [this] throw.
   List<Date> upTo(Date date) {
-    if (date.isBefore(this))
+    if (date.isBefore(this)) {
       throw ArgumentError('Date $date is before $this');
+    }
     var out = <Date>[];
     var nextD = this;
     while (!date.isBefore(nextD)) {
@@ -174,26 +178,31 @@ class Date extends Interval
     
 
   /// Add a number of days to this date.
+  @override
   Date add(int step) => Date.fromJulianDay(_value + step, location: _location);
 
   /// Subtract a number of days from this date.
   Date subtract(int step) => Date.fromJulianDay(value - step, location: _location);
 
   /// Get the beginning of the month.
-  Date get beginningOfMonth => new Date(_year, _month, 1, location: _location);
+  Date get beginningOfMonth => Date(_year, _month, 1, location: _location);
 
   /// Get the [Month] this [Date] belongs to.
-  Month currentMonth() => new Month(_year, _month, location: _location);
+  Month currentMonth() => Month(_year, _month, location: _location);
 
+  @override
   bool isBefore(Date other) => _value < other._value;
+  @override
   bool isAfter(Date other) => _value > other._value;
 
+  @override
   bool operator ==(dynamic other) {
     if (other is! Date) return false;
     Date date = other;
     return date._value == _value && location == date.location;
   }
-  //int compareTo(Date other) => this.value.compareTo(other.value);
+
+  @override
   int get hashCode => _value;
 
   /// Return the day of the week.  Mon=1, ... Sat=6, Sun=7.
@@ -235,6 +244,7 @@ class Date extends Interval
   /// Get all the hours in this day
   List<Hour> hours() => splitLeft((dt) => Hour.beginning(dt)).cast<Hour>();
 
+  @override
   String toString([DateFormat fmt]) {
     fmt ??= _defaultFmt;
     return fmt.format(DateTime(_year, _month, _day));
@@ -242,27 +252,12 @@ class Date extends Interval
 
   Interval toInterval() => Interval(start, end);
 
-  _simpleValidation() {
-    if (_month > 12 || _month < 1)
+  void _simpleValidation() {
+    if (_month > 12 || _month < 1) {
       throw FormatException('Invalid month value $_month', _month);
-    if (_day > 31 || _day < 1)
+    }
+    if (_day > 31 || _day < 1) {
       throw FormatException('Invalid day value $_day', _day);
+    }
   }
 }
-
-// calculate year, month, day when you know the _value
-//  void _calcYearMonthDay() {
-//    var j = value + _ORIGIN - 1721119;
-//    _year = (4 * j - 1) ~/ 146097;
-//    j = 4 * j - 1 - 146097 * _year;
-//    _day = j ~/ 4;
-//    j = (4 * _day + 3) ~/ 1461;
-//    _day = (4 * _day + 3) - 1461 * j;
-//    _day = (_day + 4) ~/ 4;
-//    _month = (5 * _day - 3) ~/ 153;
-//    _day = (5 * _day - 3) - 153 * _month;
-//    _day = (_day + 5) ~/ 5;
-//    _year = 100 * _year + j;
-//    _year = _year + (_month < 10 ? 0 : 1);
-//    _month = _month + (_month < 10 ? 3 : -9);
-//  }
