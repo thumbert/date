@@ -23,7 +23,7 @@ class Week extends Interval implements TimeOrdering<Week> {
     _value = 100*year + week;
     location ??= UTC;
     _start = weekStart(year, week, location);
-    _end = _start.add(_1W);
+    _end = Date.fromTZDateTime(_start).add(7).start;
   }
 
   /// Implement https://en.wikipedia.org/wiki/ISO_week_date#Calculating_the_week_number_from_a_month_and_day_of_the_month_or_ordinal_date
@@ -47,7 +47,7 @@ class Week extends Interval implements TimeOrdering<Week> {
     }
     _value = 100*year + week;
     _start = weekStart(year, week, location);
-    _end = _start.add(_1W);
+    _end = Date.fromTZDateTime(_start).add(7).start;
   }
 
 

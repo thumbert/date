@@ -46,6 +46,12 @@ void tests() {
       var dt = Week.weekStart(2020, 1, UTC);
       expect(dt, TZDateTime.utc(2019, 12, 30));
     });
+    test('week of  DST', () {
+      expect(Week(2020, 10, location).end, TZDateTime(location, 2020, 3, 9));
+      expect(Week(2020, 11, location).start, TZDateTime(location, 2020, 3, 9));
+      expect(Week(2020, 44, location).end, TZDateTime(location, 2020, 11, 2));
+      expect(Week(2020, 45, location).start, TZDateTime(location, 2020, 11, 2));
+    });
     test('week from TZDateTime, 2019-01-01 00:00:00', () {
       var dt = TZDateTime(location, 2019);
       var week = Week.fromTZDateTime(dt);
