@@ -37,7 +37,12 @@ void tests() {
       expect(Week.fromTZDateTime(TZDateTime(location, 2019, 12, 30)),
           Week.parse('2020-W01', location));
     });
-    test('weekStart', () {
+    test('week start 2020-04-24 11:54', () {
+      var dt = TZDateTime(location, 2020, 4, 24, 11, 54);
+      var week = Week.fromTZDateTime(dt);
+      expect(week.start, TZDateTime(location, 2020, 4, 20));
+    });
+    test('week start 2020-01-01', () {
       var dt = Week.weekStart(2020, 1, UTC);
       expect(dt, TZDateTime.utc(2019, 12, 30));
     });
@@ -46,6 +51,7 @@ void tests() {
       var week = Week.fromTZDateTime(dt);
       expect(week, Week.parse('2019-W01', location));
     });
+
     test('week 1, 2019', () {
       var week1 = Week(2019, 1, location);
       expect(week1.start, TZDateTime(location, 2018, 12, 31));

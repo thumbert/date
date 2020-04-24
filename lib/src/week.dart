@@ -92,13 +92,15 @@ class Week extends Interval implements TimeOrdering<Week> {
 
   /// Return the start of week
   static TZDateTime weekStart(int year, int week, Location location) {
-    var boy = TZDateTime(location, year);
+    // do the calculations in UTC, otherwise you get errors
+    var boy = TZDateTime.utc(year);
     if ([5,6,7].contains(boy.weekday)) {
       /// on Fri, Sat, Sun => it's on last week of the previous year
       week += 1;
     }
-    var start = boy.subtract(Duration(days: boy.weekday-1));
-    return start.add(Duration(days: 7*(week-1)));
+    var _start = boy.subtract(Duration(days: boy.weekday-1));
+    _start = _start.add(Duration(days: 7*(week-1)));
+    return TZDateTime(location, _start.year, _start.month, _start.day);
   }
 
   @override
