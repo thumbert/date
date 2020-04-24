@@ -57,6 +57,14 @@ bool isBeginningOfDay(DateTime dt) {
 
 bool isMidnight(DateTime dt) => isBeginningOfDay(dt);
 
+/// Check if a DateTime is beginning of a week.
+bool isBeginningOfWeek(DateTime dt) {
+  if (dt.weekday != 1 || !isBeginningOfDay(dt) ) {
+    return false;
+  }
+  return true;
+}
+
 
 /// Check if a DateTime is beginning of a month.
 bool isBeginningOfMonth(DateTime dt) {
