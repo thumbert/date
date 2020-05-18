@@ -39,38 +39,6 @@ Interval parseTerm(String term, {Location tzLocation}) {
   return interval;
 }
 
-/// A convenience function to go from an interval to a String.  The output
-/// doesn't contain the tz information anymore.
-///
-/// Works only for one day, day ranges, one month, and month ranges.
-///
-String prettyTerm(Interval interval) {
-  if (!isMidnight(interval.start))
-    throw ArgumentError('Interval start needs to be at midnight');
-  if (!isMidnight(interval.end))
-    throw ArgumentError('Interval end needs to be at midnight');
-
-  var fmt = DateFormat("dMMMyy");
-  var nDays = interval.end.difference(interval.start).inDays;
-  var start = Date.fromTZDateTime(interval.start);
-  if (nDays == 1) return start.toString(fmt);
-
-  if (isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.end)) {
-    var mStart = Month.fromTZDateTime(interval.start);
-    var mEnd = Month.fromTZDateTime(interval.end);
-    if (mStart == mEnd.previous) {
-      // it's exactly one month
-      return mStart.toString();
-    } else {
-      // it's a month range
-      return '${mStart.toString()}-${mEnd.previous.toString()}';
-    }
-  } else {
-    // it's a day range
-    var end = Date.fromTZDateTime(interval.end).previous;
-    return '${start.toString(fmt)}-${end.toString(fmt)}';
-  }
-}
 
 class TermGrammar extends GrammarParser {
   TermGrammar() : super(const TermGrammarDefinition());
@@ -201,25 +169,26 @@ class TermParserDefinition extends TermGrammarDefinition {
         return Date(_toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
       });
   simpleQuarterToken() => super.simpleQuarterToken().map((List each) {
-        int year = _toYear(each[2]);
-        int quarter = int.parse(each[0].substring(1));
-        if (quarter < 1 || quarter > 4)
+        var year = _toYear(each[2]);
+        var quarter = int.parse(each[0].substring(1));
+        if (quarter < 1 || quarter > 4) {
           throw ArgumentError('Invalid quarter: ${each.join()}');
-        int month = 3 * (quarter - 1) + 1;
-        TZDateTime start = TZDateTime.utc(year, month);
-        TZDateTime end = TZDateTime.utc(year, month + 3);
-        return new Interval(start, end);
+        }
+        var month = 3 * (quarter - 1) + 1;
+        var start = TZDateTime.utc(year, month);
+        var end = TZDateTime.utc(year, month + 3);
+        return Interval(start, end);
       });
   simpleCalYearToken() => super.simpleCalYearToken().map((List each) {
-        int year = _toYear(each[1]);
-        TZDateTime start = TZDateTime.utc(year);
-        TZDateTime end = TZDateTime.utc(year + 1);
-        return new Interval(start, end);
+        var year = _toYear(each[1]);
+        var start = TZDateTime.utc(year);
+        var end = TZDateTime.utc(year + 1);
+        return Interval(start, end);
       });
 
   compoundMonthToken() => super.compoundMonthToken().map((List each) {
-        DateTime start = (each[0] as Month).start;
-        DateTime end = (each[2] as Month).end;
+        var start = (each[0] as Month).start;
+        var end = (each[2] as Month).end;
         return Interval(start, end);
       });
   compoundDayToken() => super.compoundDayToken().map((List each) {
