@@ -227,17 +227,29 @@ class Interval implements Comparable<Interval> {
   @override
   String toString() => isInstant() ? start.toString() : '[$_start, $end)';
 
-  /// Creates a new interval ending with the specified end instant.
+  /// Create a new interval ending with the specified end instant.
   /// If [end] is not specified, it means now.
   Interval withEnd([TZDateTime end]) {
     end ??= TZDateTime.now(this.end.location);
     return Interval(start, end);
   }
 
-  /// Creates a new interval with the specified start instant.
+  /// Create a new interval with the specified start instant.
   /// If [start] is not specified, it means now.
   Interval withStart([TZDateTime start]) {
     start ??= TZDateTime.now(this.start.location);
     return Interval(start, end);
+  }
+
+  /// Create a new interval in the specified time zone.  Useful when you just
+  /// want to change the time zone location.
+  Interval withTimeZone(Location location) {
+    var newStart = TZDateTime(location, start.year, start.month, start.day,
+        start.hour, start.minute, start.second, start.millisecond,
+        start.microsecond);
+    var newEnd = TZDateTime(location, end.year, end.month, end.day,
+        end.hour, end.minute, end.second, end.millisecond,
+        end.microsecond);
+    return Interval(newStart, newEnd);
   }
 }

@@ -46,6 +46,15 @@ void tests() {
           i1.withStart(start), Interval(start, TZDateTime(location, 2015, 2)));
       expect(i1.withEnd(end), Interval(TZDateTime(location, 2015, 1), end));
     });
+    test('interval withTimeZone', () {
+      var start = TZDateTime.utc(2020);
+      var end = TZDateTime.utc(2021);
+      var i1 = Interval(start, end);
+      var i2 = i1.withTimeZone(location);
+      expect(
+          i2, Interval(TZDateTime(location, 2020), TZDateTime(location, 2021)));
+    });
+
     test('interval abuts', () {
       var i1 = Interval(
           TZDateTime(location, 2015, 1, 1), TZDateTime(location, 2015, 1, 2));
@@ -110,10 +119,8 @@ void tests() {
       expect(i1.overlap(i2), null);
     });
 
-
     test('instant (degenerate) intervals are allowed', () {
-      var i =
-          Interval(TZDateTime(location, 2015), TZDateTime(location, 2015));
+      var i = Interval(TZDateTime(location, 2015), TZDateTime(location, 2015));
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000-0500');
     });
@@ -131,11 +138,11 @@ void tests() {
     });
 
     test('fuse intervals, 1', () {
-      var d1 = Date(2019,1,1);
-      var d2 = Date(2019,1,2);
-      var d3 = Date(2019,1,3);
-      var d4 = Date(2019,1,7);
-      var d5 = Date(2019,1,8);
+      var d1 = Date(2019, 1, 1);
+      var d2 = Date(2019, 1, 2);
+      var d3 = Date(2019, 1, 3);
+      var d4 = Date(2019, 1, 7);
+      var d5 = Date(2019, 1, 8);
       var res = Interval.fuse([d1, d2, d3, d4, d5]);
       expect(res, [
         parseTerm('1Jan19-3Jan19'),
@@ -144,15 +151,15 @@ void tests() {
     });
 
     test('fuse intervals, 2', () {
-      var d1 = Date(2019,1,1);
-      var d2 = Date(2019,1,2);
-      var d3 = Date(2019,1,3);
-      var d4 = Date(2019,1,4);
-      var d5 = Date(2019,1,8);
+      var d1 = Date(2019, 1, 1);
+      var d2 = Date(2019, 1, 2);
+      var d3 = Date(2019, 1, 3);
+      var d4 = Date(2019, 1, 4);
+      var d5 = Date(2019, 1, 8);
       var res = Interval.fuse([d1, d2, d3, d4, d5]);
       expect(res, [
         parseTerm('1Jan19-4Jan19'),
-        Date(2019,1,8),
+        Date(2019, 1, 8),
       ]);
     });
 
@@ -207,8 +214,8 @@ void tests() {
         Date(2019, 1, 2),
         Date(2019, 1, 4),
       ];
-      expect(Interval.union(xs),
-          [parseTerm('1Jan19-2Jan19'), Date(2019, 1, 4)]);
+      expect(
+          Interval.union(xs), [parseTerm('1Jan19-2Jan19'), Date(2019, 1, 4)]);
     });
 
     test('union, some overlapping intervals', () {
@@ -217,8 +224,8 @@ void tests() {
         parseTerm('1Jan19-3Jan19'),
         Date(2019, 1, 5),
       ];
-      expect(Interval.union(xs),
-          [parseTerm('1Jan19-3Jan19'), Date(2019, 1, 5)]);
+      expect(
+          Interval.union(xs), [parseTerm('1Jan19-3Jan19'), Date(2019, 1, 5)]);
     });
 
     test('union, more overlapping intervals', () {
@@ -228,8 +235,7 @@ void tests() {
         parseTerm('4Jan19-5Jan19'),
         Date(2019, 1, 4),
       ];
-      expect(Interval.union(xs),
-          [parseTerm('1Jan19-5Jan19')]);
+      expect(Interval.union(xs), [parseTerm('1Jan19-5Jan19')]);
     });
 
     test('compareTo another interval', () {
@@ -251,7 +257,6 @@ void tests() {
       xs.sort();
       expect(xs, [i3, i1, i2]);
     });
-
 
     test('splitting into hours across hour boundary, returns two hours', () {
       var start = TZDateTime(location, 2017, 1, 1);
@@ -315,7 +320,8 @@ void tests() {
       var hours = <Interval>[
         ...i1.splitLeft((x) => Hour.beginning(x)),
         ...i2.splitLeft((x) => Hour.beginning(x)),
-        i3];
+        i3
+      ];
       var res = makeContiguousIntervals(hours);
       expect(res, [i1, i2, i3]);
       expect(makeContiguousIntervals([i3]), [i3]);
