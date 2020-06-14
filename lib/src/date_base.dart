@@ -83,7 +83,13 @@ class Date extends Interval
   /// two digit day, optionally separated by `-` characters.
   /// Examples: "19700101", "-0004-12-24", "81030-04-01".
   ///
-  static Date parse(String formattedString, {Location location}) {
+  static Date parse(String formattedString, {Location location, DateFormat fmt}) {
+    if (fmt != null) {
+      // use this format if explicitly passed in
+      var aux = fmt.parse(formattedString, false);
+      return Date(aux.year+2000, aux.month, aux.day, location: location);
+    }
+
     final re = RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
 
     Match match = re.firstMatch(formattedString);

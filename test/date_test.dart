@@ -32,6 +32,11 @@ void testDate() {
       expect(Date.parse('20150229'), Date(2015,3,1));  // !!! same as DateTime
     });
 
+    test('Parse a string with specific format', (){
+      expect(Date.parse('29May20', fmt: DateFormat('ddMMMyy')), Date(2020,5,29));
+    });
+
+
     test('From Julian day to year month day', () {
       var d = Date(2014, 5, 15);
       expect([d.year, d.month, d.day], [2014, 5, 15]);
