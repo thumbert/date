@@ -71,6 +71,15 @@ class Date extends Interval
     return Date(startZ.year, startZ.month, startZ.day, location: location);
   }
 
+  /// A convenience method to convert Excel dates (origin 1900-01-01)
+  static Date fromExcel(int value, {Location location}) {
+    var startZ = DateTime.fromMillisecondsSinceEpoch(
+        1000 * 24 * 3600 * (value - 25569),
+        isUtc: true);
+    location = location ?? UTC;
+    return Date(startZ.year, startZ.month, startZ.day, location: location);
+  }
+
   ///Constructs a new [Date] instance based on [formattedString].
   ///Throws a [FormatException] if the input cannot be parsed.
   ///

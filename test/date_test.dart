@@ -36,13 +36,20 @@ void testDate() {
       expect(Date.parse('29May20', fmt: DateFormat('ddMMMyy')), Date(2020,5,29));
     });
 
-
     test('From Julian day to year month day', () {
       var d = Date(2014, 5, 15);
       expect([d.year, d.month, d.day], [2014, 5, 15]);
       var d2 = Date.fromJulianDay(d.value);
       expect([d2.year, d2.month, d2.day], [2014, 5, 15]);
       expect(d2.value, 16205);
+    });
+
+    test('From Excel date', () {
+      expect(Date.fromExcel(25569), Date(1970,1,1));
+      expect(Date.fromExcel(43987), Date(2020,6,5));
+      expect(Date.fromExcel(18264), Date(1950,1,1));
+      expect(Date.fromExcel(3654), Date(1910,1,1));
+      expect(Date.fromExcel(367), Date(1901,1,1));
     });
 
     test('Day of week (Mon=1, ... Sat=6, Sun=7)', () {
