@@ -9,7 +9,7 @@ import 'package:timezone/standalone.dart';
 import 'package:timezone/src/env.dart';
 
 hourTest() {
-  Location location = getLocation('US/Eastern');  // 'US/Mountain', 'US/Central', 'US/Pacific'
+  Location location = getLocation('America/New_York');  // 'US/Mountain', 'US/Central', 'US/Pacific'
   group('Test Hour:', () {
     test('create hour', (){
       Hour h = new Hour.beginning(new TZDateTime(location, 2015, 1, 1));

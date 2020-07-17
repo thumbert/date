@@ -9,7 +9,7 @@ import 'package:date/src/interval.dart';
 
 
 testMonth() {
-  Location local = getLocation('US/Eastern');
+  Location local = getLocation('America/New_York');
 
   group("Test Month:", () {
     test("Create months from year month", () {
@@ -30,8 +30,8 @@ testMonth() {
     });
 
     test('Create month in a different timezone', (){
-      Month m1 = new Month(2017, 1, location: getLocation('US/Eastern'));
-      expect(m1.location.toString(), 'US/Eastern');
+      Month m1 = new Month(2017, 1, location: getLocation('America/New_York'));
+      expect(m1.location.toString(), 'America/New_York');
       expect(m1.start.toString(), '2017-01-01 00:00:00.000-0500');
       Month m2 = new Month(2017, 1);
       expect(m2.location.toString(), 'UTC');

@@ -50,6 +50,26 @@ class Term {
 
   Interval get interval => _interval;
 
+  bool isOneDay() {
+    return interval.end.difference(interval.start).inDays == 1;
+  }
+  bool isDayRange() {
+//    var _isOneDay = isOneDay();
+//    var _isOneMonth = isOneMonth();
+//    var _isMonthRange = isMonthRange();
+    return !isOneDay() && !isOneMonth() && !isMonthRange();
+  }
+  bool isOneMonth() {
+    var mStart = Month.fromTZDateTime(interval.start);
+    var mEnd = Month.fromTZDateTime(interval.end);
+    return isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.start) && mStart == mEnd.previous;
+  }
+  bool isMonthRange() {
+    var mStart = Month.fromTZDateTime(interval.start);
+    var mEnd = Month.fromTZDateTime(interval.end);
+    return isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.end) && mStart != mEnd.previous;
+  }
+
   @override
   bool operator ==(dynamic other) {
     if (other is! Term) return false;

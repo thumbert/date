@@ -20,7 +20,7 @@ void soloTest() {
 }
 
 void tests() {
-  var location = getLocation('US/Eastern');
+  var location = getLocation('America/New_York');
   group('Test Interval:', () {
     test('interval', () {
       var i1 = Interval(

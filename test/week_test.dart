@@ -8,7 +8,7 @@ import 'package:timezone/timezone.dart';
 
 void tests() {
   group('Week tests:', () {
-    var location = getLocation('US/Eastern');
+    var location = getLocation('America/New_York');
     test('2016 weeks from TZDateTime', () {
       expect(Week.fromTZDateTime(TZDateTime(location, 2016, 1, 1)),
           Week.parse('2015-W53', location));

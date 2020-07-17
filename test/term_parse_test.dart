@@ -105,8 +105,8 @@ void parseTermTest() {
           Interval(
               TZDateTime.utc(2017, 1), TZDateTime.utc(2017, 2, 4)));
     });
-    test('A day range in US/Eastern timezone: 1jan17-3feb17', () {
-      var location = getLocation('US/Eastern');
+    test('A day range in America/New_York timezone: 1jan17-3feb17', () {
+      var location = getLocation('America/New_York');
       expect(
           parseTerm('1jan17-3feb17', tzLocation: location),
           Interval(
