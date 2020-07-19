@@ -44,6 +44,8 @@ class Term {
 
   List<Date> days() => _interval.splitLeft((dt) => Date.fromTZDateTime(dt));
 
+  List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
+
   Date get startDate => Date.fromTZDateTime(_interval.start);
 
   Date get endDate => Date.fromTZDateTime(_interval.end).subtract(1);
@@ -54,9 +56,6 @@ class Term {
     return interval.end.difference(interval.start).inDays == 1;
   }
   bool isDayRange() {
-//    var _isOneDay = isOneDay();
-//    var _isOneMonth = isOneMonth();
-//    var _isMonthRange = isMonthRange();
     return !isOneDay() && !isOneMonth() && !isMonthRange();
   }
   bool isOneMonth() {
