@@ -24,76 +24,77 @@ class MonthGrammar extends GrammarParser {
 class MonthGrammarDefinition extends GrammarDefinition {
   const MonthGrammarDefinition();
 
-  start() => ref(value).end();
-  token(Parser p) => p.flatten().trim();
-  simpleMonthToken() => ref(monthToken) & ref(yearToken);
-  simpleMonthCodeToken() => token(letter() & digit() & digit());
-  simpleToken() =>
+  @override
+  Parser start() => ref(value).end();
+  Parser token(Parser p) => p.flatten().trim();
+  Parser simpleMonthToken() => ref(monthToken) & ref(yearToken);
+  Parser simpleMonthCodeToken() => token(letter() & digit() & digit());
+  Parser simpleToken() =>
       ref(simpleMonthToken) |
       ref(simpleMonthCodeToken) |
       yyyymmToken();
 
-  value() => ref(simpleToken);
+  Parser value() => ref(simpleToken);
 
-  monthToken() =>
+  Parser monthToken() =>
     jan() | feb() | mar() | apr() | 
     may() | jun() | jul() | aug() |
     sep() | oct() | nov() | dec();
-  yearToken() => token(digit().repeat(2, 4));
-  yyyymmToken() => token(digit().repeat(4,4) & char('-').optional() & digit().repeat(2, 2));
+  Parser yearToken() => token(digit().repeat(2, 4));
+  Parser yyyymmToken() => token(digit().repeat(4,4) & char('-').optional() & digit().repeat(2, 2));
 
-  jan() => token(string('January') |
+  Parser jan() => token(string('January') |
   string('JANUARY') |
   string('Jan') |
   string('JAN') |
   string('jan'));
-  feb() => token(string('February') |
+  Parser feb() => token(string('February') |
   string('FEBRUARY') |
   string('feb') |
   string('Feb') |
   string('FEB'));
-  mar() => token(string('March') |
+  Parser mar() => token(string('March') |
   string('MARCH') |
   string('mar') |
   string('Mar') |
   string('MAR'));
-  apr() => token(string('April') |
+  Parser apr() => token(string('April') |
   string('APRIL') |
   string('apr') |
   string('Apr') |
   string('APR'));
-  may() => token(string('May') | string('MAY') | string('may'));
-  jun() => token(string('June') |
+  Parser may() => token(string('May') | string('MAY') | string('may'));
+  Parser jun() => token(string('June') |
   string('JUNE') |
   string('jun') |
   string('Jun') |
   string('JUN'));
-  jul() => token(string('July') |
+  Parser jul() => token(string('July') |
   string('JULY') |
   string('jul') |
   string('Jul') |
   string('JUL'));
-  aug() => token(string('August') |
+  Parser aug() => token(string('August') |
   string('AUGUST') |
   string('aug') |
   string('Aug') |
   string('AUG'));
-  sep() => token(string('September') |
+  Parser sep() => token(string('September') |
   string('SEPTEMBER') |
   string('sep') |
   string('Sep') |
   string('SEP'));
-  oct() => token(string('October') |
+  Parser oct() => token(string('October') |
   string('OCTOBER') |
   string('oct') |
   string('Oct') |
   string('OCT'));
-  nov() => token(string('November') |
+  Parser nov() => token(string('November') |
   string('NOVEMBER') |
   string('nov') |
   string('Nov') |
   string('NOV'));
-  dec() => token(string('December') |
+  Parser dec() => token(string('December') |
   string('DECEMBER') |
   string('dec') |
   string('Dec') |
@@ -102,25 +103,28 @@ class MonthGrammarDefinition extends GrammarDefinition {
 
 /// Parse a term
 class MonthParser extends GrammarParser {
-  MonthParser() : super(const MonthParserDefinition()) {}
+  MonthParser() : super(const MonthParserDefinition());
 }
 
 /// the parser definition
 class MonthParserDefinition extends MonthGrammarDefinition {
   const MonthParserDefinition();
 
-  simpleMonthToken() => super.simpleMonthToken().map((List each) {
-    return new Month(_toYear(each[1]), _toMonth(each[0]));
+  @override
+  Parser simpleMonthToken() => super.simpleMonthToken().map((each) {
+    return Month(_toYear(each[1]), _toMonth(each[0]));
   });
-  simpleMonthCodeToken() => super.simpleMonthCodeToken().map((String each) {
-    return new Month(
+  @override
+  Parser simpleMonthCodeToken() => super.simpleMonthCodeToken().map((each) {
+    return Month(
         _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]);
   });
-  yyyymmToken() => super.yyyymmToken().map((String each) {
-    int n = each.length;
-    int year = int.parse(each.substring(0,4));
-    int mon = int.parse(each.substring(n-2,n));
-    return new Month(year, mon);
+  @override
+  Parser yyyymmToken() => super.yyyymmToken().map((each) {
+    var n = each.length;
+    var year = int.parse(each.substring(0,4));
+    var mon = int.parse(each.substring(n-2,n));
+    return Month(year, mon);
   });
 
 }
@@ -134,20 +138,22 @@ int _toMonth(String m) {
   } else {
     mIdx = _monthNames.indexOf(m.toLowerCase()) + 1;
   }
-  if (mIdx == -1) throw new ArgumentError('Wrong month name $m');
+  if (mIdx == -1) throw ArgumentError('Wrong month name $m');
   return mIdx;
 }
 
 /// Convert a string to a year value.  A two digit or 4 digit string.
 int _toYear(String y) {
-  if (!(y.length == 2 || y.length == 4))
-    throw new ArgumentError('Invalid year format: $y');
-  int value = int.parse(y);
+  if (!(y.length == 2 || y.length == 4)) {
+    throw ArgumentError('Invalid year format: $y');
+  }
+  var value = int.parse(y);
   if (y.length == 2) {
-    if (value > 50)
+    if (value > 50) {
       return 1900 + value;
-    else
+    } else {
       return 2000 + value;
+    }
   }
   return value;
 }

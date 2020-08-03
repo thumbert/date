@@ -47,33 +47,34 @@ class TermGrammar extends GrammarParser {
 class TermGrammarDefinition extends GrammarDefinition {
   const TermGrammarDefinition();
 
-  start() => ref(value).end();
-  token(Parser p) => p.flatten().trim();
-  simpleDayToken() => ref(dayToken) & ref(monthToken) & ref(yearToken);
-  simpleMonthToken() => ref(monthToken) & ref(yearToken);
-  simpleMonthCodeToken() => token(letter() & digit() & digit());
-  simpleQuarterToken() => quarterToken();
-  simpleCalYearToken() => calYearToken();
-  simpleToken() =>
+  @override
+  Parser start() => ref(value).end();
+  Parser token(Parser p) => p.flatten().trim();
+  Parser simpleDayToken() => ref(dayToken) & ref(monthToken) & ref(yearToken);
+  Parser simpleMonthToken() => ref(monthToken) & ref(yearToken);
+  Parser simpleMonthCodeToken() => token(letter() & digit() & digit());
+  Parser simpleQuarterToken() => quarterToken();
+  Parser simpleCalYearToken() => calYearToken();
+  Parser simpleToken() =>
       simpleCalYearToken() |
       ref(simpleMonthToken) |
       ref(simpleMonthCodeToken) |
       ref(simpleDayToken) |
       simpleQuarterToken();
 
-  compoundDayToken() => ref(simpleDayToken) & char('-') & ref(simpleDayToken);
-  compoundMonthToken() =>
+  Parser compoundDayToken() => ref(simpleDayToken) & char('-') & ref(simpleDayToken);
+  Parser compoundMonthToken() =>
       ref(simpleMonthToken) & char('-') & ref(simpleMonthToken);
-  compoundRelativeToken() => relativeToken() & relativeToken();
-  compoundToken() => compoundMonthToken() | compoundDayToken() | compoundRelativeToken();
+  Parser compoundRelativeToken() => relativeToken() & relativeToken();
+  Parser compoundToken() => compoundMonthToken() | compoundDayToken() | compoundRelativeToken();
 
-  relativeToken() => token(char('-') | char('+')) & digit().plus() & letter();
+  Parser relativeToken() => token(char('-') | char('+')) & digit().plus() & letter();
 
   // compound term needs to be parsed first
-  value() => ref(compoundToken) | ref(simpleToken) | ref(relativeToken);
+  Parser value() => ref(compoundToken) | ref(simpleToken) | ref(relativeToken);
 
-  dayToken() => token(digit().repeat(1, 2));
-  monthToken() =>
+  Parser dayToken() => token(digit().repeat(1, 2));
+  Parser monthToken() =>
       jan() |
       feb() |
       mar() |
@@ -86,62 +87,62 @@ class TermGrammarDefinition extends GrammarDefinition {
       oct() |
       nov() |
       dec();
-  yearToken() => token(digit().repeat(2, 4));
-  quarterToken() => token(char('Q') & digit()) & char(',') & yearToken();
-  calYearToken() => token((string('CAL') | string('Cal'))) & yearToken();
+  Parser yearToken() => token(digit().repeat(2, 4));
+  Parser quarterToken() => token(char('Q') & digit()) & char(',') & yearToken();
+  Parser calYearToken() => token((string('CAL') | string('Cal'))) & yearToken();
 
-  jan() => token(string('January') |
+  Parser jan() => token(string('January') |
       string('JANUARY') |
       string('Jan') |
       string('JAN') |
       string('jan'));
-  feb() => token(string('February') |
+  Parser feb() => token(string('February') |
       string('FEBRUARY') |
       string('feb') |
       string('Feb') |
       string('FEB'));
-  mar() => token(string('March') |
+  Parser mar() => token(string('March') |
       string('MARCH') |
       string('mar') |
       string('Mar') |
       string('MAR'));
-  apr() => token(string('April') |
+  Parser apr() => token(string('April') |
       string('APRIL') |
       string('apr') |
       string('Apr') |
       string('APR'));
-  may() => token(string('May') | string('MAY') | string('may'));
-  jun() => token(string('June') |
+  Parser may() => token(string('May') | string('MAY') | string('may'));
+  Parser jun() => token(string('June') |
       string('JUNE') |
       string('jun') |
       string('Jun') |
       string('JUN'));
-  jul() => token(string('July') |
+  Parser jul() => token(string('July') |
       string('JULY') |
       string('jul') |
       string('Jul') |
       string('JUL'));
-  aug() => token(string('August') |
+  Parser aug() => token(string('August') |
       string('AUGUST') |
       string('aug') |
       string('Aug') |
       string('AUG'));
-  sep() => token(string('September') |
+  Parser sep() => token(string('September') |
       string('SEPTEMBER') |
       string('sep') |
       string('Sep') |
       string('SEP'));
-  oct() => token(string('October') |
+  Parser oct() => token(string('October') |
       string('OCTOBER') |
       string('oct') |
       string('Oct') |
       string('OCT'));
-  nov() => token(string('November') |
+  Parser nov() => token(string('November') |
       string('NOVEMBER') |
       string('nov') |
       string('Nov') |
       string('NOV'));
-  dec() => token(string('December') |
+  Parser dec() => token(string('December') |
       string('DECEMBER') |
       string('dec') |
       string('Dec') |
@@ -150,25 +151,29 @@ class TermGrammarDefinition extends GrammarDefinition {
 
 /// Parse a term
 class TermParser extends GrammarParser {
-  TermParser() : super(const TermParserDefinition()) {}
+  TermParser() : super(const TermParserDefinition());
 }
 
 /// the parser definition
 class TermParserDefinition extends TermGrammarDefinition {
   const TermParserDefinition();
 
-  simpleMonthToken() => super.simpleMonthToken().map((List each) {
+  @override
+  Parser simpleMonthToken() => super.simpleMonthToken().map((each) {
         return Month(_toYear(each[1]), _toMonth(each[0]));
       });
-  simpleMonthCodeToken() => super.simpleMonthCodeToken().map((String each) {
+  @override
+  Parser simpleMonthCodeToken() => super.simpleMonthCodeToken().map((each) {
         return Month(
             _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]);
       });
 
-  simpleDayToken() => super.simpleDayToken().map((List each) {
+  @override
+  Parser simpleDayToken() => super.simpleDayToken().map((each) {
         return Date(_toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
       });
-  simpleQuarterToken() => super.simpleQuarterToken().map((List each) {
+  @override
+  Parser simpleQuarterToken() => super.simpleQuarterToken().map((each) {
         var year = _toYear(each[2]);
         var quarter = int.parse(each[0].substring(1));
         if (quarter < 1 || quarter > 4) {
@@ -179,40 +184,45 @@ class TermParserDefinition extends TermGrammarDefinition {
         var end = TZDateTime.utc(year, month + 3);
         return Interval(start, end);
       });
-  simpleCalYearToken() => super.simpleCalYearToken().map((List each) {
+  @override
+  Parser simpleCalYearToken() => super.simpleCalYearToken().map((each) {
         var year = _toYear(each[1]);
         var start = TZDateTime.utc(year);
         var end = TZDateTime.utc(year + 1);
         return Interval(start, end);
       });
 
-  compoundMonthToken() => super.compoundMonthToken().map((List each) {
+  @override
+  Parser compoundMonthToken() => super.compoundMonthToken().map((each) {
         var start = (each[0] as Month).start;
         var end = (each[2] as Month).end;
         return Interval(start, end);
       });
-  compoundDayToken() => super.compoundDayToken().map((List each) {
+  @override
+  Parser compoundDayToken() => super.compoundDayToken().map((each) {
         var start = (each[0] as Date).start;
         var end = (each[2] as Date).end;
         return Interval(start, end);
       });
 
-  compoundRelativeToken() => super.compoundRelativeToken().map((each) {
+  @override
+  Parser compoundRelativeToken() => super.compoundRelativeToken().map((each) {
 //    print(each);
     var start = (each[0] as Interval).start;
     var end = (each[1] as Interval).end;
     return Interval(start, end);
   });
 
-  relativeToken() => super.relativeToken().map((List each) {
+  @override
+  Parser relativeToken() => super.relativeToken().map((each) {
         //print(each);
         Interval res;
-        Date start = Date.today(location: UTC);
+        var start = Date.today(location: UTC);
         Date end;
         var aux = []
           ..add(each[0])
           ..addAll(each[1] as List);
-        int step = int.parse(aux.join());
+        var step = int.parse(aux.join());
         String unit = each[2];
         if (unit.toLowerCase() == 'm') {
           end = start.add((step * 30.5).round());
@@ -243,20 +253,22 @@ int _toMonth(String m) {
   } else {
     mIdx = _monthNames.indexOf(m.toLowerCase()) + 1;
   }
-  if (mIdx == -1) throw new ArgumentError('Wrong month name $m');
+  if (mIdx == -1) throw ArgumentError('Wrong month name $m');
   return mIdx;
 }
 
 /// Convert a string to a year value.  A two digit or 4 digit string.
 int _toYear(String y) {
-  if (!(y.length == 2 || y.length == 4))
-    throw new ArgumentError('Invalid year format: $y');
-  int value = int.parse(y);
+  if (!(y.length == 2 || y.length == 4)) {
+    throw ArgumentError('Invalid year format: $y');
+  }
+  var value = int.parse(y);
   if (y.length == 2) {
-    if (value > 50)
+    if (value > 50) {
       return 1900 + value;
-    else
+    } else {
       return 2000 + value;
+    }
   }
   return value;
 }
