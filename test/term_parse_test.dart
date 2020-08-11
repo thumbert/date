@@ -21,6 +21,14 @@ void parseTermTest() {
     });
     test('A month: F17, G17, .. Z17', () {
       expect(parseTerm('F17'), Month(2017, 1));
+      expect(parseTerm('G17'), Month(2017, 2));
+      expect(parseTerm('H17'), Month(2017, 3));
+      expect(parseTerm('N17'), Month(2017, 7));
+      expect(parseTerm('Q17'), Month(2017, 8));
+      expect(parseTerm('U17'), Month(2017, 9));
+      expect(parseTerm('V17'), Month(2017, 10));
+      expect(parseTerm('X17'), Month(2017, 11));
+      expect(parseTerm('Z17'), Month(2017, 12));
     });
     test('A day: 3 jan 17, 03 jan 17', () {
       expect(parseTerm('3 jan 17'), Date(2017, 1, 3));
@@ -35,10 +43,12 @@ void parseTermTest() {
       expect(parseTerm('Q1, 2017'),
           Interval(TZDateTime.utc(2017), TZDateTime.utc(2017, 4)));
     });
-    test('A calendar year: CAL2017, Cal 2017', () {
+    test('A calendar year: CAL2017, Cal 2017, Cal17', () {
       expect(parseTerm('CAL2017'),
           Interval(TZDateTime.utc(2017), TZDateTime.utc(2018)));
       expect(parseTerm('Cal 2017'),
+          Interval(TZDateTime.utc(2017), TZDateTime.utc(2018)));
+      expect(parseTerm('Cal17'),
           Interval(TZDateTime.utc(2017), TZDateTime.utc(2018)));
     });
     test('A relative token: -3d', () {
@@ -112,6 +122,13 @@ void parseTermTest() {
           Interval(
               TZDateTime(location, 2017, 1), TZDateTime(location, 2017, 2, 4)));
     });
+    test('A month code range F19-G19', () {
+      var location = getLocation('America/New_York');
+      var term = Term.parse('F19-G19', location);
+      expect(term.interval, Interval(TZDateTime(location, 2019, 1),
+          TZDateTime(location, 2019, 3)));
+    });
+
     test('prettyTerm tests', () {
       expect(prettyTerm(Date(2018, 1, 1)), '1Jan18');
       expect(prettyTerm(Month(2018, 1)), 'Jan18');
