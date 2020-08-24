@@ -206,7 +206,7 @@ class Interval implements Comparable<Interval> {
     return res;
   }
 
-  Iterator<Hour> get hourIterator => _HourIterator(_start, _end);
+  Iterator<Hour> get hourIterator => _HourIterator(start, end);
 
   /// Split this interval into a list of abutting intervals according to
   /// function [f].  The function [f] operates on the start(left) of
@@ -269,17 +269,21 @@ class _HourIterator extends Iterator<Hour> {
     if (end.difference(start).inHours < 1) {
       throw ArgumentError('Sub hourly interval.  Nothing to iterate.');
     }
-    _current = start;
   }
 
   @override
   bool moveNext() {
-    var candidate = _current.add(h1);
-    var res = candidate.isBefore(end);
-    if (res) {
-      _current = candidate;
+    if (_current == null) {
+      _current = start;
+      return true;
+    } else {
+      var candidate = _current.add(h1);
+      var res = candidate.isBefore(end);
+      if (res) {
+        _current = candidate;
+      }
+      return res;
     }
-    return res;
   }
 
   @override

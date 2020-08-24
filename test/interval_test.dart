@@ -130,12 +130,22 @@ void tests() {
       var term = Interval(TZDateTime(UTC, 2020, 1, 2),
           TZDateTime(UTC, 2020, 1, 2, 5));
       var hIter = term.hourIterator;
-      expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2)));
       hIter.moveNext();
-      expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2, 1)));
+      expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2)));
       while(hIter.moveNext()) {}
       expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2, 4)));
     });
+
+    test('hour iterator, different timezone', () {
+      var term = Interval(TZDateTime(location, 2020, 1, 2),
+          TZDateTime(location, 2020, 1, 2, 5));
+      var hIter = term.hourIterator;
+      hIter.moveNext();
+      expect(hIter.current, Hour.beginning(TZDateTime(location, 2020, 1, 2)));
+      while(hIter.moveNext()) {}
+      expect(hIter.current, Hour.beginning(TZDateTime(location, 2020, 1, 2, 4)));
+    });
+
 
     test('calculate the covering of several intervals', () {
       var i1 = Interval(
