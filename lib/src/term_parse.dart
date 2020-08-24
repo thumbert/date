@@ -12,7 +12,7 @@ final TermParser _parser = TermParser();
 /// Parse a limited number of String inputs into a datetime interval.
 /// Supported tokens are:
 /// <p>days: 1Jan17, months: 'Jan17', 'F18', years: 'Cal17', quarters: 'Q3,18',
-/// day ranges: 1Jan17-3Jan17, or month ranges: Jul17-Aug17.
+/// day ranges: 1Jan17-3Jan17, or month ranges: Jul17-Aug17, F21-H21.
 ///
 /// <p>Or a term relative to the current moment.  For example:
 /// '-10d' the last 10 days, '+10d' the next 10 days,
@@ -63,8 +63,11 @@ class TermGrammarDefinition extends GrammarDefinition {
       simpleQuarterToken();
 
   Parser compoundDayToken() => ref(simpleDayToken) & char('-') & ref(simpleDayToken);
-  Parser compoundMonthToken() =>
+  Parser compoundMonthSimpleToken() =>
       ref(simpleMonthToken) & char('-') & ref(simpleMonthToken);
+  Parser compoundMonthCodeToken() =>
+      ref(simpleMonthCodeToken) & char('-') & ref(simpleMonthCodeToken);
+  Parser compoundMonthToken() => compoundMonthSimpleToken() | compoundMonthCodeToken();
   Parser compoundRelativeToken() => relativeToken() & relativeToken();
   Parser compoundToken() => compoundMonthToken() | compoundDayToken() | compoundRelativeToken();
 
