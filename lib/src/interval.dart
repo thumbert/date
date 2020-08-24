@@ -1,5 +1,6 @@
 library interval;
 
+import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
 class Interval implements Comparable<Interval> {
@@ -205,6 +206,8 @@ class Interval implements Comparable<Interval> {
     return res;
   }
 
+  Iterator<Hour> get hourIterator => _HourIterator(_start, _end);
+
   /// Split this interval into a list of abutting intervals according to
   /// function [f].  The function [f] operates on the start(left) of
   /// each interval.
@@ -252,4 +255,33 @@ class Interval implements Comparable<Interval> {
         end.microsecond);
     return Interval(newStart, newEnd);
   }
+}
+
+
+class _HourIterator extends Iterator<Hour> {
+  TZDateTime start, end, _current;
+  static const h1 = Duration(hours: 1);
+
+  _HourIterator(this.start, this.end) {
+    if (!isBeginningOfHour(start)) {
+      throw ArgumentError('Start should be at hour beginning, it is $start');
+    }
+    if (end.difference(start).inHours < 1) {
+      throw ArgumentError('Sub hourly interval.  Nothing to iterate.');
+    }
+    _current = start;
+  }
+
+  @override
+  bool moveNext() {
+    var candidate = _current.add(h1);
+    var res = candidate.isBefore(end);
+    if (res) {
+      _current = candidate;
+    }
+    return res;
+  }
+
+  @override
+  Hour get current => Hour.beginning(_current);
 }

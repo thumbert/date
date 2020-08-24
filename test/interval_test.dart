@@ -8,6 +8,7 @@ import 'package:date/src/hour.dart';
 import 'package:date/src/month.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/utils.dart';
+import 'package:timezone/timezone.dart';
 
 void soloTest() {
   test('Split one year with TZDateTime into months using splitLeft', () {
@@ -123,6 +124,17 @@ void tests() {
       var i = Interval(TZDateTime(location, 2015), TZDateTime(location, 2015));
       expect(i.isInstant(), true);
       expect(i.toString(), '2015-01-01 00:00:00.000-0500');
+    });
+
+    test('hour iterator', () {
+      var term = Interval(TZDateTime(UTC, 2020, 1, 2),
+          TZDateTime(UTC, 2020, 1, 2, 5));
+      var hIter = term.hourIterator;
+      expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2)));
+      hIter.moveNext();
+      expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2, 1)));
+      while(hIter.moveNext()) {}
+      expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2, 4)));
     });
 
     test('calculate the covering of several intervals', () {
