@@ -1,5 +1,6 @@
 library test_month;
 
+import 'package:date/date.dart';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
@@ -8,37 +9,37 @@ import 'package:date/src/month.dart';
 import 'package:date/src/interval.dart';
 
 
-testMonth() {
-  Location local = getLocation('America/New_York');
+void tests() {
+  var local = getLocation('America/New_York');
 
-  group("Test Month:", () {
-    test("Create months from year month", () {
-      Month m = new Month(2014, 1);
-      Month m2 = new Month(2014, 1);
+  group('Test Month:', () {
+    test('Create months from year month', () {
+      var m = Month(2014, 1);
+      var m2 = Month(2014, 1);
       expect(m, m2);
-      expect(m.toString(), "Jan14");
+      expect(m.toString(), 'Jan14');
     });
 
-    test("Create months from DateTime", () {
+    test('Create months from DateTime', () {
       Month m;
-      m = new Month.fromTZDateTime(new TZDateTime(local, 2014));
+      m = Month.fromTZDateTime(TZDateTime(local, 2014));
       expect([m.year, m.month], [2014, 1]);
-      m = new Month.fromTZDateTime(new TZDateTime(local, 2014, 11));
+      m = Month.fromTZDateTime(TZDateTime(local, 2014, 11));
       expect([m.year, m.month], [2014, 11]);
-      m = new Month.fromTZDateTime(new TZDateTime(local, 2014, 12));
+      m = Month.fromTZDateTime(TZDateTime(local, 2014, 12));
       expect([m.year, m.month], [2014, 12]);
     });
 
     test('Create month in a different timezone', (){
-      Month m1 = new Month(2017, 1, location: getLocation('America/New_York'));
+      var m1 = Month(2017, 1, location: getLocation('America/New_York'));
       expect(m1.location.toString(), 'America/New_York');
       expect(m1.start.toString(), '2017-01-01 00:00:00.000-0500');
-      Month m2 = new Month(2017, 1);
+      var m2 = Month(2017, 1);
       expect(m2.location.toString(), 'UTC');
       expect(m2.start.toString(), '2017-01-01 00:00:00.000Z');
     });
 
-    test("Next/previous months", () {
+    test('Next/previous months', () {
       expect(Month(2014, 1).next, Month(2014, 2));
       expect(Month(2014, 1).previous, Month(2013, 12));
       expect(Month(2014, 1).add(6), Month(2014, 7));
@@ -58,16 +59,16 @@ testMonth() {
       expect(upToMonths.last, Month(2017, 12));
     });
 
-    test("Add/subtract months", () {
-      Month m1 = Month(2015, 11);
-      Month m3 = m1.add(1);
+    test('Add/subtract months', () {
+      var m1 = Month(2015, 11);
+      var m3 = m1.add(1);
       expect(m3.toString(), 'Dec15');
-      Month m4 = m3.add(1).subtract(1);
-      expect("Dec15: (${m4.year}, ${m4.month})", "Dec15: (2015, 12)");
+      var m4 = m3.add(1).subtract(1);
+      expect('Dec15: (${m4.year}, ${m4.month})', 'Dec15: (2015, 12)');
       expect(m1.subtract(11), Month(2014, 12));
     });
 
-    test("Generate list of months", () {
+    test('Generate list of months', () {
       var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
       var months = it.splitLeft((dt) => Month.fromTZDateTime(dt));
       expect(months.length, 12);
@@ -97,22 +98,44 @@ testMonth() {
 
 
     test('month format (default)', () {
-      Month m1 = new Month(2015,6);
+      var m1 = Month(2015,6);
       expect(m1.toString(), 'Jun15');
       expect(m1.toIso8601String(), '2015-06');
     });
 
     test('month parse (other format)', () {
-      DateFormat isoFmt = new DateFormat('yyyy-MM');
-      Month m1 = Month.parse('2017-07', fmt: isoFmt, location: local);
+      var isoFmt = DateFormat('yyyy-MM');
+      var m1 = Month.parse('2017-07', fmt: isoFmt, location: local);
       expect(m1, Month(2017, 7, location: local));
     });
 
+    test('get the Mondays in Sep20', () {
+      var m = Month(2020, 9);
+      var mondays = m.mondays();
+      expect(mondays, [
+        Date(2020, 9, 7),
+        Date(2020, 9, 14),
+        Date(2020, 9, 21),
+        Date(2020, 9, 28),
+      ]);
+    });
+
+    test('get the Mondays in Jun20', () {
+      var m = Month(2020, 6);
+      var mondays = m.mondays();
+      expect(mondays, [
+        Date(2020, 6, 1),
+        Date(2020, 6, 8),
+        Date(2020, 6, 15),
+        Date(2020, 6, 22),
+        Date(2020, 6, 29),
+      ]);
+    });
 
   });
 }
 
-main() async {
+void main() async {
   await initializeTimeZone();
-  await testMonth();
+  await tests();
 }

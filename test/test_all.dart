@@ -17,7 +17,7 @@ void main() async {
   date.testDate();
   hour.hourTest();
   interval.tests();
-  month.testMonth();
+  month.tests();
   month_parse.parseMonthTest();
   term.tests();
   term_parse.parseTermTest();

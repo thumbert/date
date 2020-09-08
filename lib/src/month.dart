@@ -17,9 +17,10 @@ class Month extends Interval
   static final DateFormat _defaultFmt = DateFormat('MMMyy');
   static final DateFormat _isoFmt = DateFormat('yyyy-MM');
 
-  static Month current({DateTime datetime}) {
+  static Month current({DateTime datetime, Location location}) {
     datetime ??= DateTime.now();
-    return Month(datetime.year, datetime.month);
+    location ??= UTC;
+    return Month(datetime.year, datetime.month, location: location);
   }
 
   /// Creates a new [Month] object.  Months are [Interval]s.
@@ -112,6 +113,25 @@ class Month extends Interval
     return out;
   }
 
+  /// Get a list with all the Mondays in the month
+  List<Date> mondays() {
+    var out = <Date>[];
+    var dow = startDate.weekday;
+    if (dow == 1) {
+      // month starts on a Monday
+      out.add(startDate);
+    } else {
+      // add the first Monday
+      out.add(startDate.add(8-dow));
+    }
+    var end1 = endDate.add(1);
+    var candidate = out.last.add(7);
+    while (candidate.isBefore(end1)) {
+      out.add(candidate);
+      candidate = candidate.add(7);
+    }
+    return out;
+  }
 
   @override
   Month add(int months) =>
