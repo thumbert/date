@@ -41,7 +41,7 @@ class Term {
         Date(year + offset, _end.month, _end.day, location: _end.location);
     return Term(newStart, newEnd);
   }
-
+  
   List<Date> days() => _interval.splitLeft((dt) => Date.fromTZDateTime(dt));
 
   List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
