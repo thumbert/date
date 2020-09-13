@@ -55,6 +55,13 @@ void tests() {
       expect(
           i2, Interval(TZDateTime(location, 2020), TZDateTime(location, 2021)));
     });
+    test('interval equality', () {
+      var termInterval = Term.parse('Mar19', location).interval;
+      var march = Month(2019, 3, location: location);
+      expect(termInterval == march, true);  // OK, march is an Interval
+      expect(march == termInterval, false);  // term interval is NOT a Month
+      expect(march.toInterval() == termInterval, true); // OK to compare intervals
+    });
 
     test('interval abuts', () {
       var i1 = Interval(

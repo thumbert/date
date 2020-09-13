@@ -96,11 +96,15 @@ void tests() {
       expect(m1.compareTo(m1), 0);
     });
 
-
     test('month format (default)', () {
       var m1 = Month(2015,6);
       expect(m1.toString(), 'Jun15');
       expect(m1.toIso8601String(), '2015-06');
+    });
+
+    test('month parse Mar19', () {
+      var m1 = Month.parse('Mar19', location: local);
+      expect(m1, Month(2019, 3, location: local));
     });
 
     test('month parse (other format)', () {

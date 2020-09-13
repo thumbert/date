@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
-final MonthParser _parser = new MonthParser();
+final MonthParser _parser = MonthParser();
 
 
 /// Parse a limited number of String inputs into a month term using a parser.

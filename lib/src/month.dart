@@ -1,5 +1,6 @@
 library month;
 
+import 'package:date/date.dart';
 import 'package:intl/intl.dart';
 import 'package:date/src/date_base.dart';
 import 'package:date/src/time_ordering.dart';
@@ -7,8 +8,7 @@ import 'package:date/src/interval.dart';
 import 'package:timezone/timezone.dart';
 
 /// Class representing a calendar Month implemented as an Interval.
-class Month extends Interval
-    implements TimeOrdering<Month>, Additive<Month> {
+class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   int _value;
   int _year;
   int _month; // between Jan=1 to Dec=12
@@ -40,11 +40,9 @@ class Month extends Interval
   }
 
   /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
-  static Month parse(String s, {DateFormat fmt, Location location}) {
-    fmt ??= _defaultFmt;
-    location ??= UTC;
-    var dt = fmt.parseUtc(s);
-    return Month(dt.year, dt.month, location: location);
+  static Month parse(String s,
+      {@deprecated DateFormat fmt, Location location}) {
+    return parseMonth(s, location: location);
   }
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
@@ -81,18 +79,19 @@ class Month extends Interval
   /// Return the previous [n] months ending on this month.
   List<Month> previousN(int n) {
     var out = <Month>[];
-    for (var i=n; i>0; i--) {
+    for (var i = n; i > 0; i--) {
       out.add(subtract(i));
     }
     return out;
   }
 
-  Month get next => Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
+  Month get next =>
+      Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
 
   /// Return the next [n] months starting on this month.
   List<Month> nextN(int n) {
     var out = <Month>[];
-    for (var i=1; i<=n; i++) {
+    for (var i = 1; i <= n; i++) {
       out.add(add(i));
     }
     return out;
@@ -122,7 +121,7 @@ class Month extends Interval
       out.add(startDate);
     } else {
       // add the first Monday
-      out.add(startDate.add(8-dow));
+      out.add(startDate.add(8 - dow));
     }
     var end1 = endDate.add(1);
     var candidate = out.last.add(7);
@@ -135,9 +134,11 @@ class Month extends Interval
 
   @override
   Month add(int months) =>
-      Month(_calcYear(_value + months), _calcMonth(_value + months), location: _location);
+      Month(_calcYear(_value + months), _calcMonth(_value + months),
+          location: _location);
   Month subtract(int months) =>
-      Month(_calcYear(_value - months), _calcMonth(_value - months), location: _location);
+      Month(_calcYear(_value - months), _calcMonth(_value - months),
+          location: _location);
 
   @override
   bool isBefore(Month other) => _value < other._value;
