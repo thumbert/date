@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.0 (released 2020-09-15)
+- Add a Quarter class
+- Add a Term class
+
 ## 2.3.0 (released 2019-03-14)
 - Mark TimeIterable as deprecated.  After using the package for a 
 while, this class is not really needed.  

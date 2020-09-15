@@ -7,25 +7,18 @@ import 'package:date/src/interval.dart';
 
 /// An immutable class to represent an hour.
 class Hour extends Interval implements TimeOrdering<Hour>, Additive<Hour> {
-  /// number of hours since origin in UTC timezone, hour beginning
-  /// should explore if this is worth doing.
-  ///int _value;
 
-  static Duration _H1 = new Duration(hours: 1);
+  static final Duration _H1 = Duration(hours: 1);
 
   /// Create an hour containing a given [TZDateTime]
   Hour.containing(TZDateTime dt) : super(TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour),
-      TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour+1)) {}
+      TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour+1));
   
   /// Create an hour beginning at a given [TZDateTime]
-  Hour.beginning(TZDateTime start): super(start, start.add(_H1)) {
-    //_value = (start.toUtc().millisecondsSinceEpoch/3600000).round();
-  }
+  Hour.beginning(TZDateTime start): super(start, start.add(_H1));
 
   /// Create an hour ending at a given [TZDateTime]
-  Hour.ending(TZDateTime end): super(end.subtract(_H1), end) {
-    //_value = (end.toUtc().millisecondsSinceEpoch/3600000).round()-1;
-  }
+  Hour.ending(TZDateTime end): super(end.subtract(_H1), end);
 
   /// Get the previous hour.
   Hour get previous => Hour.ending(start);
@@ -38,26 +31,32 @@ class Hour extends Interval implements TimeOrdering<Hour>, Additive<Hour> {
       location: start.location);
 
   /// Add a number of hours to this hour.
+  @override
   Hour add(int step) => Hour.beginning(start.add(Duration(hours: step)));
 
   /// Subtract a number of hours from this hours.
   Hour subtract(int step) => Hour.beginning(start.subtract(Duration(hours: step)));
 
+  @override
   bool isBefore(Hour other) => start.isBefore(other.start);
 
+  @override
   bool isAfter(Hour other) => start.isAfter(other.start);
 
+  @override
   bool operator ==(dynamic other) {
     if (other is! Hour) return false;
     Hour hour = other;
     return start == hour.start;
   }
 
+  @override
   int get hashCode => start.hashCode;
 
+  @override
   String toString() => '[$start, $end)';
 
   /// return this hour as an Interval
-  Interval toInterval() => new Interval(start, end);
+  Interval toInterval() => Interval(start, end);
 }
 
