@@ -12,8 +12,7 @@ import 'hour.dart';
 
 ///A simple Date class.  No worries about the time of the day, time zones, etc.
 ///Days are counted as integers from an origin, set to '1970-01-01'.
-class Date extends Interval
-    implements TimeOrdering<Date>, Additive<Date> {
+class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   int _year;
   int _month;
   int _day;
@@ -64,8 +63,7 @@ class Date extends Interval
   /// Can't make this a constructor because I have problems setting the start/end
   /// of the superclass in the correct local timezone.
   static Date fromJulianDay(int value, {Location location}) {
-    var startZ = DateTime.fromMillisecondsSinceEpoch(
-        1000 * 24 * 3600 * value,
+    var startZ = DateTime.fromMillisecondsSinceEpoch(1000 * 24 * 3600 * value,
         isUtc: true);
     location = location ?? UTC;
     return Date(startZ.year, startZ.month, startZ.day, location: location);
@@ -92,11 +90,12 @@ class Date extends Interval
   /// two digit day, optionally separated by `-` characters.
   /// Examples: "19700101", "-0004-12-24", "81030-04-01".
   ///
-  static Date parse(String formattedString, {Location location, DateFormat fmt}) {
+  static Date parse(String formattedString,
+      {Location location, DateFormat fmt}) {
     if (fmt != null) {
       // use this format if explicitly passed in
       var aux = fmt.parse(formattedString, false);
-      return Date(aux.year+2000, aux.month, aux.day, location: location);
+      return Date(aux.year + 2000, aux.month, aux.day, location: location);
     }
 
     final re = RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
@@ -157,7 +156,7 @@ class Date extends Interval
   /// Return the previous [n] days ending on this date.
   List<Date> previousN(int n) {
     var out = <Date>[];
-    for (var i=n; i>0; i--) {
+    for (var i = n; i > 0; i--) {
       out.add(subtract(i));
     }
     return out;
@@ -170,12 +169,12 @@ class Date extends Interval
   /// than 0.
   List<Date> nextN(int n) {
     var out = <Date>[];
-    for (var i=1; i<=n; i++) {
+    for (var i = 1; i <= n; i++) {
       out.add(add(i));
     }
     return out;
   }
-    
+
   /// Return all dates starting from this date up to [date] inclusive.
   /// If [date] is before [this] throw.
   List<Date> upTo(Date date) {
@@ -189,15 +188,15 @@ class Date extends Interval
       nextD = nextD.add(1);
     }
     return out;
-  }  
-    
+  }
 
   /// Add a number of days to this date.
   @override
   Date add(int step) => Date.fromJulianDay(_value + step, location: _location);
 
   /// Subtract a number of days from this date.
-  Date subtract(int step) => Date.fromJulianDay(value - step, location: _location);
+  Date subtract(int step) =>
+      Date.fromJulianDay(value - step, location: _location);
 
   /// Get the beginning of the month.
   Date get beginningOfMonth => Date(_year, _month, 1, location: _location);
@@ -241,19 +240,24 @@ class Date extends Interval
     _dayOfWeek = jx;
   }
 
-  /// Return the day of the year.  1-Jan is day 1 of the year. 
+  /// Return the day of the year.  1-Jan is day 1 of the year.
   int dayOfYear() => value - Date(_year, 1, 1).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => weekday >= 6 ? true : false;
 
   /// Convert to a regular SDK [DateTime] object at midnight.
-  DateTime toDateTime({isUtc: false}) {
+  DateTime toDateTime({isUtc = false}) {
     if (isUtc) {
       return DateTime.utc(year, month, day);
     } else {
       return DateTime(year, month, day);
     }
+  }
+
+  /// Convert to an Excel integer
+  int toExcel() {
+    return _value + 25569;
   }
 
   /// Get all the hours in this day
