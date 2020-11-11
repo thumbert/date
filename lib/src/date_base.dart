@@ -3,6 +3,7 @@
 
 library date.base;
 
+import 'package:date/src/date_parse.dart';
 import 'package:timezone/timezone.dart';
 import 'package:intl/intl.dart';
 import 'month.dart';
@@ -90,25 +91,9 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// two digit day, optionally separated by `-` characters.
   /// Examples: "19700101", "-0004-12-24", "81030-04-01".
   ///
-  static Date parse(String formattedString,
-      {Location location, DateFormat fmt}) {
-    if (fmt != null) {
-      // use this format if explicitly passed in
-      var aux = fmt.parse(formattedString, false);
-      return Date(aux.year + 2000, aux.month, aux.day, location: location);
-    }
-
-    final re = RegExp(r'^([+-]?\d{4,6})-?(\d\d)-?(\d\d)');
-
-    Match match = re.firstMatch(formattedString);
-    if (match != null) {
-      var years = int.parse(match[1]);
-      var month = int.parse(match[2]);
-      var day = int.parse(match[3]);
-      return Date(years, month, day, location: location);
-    } else {
-      throw FormatException('Invalid date format', formattedString);
-    }
+  static Date parse(String input,
+      {Location location, @deprecated DateFormat fmt}) {
+    return parseDate(input, location: location);
   }
 
   /// the year of the date

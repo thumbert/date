@@ -29,6 +29,8 @@ void testDate() {
       expect(Date.parse('2015-01-03'), Date(2015, 1, 3));
       expect(Date.parse('2015-0103'), Date(2015, 1, 3));
       expect(Date.parse('20150229'), Date(2015, 3, 1)); // !!! same as DateTime
+      expect(Date.parse('2/22/2015'), Date(2015, 2, 22));
+      expect(Date.parse('22Feb15'), Date(2015, 2, 22));
     });
 
     test('Parse a string with specific format', () {
