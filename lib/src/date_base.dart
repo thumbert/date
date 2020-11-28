@@ -79,21 +79,35 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     return Date(startZ.year, startZ.month, startZ.day, location: location);
   }
 
-  ///Constructs a new [Date] instance based on [formattedString].
+  ///Constructs a new [Date] instance.
   ///Throws a [FormatException] if the input cannot be parsed.
-  ///
-  ///The function parses a subset of ISO 8601
-  ///which includes the subset accepted by RFC 3339.
   ///
   ///The accepted inputs are currently:
   ///
   /// A date: A signed four-to-six digit year, two digit month and
   /// two digit day, optionally separated by `-` characters.
   /// Examples: "19700101", "-0004-12-24", "81030-04-01".
-  ///
+  /// * yyyy-mm-dd format is accepted
+  /// * mm/dd/yyyy format is accepted,
+  /// * ddMMMyy format is accepted.
   static Date parse(String input,
       {Location location, @deprecated DateFormat fmt}) {
     return parseDate(input, location: location);
+  }
+
+  ///Constructs a new [Date] instance.
+  ///Returns null if the input cannot be parsed.
+  ///
+  ///The accepted inputs are currently:
+  ///
+  /// A date: A signed four-to-six digit year, two digit month and
+  /// two digit day, optionally separated by `-` characters.
+  /// Examples: "19700101", "-0004-12-24", "81030-04-01".
+  /// * yyyy-mm-dd format is accepted
+  /// * mm/dd/yyyy format is accepted,
+  /// * ddMMMyy format is accepted.
+  static Date tryParse(String input, {Location location}) {
+    return tryParseDate(input, location: location);
   }
 
   /// the year of the date

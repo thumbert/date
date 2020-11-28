@@ -9,9 +9,23 @@ final DateParser _parser = DateParser();
 /// Parse a limited number of String inputs into a Date using a parser.
 /// Supported tokens are:
 /// <p>'5Jan18', '5Jan2018', '20180105', '2018-01-05', '1/5/2018',
+///
 Date parseDate(String term, {Location location}) {
   location ??= UTC;
   var res = _parser.parse(term);
+  if (res.isFailure) {
+    throw FormatException('Malformed input: $term');
+  }
+  Date date = res.value;
+  return Date(date.year, date.month, date.day, location: location);
+}
+
+Date tryParseDate(String term, {Location location}) {
+  location ??= UTC;
+  var res = _parser.parse(term);
+  if (res.isFailure) {
+    return null;
+  }
   Date date = res.value;
   return Date(date.year, date.month, date.day, location: location);
 }

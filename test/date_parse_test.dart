@@ -7,6 +7,9 @@ import 'package:timezone/data/latest.dart';
 
 void tests() {
   group('Date parse:', () {
+    test('A malformed input', () {
+      expect(tryParseDate('29May2a'), null);
+    });
     test('A date: 1jan17, 1-Jan-17, 1 Mar 2017, 1Mar2017', () {
       expect(parseDate('1jan17'), Date(2017, 1, 1));
       expect(parseDate('1-Jan-17'), Date(2017, 1, 1));

@@ -39,7 +39,6 @@ Interval parseTerm(String term, {Location tzLocation}) {
   return interval;
 }
 
-
 class TermGrammar extends GrammarParser {
   TermGrammar() : super(const TermGrammarDefinition());
 }
@@ -62,16 +61,20 @@ class TermGrammarDefinition extends GrammarDefinition {
       ref(simpleDayToken) |
       simpleQuarterToken();
 
-  Parser compoundDayToken() => ref(simpleDayToken) & char('-') & ref(simpleDayToken);
+  Parser compoundDayToken() =>
+      ref(simpleDayToken) & char('-') & ref(simpleDayToken);
   Parser compoundMonthSimpleToken() =>
       ref(simpleMonthToken) & char('-') & ref(simpleMonthToken);
   Parser compoundMonthCodeToken() =>
       ref(simpleMonthCodeToken) & char('-') & ref(simpleMonthCodeToken);
-  Parser compoundMonthToken() => compoundMonthSimpleToken() | compoundMonthCodeToken();
+  Parser compoundMonthToken() =>
+      compoundMonthSimpleToken() | compoundMonthCodeToken();
   Parser compoundRelativeToken() => relativeToken() & relativeToken();
-  Parser compoundToken() => compoundMonthToken() | compoundDayToken() | compoundRelativeToken();
+  Parser compoundToken() =>
+      compoundMonthToken() | compoundDayToken() | compoundRelativeToken();
 
-  Parser relativeToken() => token(char('-') | char('+')) & digit().plus() & letter();
+  Parser relativeToken() =>
+      token(char('-') | char('+')) & digit().plus() & letter();
 
   // compound term needs to be parsed first
   Parser value() => ref(compoundToken) | ref(simpleToken) | ref(relativeToken);
@@ -211,10 +214,10 @@ class TermParserDefinition extends TermGrammarDefinition {
   @override
   Parser compoundRelativeToken() => super.compoundRelativeToken().map((each) {
 //    print(each);
-    var start = (each[0] as Interval).start;
-    var end = (each[1] as Interval).end;
-    return Interval(start, end);
-  });
+        var start = (each[0] as Interval).start;
+        var end = (each[1] as Interval).end;
+        return Interval(start, end);
+      });
 
   @override
   Parser relativeToken() => super.relativeToken().map((each) {
@@ -290,7 +293,6 @@ Map<String, int> _monthCode = {
   'X': 11,
   'Z': 12,
 };
-
 
 Map _monthIdx = {
   'jan': 1,
