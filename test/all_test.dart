@@ -3,6 +3,7 @@ library test_all;
 import 'package:timezone/standalone.dart';
 import 'date_test.dart' as date;
 import 'date_parse_test.dart' as date_parse;
+import 'extensions_test.dart' as ext;
 import 'hour_test.dart' as hour;
 import 'interval_test.dart' as interval;
 import 'month_test.dart' as month;
@@ -18,6 +19,7 @@ void main() async {
 
   date.testDate();
   date_parse.tests();
+  ext.tests();
   hour.hourTest();
   interval.tests();
   month.tests();
