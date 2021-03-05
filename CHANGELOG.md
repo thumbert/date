@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.0 (released 2021-03-06)
+- Prepare for null safety.  This is the last 
+release before null safety.
+- No new features, just internal refactoring  
+
 ## 2.4.0 (released 2020-09-15)
 - Add a Quarter class
 - Add a Term class
