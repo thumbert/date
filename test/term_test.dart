@@ -22,7 +22,7 @@ void tests() {
       var months = term.interval.splitLeft((dt) => Month.fromTZDateTime(dt));
       expect(months.length, 3);
     });
-    test('term is*', (){
+    test('term is*', () {
       expect(Term.parse('3Jun20', location).isOneDay(), true);
       expect(Term.parse('3Jun20', location).isOneMonth(), false);
       expect(Term.parse('3Jun20', location).isDayRange(), false);
@@ -44,6 +44,6 @@ void tests() {
 }
 
 void main() async {
-  await initializeTimeZones();
+  initializeTimeZones();
   tests();
 }

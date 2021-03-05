@@ -17,9 +17,8 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   int year;
   int month;
   int day;
-  int _value; // number of days since origin 1970-01-01
-  int _dayOfWeek;
-  Location location;
+  late int _value; // number of days since origin 1970-01-01
+  int? _dayOfWeek;
 
   /// Default string format is the ISO `yyyy-MM-dd`.
   static final DateFormat _defaultFmt = DateFormat('yyyy-MM-dd');
@@ -27,36 +26,29 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   static final Duration D1 = Duration(days: 1);
 
   /// Construct a [Date] from parts.
-  Date(this.year, this.month, this.day, {this.location})
-      : super(TZDateTime.utc(year, month, day),
-            TZDateTime.utc(year, month, day + 1)) {
+  Date(this.year, this.month, this.day, {required Location location})
+      : super(TZDateTime(location, year, month, day),
+            TZDateTime(location, year, month, day + 1)) {
     _simpleValidation();
     _calcValue();
-    if (location == null) {
-      location = UTC;
-    } else {
-      start = TZDateTime(location, year, month, day);
-      end = TZDateTime(location, year, month, day + 1);
-    }
   }
 
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
   /// datetime.
   Date.fromTZDateTime(TZDateTime datetime)
-      : super(
+      : year = datetime.year,
+        month = datetime.month,
+        day = datetime.day,
+        super(
             TZDateTime(
                 datetime.location, datetime.year, datetime.month, datetime.day),
             TZDateTime(datetime.location, datetime.year, datetime.month,
                 datetime.day + 1)) {
-    year = datetime.year;
-    month = datetime.month;
-    day = datetime.day;
     _calcValue();
-    location = datetime.location;
   }
 
   /// Return today's date.
-  static Date today({Location location}) {
+  static Date today({required Location location}) {
     var now = DateTime.now();
     return Date(now.year, now.month, now.day, location: location);
   }
@@ -64,7 +56,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// Construct a date given the number of days since the origin 1970-01-01.
   /// Can't make this a constructor because I have problems setting the start/end
   /// of the superclass in the correct local timezone.
-  static Date fromJulianDay(int value, {Location location}) {
+  static Date fromJulianDay(int value, {Location? location}) {
     var startZ = DateTime.fromMillisecondsSinceEpoch(1000 * 24 * 3600 * value,
         isUtc: true);
     location = location ?? UTC;
@@ -72,7 +64,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   /// A convenience method to convert Excel dates (origin 1900-01-01)
-  static Date fromExcel(int value, {Location location}) {
+  static Date fromExcel(int value, {Location? location}) {
     var startZ = DateTime.fromMillisecondsSinceEpoch(
         1000 * 24 * 3600 * (value - 25569),
         isUtc: true);
@@ -92,7 +84,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// * mm/dd/yyyy format is accepted,
   /// * ddMMMyy format is accepted.
   static Date parse(String input,
-      {Location location, @deprecated DateFormat fmt}) {
+      {Location? location, @deprecated DateFormat? fmt}) {
     return parseDate(input, location: location);
   }
 
@@ -107,12 +99,14 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// * yyyy-mm-dd format is accepted
   /// * mm/dd/yyyy format is accepted,
   /// * ddMMMyy format is accepted.
-  static Date tryParse(String input, {Location location}) {
+  static Date? tryParse(String input, {Location? location}) {
     return tryParseDate(input, location: location);
   }
 
   /// julian date
   int get value => _value;
+
+  Location get location => start.location;
 
   /// The calculation to go from the triple (year, month, day) to a Julian
   /// date is taken from the R package
@@ -196,7 +190,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   @override
   bool operator ==(dynamic other) {
     if (other is! Date) return false;
-    Date date = other;
+    var date = other;
     return date._value == _value && location == date.location;
   }
 
@@ -206,7 +200,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// Return the day of the week.  Mon=1, ... Sat=6, Sun=7.
   int get weekday {
     if (_dayOfWeek == null) _calcDayOfWeek();
-    return _dayOfWeek;
+    return _dayOfWeek!;
   }
 
   void _calcDayOfWeek() {
@@ -225,7 +219,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   /// Return the day of the year.  1-Jan is day 1 of the year.
-  int dayOfYear() => value - Date(year, 1, 1).value + 1;
+  int dayOfYear() => value - Date(year, 1, 1, location: UTC).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => weekday >= 6 ? true : false;
@@ -248,7 +242,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   List<Hour> hours() => splitLeft((dt) => Hour.beginning(dt)).cast<Hour>();
 
   @override
-  String toString([DateFormat fmt]) {
+  String toString([DateFormat? fmt]) {
     fmt ??= _defaultFmt;
     return fmt.format(DateTime(year, month, day));
   }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0 (released 2021-03-06)
+- Moved the package to null safety
+- Breaking change in Date, Month, Quarter have now the timezone location 
+  argument required non-null.  Could not retain the existing behavior. 
+
 ## 2.5.0 (released 2021-03-06)
 - Prepare for null safety.  This is the last 
 release before null safety.

@@ -6,7 +6,7 @@ import 'package:timezone/timezone.dart';
 import 'term_parse.dart';
 
 class Term {
-  Interval _interval;
+  late Interval _interval;
 
   /// A simple interval for a period between two dates, end date inclusive.
   Term(Date start, Date end) {
@@ -14,7 +14,7 @@ class Term {
   }
 
   Term.parse(String x, Location location) {
-    _interval = parseTerm(x, tzLocation: location);
+    _interval = parseTerm(x, tzLocation: location)!;
   }
 
   Term.fromInterval(Interval interval) {
@@ -41,7 +41,7 @@ class Term {
         Date(year + offset, _end.month, _end.day, location: _end.location);
     return Term(newStart, newEnd);
   }
-  
+
   List<Date> days() => _interval.splitLeft((dt) => Date.fromTZDateTime(dt));
 
   List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
@@ -55,24 +55,31 @@ class Term {
   bool isOneDay() {
     return interval.end.difference(interval.start).inDays == 1;
   }
+
   bool isDayRange() {
     return !isOneDay() && !isOneMonth() && !isMonthRange();
   }
+
   bool isOneMonth() {
     var mStart = Month.fromTZDateTime(interval.start);
     var mEnd = Month.fromTZDateTime(interval.end);
-    return isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.start) && mStart == mEnd.previous;
+    return isBeginningOfMonth(interval.start) &&
+        isBeginningOfMonth(interval.start) &&
+        mStart == mEnd.previous;
   }
+
   bool isMonthRange() {
     var mStart = Month.fromTZDateTime(interval.start);
     var mEnd = Month.fromTZDateTime(interval.end);
-    return isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.end) && mStart != mEnd.previous;
+    return isBeginningOfMonth(interval.start) &&
+        isBeginningOfMonth(interval.end) &&
+        mStart != mEnd.previous;
   }
 
   @override
   bool operator ==(dynamic other) {
     if (other is! Term) return false;
-    Term term = other;
+    var term = other;
     return _interval == term._interval;
   }
 

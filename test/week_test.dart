@@ -92,9 +92,9 @@ void tests() {
       expect(Week.weekOfYear(TZDateTime(location, 2008, 12, 28)), 52);
       expect(Week.weekOfYear(TZDateTime(location, 2008, 12, 29)), 1);
     });
-    test('toString', (){
-      expect(Week(2020,1,location).toString(), '2020-W01');
-      expect(Week(2020,53,location).toString(), '2020-W53');
+    test('toString', () {
+      expect(Week(2020, 1, location).toString(), '2020-W01');
+      expect(Week(2020, 53, location).toString(), '2020-W53');
     });
     test('equality', () {
       expect(Week(2020, 1, UTC), Week(2020, 1, UTC));
@@ -104,7 +104,7 @@ void tests() {
       expect(Week(2020, 1, UTC).previous, Week(2019, 52, UTC));
       expect(Week(2021, 1, UTC).previous, Week(2020, 53, UTC));
     });
-    test('before and after', (){
+    test('before and after', () {
       expect(Week(2020, 2, UTC).isAfter(Week(2020, 1, UTC)), true);
       expect(Week(2020, 2, UTC).isBefore(Week(2020, 1, UTC)), false);
       expect(Week(2020, 1, UTC).isBefore(Week(2020, 1, UTC)), false);
@@ -123,8 +123,7 @@ void tests() {
   });
 }
 
-
 void main() async {
-  await initializeTimeZones();
+  initializeTimeZones();
   tests();
 }

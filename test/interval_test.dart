@@ -58,9 +58,10 @@ void tests() {
     test('interval equality', () {
       var termInterval = Term.parse('Mar19', location).interval;
       var march = Month(2019, 3, location: location);
-      expect(termInterval == march, true);  // OK, march is an Interval
-      expect(march == termInterval, false);  // term interval is NOT a Month
-      expect(march.toInterval() == termInterval, true); // OK to compare intervals
+      expect(termInterval == march, true); // OK, march is an Interval
+      expect(march == termInterval, false); // term interval is NOT a Month
+      expect(
+          march.toInterval() == termInterval, true); // OK to compare intervals
     });
 
     test('interval abuts', () {
@@ -96,10 +97,10 @@ void tests() {
       expect(i1.containsInterval(i4), true);
     });
     test('adjacent intervals', () {
-      var i1 = parseTerm('Jan19');
-      var i2 = parseTerm('Feb19');
+      var i1 = parseTerm('Jan19')!;
+      var i2 = parseTerm('Feb19')!;
       expect(i1.abuts(i2), true);
-      expect(i1.abuts(parseTerm('Mar19')), false);
+      expect(i1.abuts(parseTerm('Mar19')!), false);
     });
     test('overlap of two intervals', () {
       var i1 = Interval(
@@ -117,13 +118,13 @@ void tests() {
       expect(i3.overlap(i4), i4.overlap(i3));
     });
     test('intervals with no overlap returns null', () {
-      var i1 = parseTerm('1Jan19-5Jan19');
-      var i2 = parseTerm('15Jan19-25Jan19');
+      var i1 = parseTerm('1Jan19-5Jan19')!;
+      var i2 = parseTerm('15Jan19-25Jan19')!;
       expect(i1.overlap(i2), null);
     });
     test('overlap of two adjacent intervals returns null', () {
-      var i1 = parseTerm('Jan19');
-      var i2 = parseTerm('Feb19');
+      var i1 = parseTerm('Jan19')!;
+      var i2 = parseTerm('Feb19')!;
       expect(i1.overlap(i2), null);
     });
 
@@ -134,12 +135,12 @@ void tests() {
     });
 
     test('hour iterator', () {
-      var term = Interval(TZDateTime(UTC, 2020, 1, 2),
-          TZDateTime(UTC, 2020, 1, 2, 5));
+      var term =
+          Interval(TZDateTime(UTC, 2020, 1, 2), TZDateTime(UTC, 2020, 1, 2, 5));
       var hIter = term.hourIterator;
       hIter.moveNext();
       expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2)));
-      while(hIter.moveNext()) {}
+      while (hIter.moveNext()) {}
       expect(hIter.current, Hour.beginning(TZDateTime(UTC, 2020, 1, 2, 4)));
     });
 
@@ -149,10 +150,10 @@ void tests() {
       var hIter = term.hourIterator;
       hIter.moveNext();
       expect(hIter.current, Hour.beginning(TZDateTime(location, 2020, 1, 2)));
-      while(hIter.moveNext()) {}
-      expect(hIter.current, Hour.beginning(TZDateTime(location, 2020, 1, 2, 4)));
+      while (hIter.moveNext()) {}
+      expect(
+          hIter.current, Hour.beginning(TZDateTime(location, 2020, 1, 2, 4)));
     });
-
 
     test('calculate the covering of several intervals', () {
       var i1 = Interval(
@@ -167,11 +168,11 @@ void tests() {
     });
 
     test('fuse intervals, 1', () {
-      var d1 = Date(2019, 1, 1);
-      var d2 = Date(2019, 1, 2);
-      var d3 = Date(2019, 1, 3);
-      var d4 = Date(2019, 1, 7);
-      var d5 = Date(2019, 1, 8);
+      var d1 = Date(2019, 1, 1, location: UTC);
+      var d2 = Date(2019, 1, 2, location: UTC);
+      var d3 = Date(2019, 1, 3, location: UTC);
+      var d4 = Date(2019, 1, 7, location: UTC);
+      var d5 = Date(2019, 1, 8, location: UTC);
       var res = Interval.fuse([d1, d2, d3, d4, d5]);
       expect(res, [
         parseTerm('1Jan19-3Jan19'),
@@ -180,57 +181,57 @@ void tests() {
     });
 
     test('fuse intervals, 2', () {
-      var d1 = Date(2019, 1, 1);
-      var d2 = Date(2019, 1, 2);
-      var d3 = Date(2019, 1, 3);
-      var d4 = Date(2019, 1, 4);
-      var d5 = Date(2019, 1, 8);
+      var d1 = Date(2019, 1, 1, location: UTC);
+      var d2 = Date(2019, 1, 2, location: UTC);
+      var d3 = Date(2019, 1, 3, location: UTC);
+      var d4 = Date(2019, 1, 4, location: UTC);
+      var d5 = Date(2019, 1, 8, location: UTC);
       var res = Interval.fuse([d1, d2, d3, d4, d5]);
       expect(res, [
         parseTerm('1Jan19-4Jan19'),
-        Date(2019, 1, 8),
+        Date(2019, 1, 8, location: UTC),
       ]);
     });
 
     test('difference 2 intervals adjacent', () {
-      var m1 = parseTerm('Jan19');
+      var m1 = parseTerm('Jan19')!;
       var m2 = parseTerm('Feb19');
-      expect(m1.difference([m2]), [m1]);
+      expect(m1.difference([m2!]), [m1]);
     });
     test('difference 1 interval, middle overlap', () {
-      var one = parseTerm('1Jan19-5Jan19');
-      expect(one.difference([parseTerm('2Jan19-3Jan19')]), [
+      var one = parseTerm('1Jan19-5Jan19')!;
+      expect(one.difference([parseTerm('2Jan19-3Jan19')!]), [
         Interval(TZDateTime.utc(2019), TZDateTime.utc(2019, 1, 2)),
         parseTerm('4Jan19-5Jan19')
       ]);
     });
     test('difference 1 interval, all overlap', () {
-      var one = parseTerm('1Jan19-5Jan19');
-      expect(one.difference([parseTerm('3Mar19-10Mar19')]), [one]);
+      var one = parseTerm('1Jan19-5Jan19')!;
+      expect(one.difference([parseTerm('3Mar19-10Mar19')!]), [one]);
     });
     test('difference 1 interval, left overlap', () {
-      var one = parseTerm('1Jan19-5Jan19');
-      expect(one.difference([parseTerm('3Jan19-18Jan19')]), [
+      var one = parseTerm('1Jan19-5Jan19')!;
+      expect(one.difference([parseTerm('3Jan19-18Jan19')!]), [
         Interval(TZDateTime.utc(2019), TZDateTime.utc(2019, 1, 3)),
       ]);
     });
     test('difference 1 interval, right overlap', () {
-      var one = parseTerm('1Jan19-5Jan19');
-      expect(one.difference([parseTerm('24Dec18-3Jan19')]), [
+      var one = parseTerm('1Jan19-5Jan19')!;
+      expect(one.difference([parseTerm('24Dec18-3Jan19')!]), [
         Interval(TZDateTime.utc(2019, 1, 4), TZDateTime.utc(2019, 1, 6)),
       ]);
     });
     test('difference 1 interval, no difference', () {
-      var one = parseTerm('1Jan19-5Jan19');
-      expect(one.difference([parseTerm('24Dec18-13Jan19')]), []);
+      var one = parseTerm('1Jan19-5Jan19')!;
+      expect(one.difference([parseTerm('24Dec18-13Jan19')!]), []);
     });
     test('difference multiple intervals', () {
       var one = parseTerm('1Jan19-5Jan19');
       var two = parseTerm('8Jan19-11Jan19');
       var three = parseTerm('14Jan19-18Jan19');
       var four = parseTerm('20Jan19-22Jan19');
-      var interval = parseTerm('3Jan19-15Jan19');
-      var res = interval.difference([one, two, three, four]);
+      var interval = parseTerm('3Jan19-15Jan19')!;
+      var res = interval.difference([one!, two!, three!, four!]);
       expect(res, [
         parseTerm('6Jan19-7Jan19'),
         parseTerm('12Jan19-13Jan19'),
@@ -239,30 +240,30 @@ void tests() {
 
     test('union, non overlapping intervals', () {
       var xs = [
-        Date(2019, 1, 1),
-        Date(2019, 1, 2),
-        Date(2019, 1, 4),
+        Date(2019, 1, 1, location: UTC),
+        Date(2019, 1, 2, location: UTC),
+        Date(2019, 1, 4, location: UTC),
       ];
-      expect(
-          Interval.union(xs), [parseTerm('1Jan19-2Jan19'), Date(2019, 1, 4)]);
+      expect(Interval.union(xs),
+          [parseTerm('1Jan19-2Jan19'), Date(2019, 1, 4, location: UTC)]);
     });
 
     test('union, some overlapping intervals', () {
-      var xs = [
-        Date(2019, 1, 3),
-        parseTerm('1Jan19-3Jan19'),
-        Date(2019, 1, 5),
+      var xs = <Interval>[
+        Date(2019, 1, 3, location: UTC),
+        parseTerm('1Jan19-3Jan19')!,
+        Date(2019, 1, 5, location: UTC),
       ];
-      expect(
-          Interval.union(xs), [parseTerm('1Jan19-3Jan19'), Date(2019, 1, 5)]);
+      expect(Interval.union(xs),
+          [parseTerm('1Jan19-3Jan19'), Date(2019, 1, 5, location: UTC)]);
     });
 
     test('union, more overlapping intervals', () {
-      var xs = [
-        Date(2019, 1, 5),
-        parseTerm('1Jan19-3Jan19'),
-        parseTerm('4Jan19-5Jan19'),
-        Date(2019, 1, 4),
+      var xs = <Interval>[
+        Date(2019, 1, 5, location: UTC),
+        parseTerm('1Jan19-3Jan19')!,
+        parseTerm('4Jan19-5Jan19')!,
+        Date(2019, 1, 4, location: UTC),
       ];
       expect(Interval.union(xs), [parseTerm('1Jan19-5Jan19')]);
     });
@@ -320,7 +321,7 @@ void tests() {
       expect(res.length, 36);
     });
     test('Split 1 month into days using splitLeft', () {
-      var interval = Month(2017, 3);
+      var interval = Month(2017, 3, location: UTC);
       var days = interval.splitLeft((dt) => Date.fromTZDateTime(dt));
       expect(days.length, 31);
     });
@@ -360,5 +361,5 @@ void tests() {
 
 void main() async {
   await initializeTimeZone();
-  await tests();
+  tests();
 }

@@ -4,8 +4,8 @@ import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
 class Interval implements Comparable<Interval> {
-  TZDateTime start;
-  TZDateTime end;
+  late TZDateTime start;
+  late TZDateTime end;
 
   /// An implementation of a time interval. The interval is ClosedOpen [start, end).
   /// The [start] and the [end] should be in the same time zone location.
@@ -160,7 +160,7 @@ class Interval implements Comparable<Interval> {
 
   /// Return the overlap between two intervals.  If there is no overlap,
   /// or if the two intervals are adjoining, return [null].
-  Interval overlap(Interval other) {
+  Interval? overlap(Interval other) {
     TZDateTime iStart;
     if (start.isBefore(other.start)) {
       iStart = other.start;
@@ -182,7 +182,7 @@ class Interval implements Comparable<Interval> {
   @override
   bool operator ==(dynamic other) {
     if (other is! Interval) return false;
-    Interval interval = other;
+    var interval = other;
     return start == interval.start && end == interval.end;
   }
 
@@ -228,14 +228,14 @@ class Interval implements Comparable<Interval> {
 
   /// Create a new interval ending with the specified end instant.
   /// If [end] is not specified, it means now.
-  Interval withEnd([TZDateTime end]) {
+  Interval withEnd([TZDateTime? end]) {
     end ??= TZDateTime.now(this.end.location);
     return Interval(start, end);
   }
 
   /// Create a new interval with the specified start instant.
   /// If [start] is not specified, it means now.
-  Interval withStart([TZDateTime start]) {
+  Interval withStart([TZDateTime? start]) {
     start ??= TZDateTime.now(this.start.location);
     return Interval(start, end);
   }
@@ -260,7 +260,8 @@ class Interval implements Comparable<Interval> {
 }
 
 class _HourIterator extends Iterator<Hour> {
-  TZDateTime start, end, _current;
+  TZDateTime start, end;
+  TZDateTime? _current;
   static const h1 = Duration(hours: 1);
 
   _HourIterator(this.start, this.end) {
@@ -278,7 +279,7 @@ class _HourIterator extends Iterator<Hour> {
       _current = start;
       return true;
     } else {
-      var candidate = _current.add(h1);
+      var candidate = _current!.add(h1);
       var res = candidate.isBefore(end);
       if (res) {
         _current = candidate;
@@ -288,5 +289,5 @@ class _HourIterator extends Iterator<Hour> {
   }
 
   @override
-  Hour get current => Hour.beginning(_current);
+  Hour get current => Hour.beginning(_current!);
 }

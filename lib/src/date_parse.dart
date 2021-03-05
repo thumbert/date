@@ -10,7 +10,7 @@ final DateParser _parser = DateParser();
 /// Supported tokens are:
 /// <p>'5Jan18', '5Jan2018', '20180105', '2018-01-05', '1/5/2018',
 ///
-Date parseDate(String term, {Location location}) {
+Date parseDate(String term, {Location? location}) {
   location ??= UTC;
   var res = _parser.parse(term);
   if (res.isFailure) {
@@ -20,7 +20,7 @@ Date parseDate(String term, {Location location}) {
   return Date(date.year, date.month, date.day, location: location);
 }
 
-Date tryParseDate(String term, {Location location}) {
+Date? tryParseDate(String term, {Location? location}) {
   location ??= UTC;
   var res = _parser.parse(term);
   if (res.isFailure) {
@@ -147,24 +147,24 @@ class DateParserDefinition extends DateGrammarDefinition {
 
   @override
   Parser dMMMyyToken() => super.dMMMyyToken().map((each) {
-        return Date(_toYear(each[4]), _toMonth(each[2]), int.parse(each[0]));
+        return Date(_toYear(each[4]), _toMonth(each[2])!, int.parse(each[0]), location: UTC);
       });
   @override
   Parser mdyyyyToken() => super.mdyyyyToken().map((each) {
-        return Date(_toYear(each[4]), int.parse(each[0]), int.parse(each[2]));
+        return Date(_toYear(each[4]), int.parse(each[0]), int.parse(each[2]), location: UTC);
       });
   @override
   Parser yyyymmddToken() => super.yyyymmddToken().map((each) {
         var year = int.parse(each[0]);
         var mon = int.parse(each[2]);
         var day = int.parse(each[4]);
-        return Date(year, mon, day);
+        return Date(year, mon, day, location: UTC);
       });
 }
 
 /// Convert a month token to a month value.
-int _toMonth(String m) {
-  int mIdx;
+int? _toMonth(String m) {
+  int? mIdx;
   if (m.length == 3) {
     mIdx = _monthIdx[m.toLowerCase()];
   } else {

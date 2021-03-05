@@ -7,11 +7,11 @@ import 'interval.dart';
 
 class Week extends Interval implements TimeOrdering<Week> {
   int year;
-  int week;
+  late int week;
   Location location;
 
   static final Duration _1W = Duration(days: 7);
-  int _value;
+  late int _value;
 
   /// ISO 8601 week
   /// see https://en.wikipedia.org/wiki/ISO_8601#Week_dates
@@ -20,18 +20,16 @@ class Week extends Interval implements TimeOrdering<Week> {
   Week(this.year, this.week, this.location)
       : super(TZDateTime(location, year), TZDateTime(location, year)) {
     _value = 100 * year + week;
-    location ??= UTC;
     start = weekStart(year, week, location);
     end = Date.fromTZDateTime(start).add(7).start;
   }
 
   /// Implement https://en.wikipedia.org/wiki/ISO_week_date#Calculating_the_week_number_from_a_month_and_day_of_the_month_or_ordinal_date
   Week.fromTZDateTime(TZDateTime datetime)
-      : super(TZDateTime(datetime.location, datetime.year),
+      : year = datetime.year,
+        location = datetime.location,
+        super(TZDateTime(datetime.location, datetime.year),
             TZDateTime(datetime.location, datetime.year)) {
-    year = datetime.year;
-    location = datetime.location;
-
     var doy = dayOfYear(year, datetime.month, datetime.day);
     var res = (doy - datetime.weekday + 10) ~/ 7;
     if (res == 0) {
@@ -112,7 +110,7 @@ class Week extends Interval implements TimeOrdering<Week> {
   @override
   bool operator ==(dynamic other) {
     if (other is! Week) return false;
-    Week week = other;
+    var week = other;
     return _value == week._value && location == week.location;
   }
 

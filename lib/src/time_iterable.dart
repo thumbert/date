@@ -6,7 +6,7 @@ import 'time_ordering.dart';
 
 @Deprecated('Not really needed.  To be removed in version 3.0.0')
 class TimeIterable<E extends ComparableWithAdd<E>> extends Object
-    with IterableMixin<E> {
+    with IterableMixin<E?> {
   E start;
   E end;
   int step;
@@ -24,14 +24,14 @@ class TimeIterable<E extends ComparableWithAdd<E>> extends Object
       throw 'End is before start and step is positive!';
   }
 
-  Iterator<E> get iterator => new TimeIterator<E>(start, end, step: step);
+  Iterator<E?> get iterator => new TimeIterator<E>(start, end, step: step);
 }
 
 /// An iterator for time interval objects.  The type [E] needs to have an [add] method.
-class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E> {
-  E _current, start, end;
+class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E?> {
+  E? _current, start, end;
   int step;
-  Function _isDone;
+  late Function _isDone;
 
   TimeIterator(E this.start, E this.end, {int this.step: 1}) {
     if (step > 0) {
@@ -48,12 +48,12 @@ class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E> {
     if (_current == null) {
       _current = start;
     } else {
-      _current = _current.add(step);
+      _current = _current!.add(step);
       if (_isDone(_current)) res = false;
     }
 
     return res;
   }
 
-  E get current => _current;
+  E? get current => _current;
 }

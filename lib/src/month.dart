@@ -13,13 +13,13 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   /// between Jan=1 to Dec=12
   int month;
-  int _value;
+  late int _value;
   Location location;
 
   static final DateFormat _defaultFmt = DateFormat('MMMyy');
   static final DateFormat _isoFmt = DateFormat('yyyy-MM');
 
-  static Month current({DateTime datetime, Location location}) {
+  static Month current({DateTime? datetime, Location? location}) {
     datetime ??= DateTime.now();
     location ??= UTC;
     return Month(datetime.year, datetime.month, location: location);
@@ -29,31 +29,26 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   /// The default timezone is UTC.
   /// Specify the timezone for the month
   /// if you want to split/aggregate months.
-  Month(this.year, this.month, {this.location})
-      : super(TZDateTime.utc(year, month), TZDateTime.utc(year, month + 1)) {
+  Month(this.year, this.month, {required this.location})
+      : super(TZDateTime(location, year, month),
+            TZDateTime(location, year, month + 1)) {
     _value = year * 12 + month;
-    if (location == null) {
-      location = UTC;
-    } else {
-      start = TZDateTime(location, year, month);
-      end = TZDateTime(location, year, month + 1);
-    }
   }
 
   /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
   static Month parse(String s,
-      {@deprecated DateFormat fmt, Location location}) {
+      {@deprecated DateFormat? fmt, Location? location}) {
     return parseMonth(s, location: location);
   }
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
-      : super(TZDateTime(datetime.location, datetime.year, datetime.month),
+      : year = datetime.year,
+        month = datetime.month,
+        location = datetime.location,
+        super(TZDateTime(datetime.location, datetime.year, datetime.month),
             TZDateTime(datetime.location, datetime.year, datetime.month + 1)) {
     _value = datetime.year * 12 + datetime.month;
-    year = datetime.year;
-    month = datetime.month;
-    location = datetime.location;
   }
 
   int _calcYear(int x) => (x - 1) ~/ 12;
@@ -139,7 +134,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   @override
   bool operator ==(dynamic other) {
     if (other is! Month) return false;
-    Month month = other;
+    var month = other;
     return _value == month._value && location == month.location;
   }
 
@@ -151,7 +146,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   /// Format a month.  The default format is MMMyy.
   @override
-  String toString([DateFormat fmt]) {
+  String toString([DateFormat? fmt]) {
     fmt ??= _defaultFmt;
     return fmt.format(start);
   }

@@ -25,12 +25,12 @@ final TermParser _parser = TermParser();
 /// <p>If the tzLocation is not specified, return the interval in UTC timezone,
 /// otherwise, return the interval in the time zone specified.
 /// Throws an [ArgumentError] if the parsing fails.
-Interval parseTerm(String term, {Location tzLocation}) {
+Interval? parseTerm(String term, {Location? tzLocation}) {
   var res = _parser.parse(term);
   if (res.isFailure) throw ArgumentError('Couldn\'t parse term $term.');
-  var interval = res.value as Interval;
+  var interval = res.value as Interval?;
   if (tzLocation != null) {
-    var start = interval.start;
+    var start = interval!.start;
     var end = interval.end;
     interval = Interval(
         TZDateTime(tzLocation, start.year, start.month, start.day),
@@ -166,17 +166,19 @@ class TermParserDefinition extends TermGrammarDefinition {
 
   @override
   Parser simpleMonthToken() => super.simpleMonthToken().map((each) {
-        return Month(_toYear(each[1]), _toMonth(each[0]));
+        return Month(_toYear(each[1]), _toMonth(each[0])!, location: UTC);
       });
   @override
   Parser simpleMonthCodeToken() => super.simpleMonthCodeToken().map((each) {
         return Month(
-            _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]);
+            _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]!,
+            location: UTC);
       });
 
   @override
   Parser simpleDayToken() => super.simpleDayToken().map((each) {
-        return Date(_toYear(each[2]), _toMonth(each[1]), int.parse(each[0]));
+        return Date(_toYear(each[2]), _toMonth(each[1])!, int.parse(each[0]),
+            location: UTC);
       });
   @override
   Parser simpleQuarterToken() => super.simpleQuarterToken().map((each) {
@@ -225,9 +227,7 @@ class TermParserDefinition extends TermGrammarDefinition {
         Interval res;
         var start = Date.today(location: UTC);
         Date end;
-        var aux = []
-          ..add(each[0])
-          ..addAll(each[1] as List);
+        var aux = [each[0], ...each[1] as List];
         var step = int.parse(aux.join());
         String unit = each[2];
         if (unit.toLowerCase() == 'm') {
@@ -252,8 +252,8 @@ class TermParserDefinition extends TermGrammarDefinition {
 }
 
 /// Convert a month token to a month value.
-int _toMonth(String m) {
-  int mIdx;
+int? _toMonth(String m) {
+  int? mIdx;
   if (m.length == 3) {
     mIdx = _monthIdx[m.toLowerCase()];
   } else {

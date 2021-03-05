@@ -6,11 +6,10 @@ import 'package:timezone/timezone.dart';
 
 final MonthParser _parser = MonthParser();
 
-
 /// Parse a limited number of String inputs into a month term using a parser.
 /// Supported tokens are:
 /// <p>'Jan18', 'January 2018', 'Jan 2018', 'F18', '2018-01', '201801'
-Month parseMonth(String term, {Location location}) {
+Month parseMonth(String term, {Location? location}) {
   location ??= UTC;
   var res = _parser.parse(term);
   Month month = res.value;
@@ -30,75 +29,83 @@ class MonthGrammarDefinition extends GrammarDefinition {
   Parser simpleMonthToken() => ref(monthToken) & ref(yearToken);
   Parser simpleMonthCodeToken() => token(letter() & digit() & digit());
   Parser simpleToken() =>
-      ref(simpleMonthToken) |
-      ref(simpleMonthCodeToken) |
-      yyyymmToken();
+      ref(simpleMonthToken) | ref(simpleMonthCodeToken) | yyyymmToken();
 
   Parser value() => ref(simpleToken);
 
   Parser monthToken() =>
-    jan() | feb() | mar() | apr() | 
-    may() | jun() | jul() | aug() |
-    sep() | oct() | nov() | dec();
+      jan() |
+      feb() |
+      mar() |
+      apr() |
+      may() |
+      jun() |
+      jul() |
+      aug() |
+      sep() |
+      oct() |
+      nov() |
+      dec();
   Parser yearToken() => token(digit().repeat(2, 4));
-  Parser yyyymmToken() => token(digit().repeat(4,4) & char('-').optional() & digit().repeat(2, 2));
+  Parser yyyymmToken() =>
+      token(digit().repeat(4, 4) & char('-').optional() & digit().repeat(2, 2));
 
   Parser jan() => token(string('January') |
-  string('JANUARY') |
-  string('Jan') |
-  string('JAN') |
-  string('jan'));
+      string('JANUARY') |
+      string('Jan') |
+      string('JAN') |
+      string('jan'));
   Parser feb() => token(string('February') |
-  string('FEBRUARY') |
-  string('feb') |
-  string('Feb') |
-  string('FEB'));
+      string('FEBRUARY') |
+      string('feb') |
+      string('Feb') |
+      string('FEB'));
   Parser mar() => token(string('March') |
-  string('MARCH') |
-  string('mar') |
-  string('Mar') |
-  string('MAR'));
+      string('MARCH') |
+      string('mar') |
+      string('Mar') |
+      string('MAR'));
   Parser apr() => token(string('April') |
-  string('APRIL') |
-  string('apr') |
-  string('Apr') |
-  string('APR'));
+      string('APRIL') |
+      string('apr') |
+      string('Apr') |
+      string('APR'));
   Parser may() => token(string('May') | string('MAY') | string('may'));
   Parser jun() => token(string('June') |
-  string('JUNE') |
-  string('jun') |
-  string('Jun') |
-  string('JUN'));
+      string('JUNE') |
+      string('jun') |
+      string('Jun') |
+      string('JUN'));
   Parser jul() => token(string('July') |
-  string('JULY') |
-  string('jul') |
-  string('Jul') |
-  string('JUL'));
+      string('JULY') |
+      string('jul') |
+      string('Jul') |
+      string('JUL'));
   Parser aug() => token(string('August') |
-  string('AUGUST') |
-  string('aug') |
-  string('Aug') |
-  string('AUG'));
+      string('AUGUST') |
+      string('aug') |
+      string('Aug') |
+      string('AUG'));
   Parser sep() => token(string('September') |
-  string('SEPTEMBER') |
-  string('sep') |
-  string('Sep') |
-  string('SEP'));
+      string('SEPTEMBER') |
+      string('sep') |
+      string('Sep') |
+      string('SEP'));
   Parser oct() => token(string('October') |
-  string('OCTOBER') |
-  string('oct') |
-  string('Oct') |
-  string('OCT'));
+      string('OCTOBER') |
+      string('oct') |
+      string('Oct') |
+      string('OCT'));
   Parser nov() => token(string('November') |
-  string('NOVEMBER') |
-  string('nov') |
-  string('Nov') |
-  string('NOV'));
+      string('NOVEMBER') |
+      string('nov') |
+      string('Nov') |
+      string('NOV'));
   Parser dec() => token(string('December') |
-  string('DECEMBER') |
-  string('dec') |
-  string('Dec') |
-  string('DEC'));
+      string('DECEMBER') |
+      string('dec') |
+      string('Dec') |
+      string('DEC'));
 }
 
 /// Parse a term
@@ -112,27 +119,26 @@ class MonthParserDefinition extends MonthGrammarDefinition {
 
   @override
   Parser simpleMonthToken() => super.simpleMonthToken().map((each) {
-    return Month(_toYear(each[1]), _toMonth(each[0]));
-  });
+        return Month(_toYear(each[1]), _toMonth(each[0])!, location: UTC);
+      });
   @override
   Parser simpleMonthCodeToken() => super.simpleMonthCodeToken().map((each) {
-    return Month(
-        _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]);
-  });
+        return Month(
+            _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]!,
+            location: UTC);
+      });
   @override
   Parser yyyymmToken() => super.yyyymmToken().map((each) {
-    var n = each.length;
-    var year = int.parse(each.substring(0,4));
-    var mon = int.parse(each.substring(n-2,n));
-    return Month(year, mon);
-  });
-
+        var n = each.length;
+        var year = int.parse(each.substring(0, 4));
+        var mon = int.parse(each.substring(n - 2, n));
+        return Month(year, mon, location: UTC);
+      });
 }
 
-
 /// Convert a month token to a month value.
-int _toMonth(String m) {
-  int mIdx;
+int? _toMonth(String m) {
+  int? mIdx;
   if (m.length == 3) {
     mIdx = _monthIdx[m.toLowerCase()];
   } else {
@@ -172,8 +178,6 @@ Map<String, int> _monthCode = {
   'X': 11,
   'Z': 12,
 };
-
-
 
 Map _monthIdx = {
   'jan': 1,

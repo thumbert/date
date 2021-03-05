@@ -8,27 +8,26 @@ import 'interval.dart';
 
 class Quarter extends Interval implements TimeOrdering<Quarter> {
   int year;
-  int quarter;
+  late int quarter;
   Location location;
 
-  int _value;
+  late int _value;
   static final isoFormat = DateFormat('yyyy-QQQ');
   static final format = DateFormat('QQQ, yyyy');
 
   /// There is no ISO standard
-  Quarter(this.year, this.quarter, {this.location})
+  Quarter(this.year, this.quarter, {required this.location})
       : super(TZDateTime.utc(year), TZDateTime.utc(year)) {
     _value = 100 * year + (quarter - 1) * 25;
-    location ??= UTC;
     start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
     end = Month.fromTZDateTime(start).add(2).end;
   }
 
   Quarter.fromTZDateTime(TZDateTime datetime)
-      : super(TZDateTime(datetime.location, datetime.year),
+      : year = datetime.year,
+        location = datetime.location,
+        super(TZDateTime(datetime.location, datetime.year),
             TZDateTime(datetime.location, datetime.year)) {
-    year = datetime.year;
-    location = datetime.location;
     var month = datetime.month;
     quarter = month ~/ 3 + 1;
 
@@ -76,7 +75,7 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
   List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt));
 
   @override
-  String toString({DateFormat fmt}) {
+  String toString({DateFormat? fmt}) {
     fmt ??= isoFormat;
     return fmt.format(start);
   }
@@ -84,7 +83,7 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
   @override
   bool operator ==(dynamic other) {
     if (other is! Quarter) return false;
-    Quarter quarter = other;
+    var quarter = other;
     return _value == quarter._value && location == quarter.location;
   }
 
