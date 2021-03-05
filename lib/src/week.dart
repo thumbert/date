@@ -12,7 +12,6 @@ class Week extends Interval implements TimeOrdering<Week> {
 
   static final Duration _1W = Duration(days: 7);
   int _value;
-  TZDateTime _start, _end;
 
   /// ISO 8601 week
   /// see https://en.wikipedia.org/wiki/ISO_8601#Week_dates
@@ -20,15 +19,16 @@ class Week extends Interval implements TimeOrdering<Week> {
   /// So prefer the [Week.fromTZDateTime] constructor.
   Week(this.year, this.week, this.location)
       : super(TZDateTime(location, year), TZDateTime(location, year)) {
-    _value = 100*year + week;
+    _value = 100 * year + week;
     location ??= UTC;
-    _start = weekStart(year, week, location);
-    _end = Date.fromTZDateTime(_start).add(7).start;
+    start = weekStart(year, week, location);
+    end = Date.fromTZDateTime(start).add(7).start;
   }
 
   /// Implement https://en.wikipedia.org/wiki/ISO_week_date#Calculating_the_week_number_from_a_month_and_day_of_the_month_or_ordinal_date
   Week.fromTZDateTime(TZDateTime datetime)
-      : super(TZDateTime(datetime.location, datetime.year), TZDateTime(datetime.location, datetime.year)){
+      : super(TZDateTime(datetime.location, datetime.year),
+            TZDateTime(datetime.location, datetime.year)) {
     year = datetime.year;
     location = datetime.location;
 
@@ -45,43 +45,37 @@ class Week extends Interval implements TimeOrdering<Week> {
     } else {
       week = res;
     }
-    _value = 100*year + week;
-    _start = weekStart(year, week, location);
-    _end = Date.fromTZDateTime(_start).add(7).start;
+    _value = 100 * year + week;
+    start = weekStart(year, week, location);
+    end = Date.fromTZDateTime(start).add(7).start;
   }
-
-
 
   /// Parse the ISO format yyyy-Www or yyyyWww
   static Week parse(String x, Location location) {
-    var year = int.parse(x.substring(0,4));
+    var year = int.parse(x.substring(0, 4));
     var offset = 0;
     if (x[4] == '-') offset += 1;
-    var week = int.parse(x.substring(5+offset));
+    var week = int.parse(x.substring(5 + offset));
     return Week(year, week, location);
   }
 
-  @override
-  TZDateTime get start => _start;
-  @override
-  TZDateTime get end => _end;
+  Date get startDate =>
+      Date(start.year, start.month, start.day, location: location);
 
-  Date get startDate => Date(_start.year, _start.month, _start.day, location: location);
+  Week get next => Week.fromTZDateTime(end);
 
-  Week get next => Week.fromTZDateTime(_end);
-
-  Week get previous => Week.fromTZDateTime(_start.subtract(_1W));
+  Week get previous => Week.fromTZDateTime(start.subtract(_1W));
 
   /// Calculate which week of the year this instant belongs to.
   /// Return an [int] between 1 and 52 || 53 depending on the year.
   static int weekOfYear(TZDateTime dt) {
     var date = Date(dt.year, dt.month, dt.day, location: dt.location);
     var w1Start = weekStart(dt.year, 1, dt.location);
-    var w1Start2 = weekStart(dt.year+1, 1, dt.location);
+    var w1Start2 = weekStart(dt.year + 1, 1, dt.location);
     if (!dt.isBefore(w1Start2)) w1Start = w1Start2;
     if (dt.isBefore(w1Start)) {
       // it's last week of the previous year
-      w1Start = weekStart(dt.year-1, 1, dt.location);
+      w1Start = weekStart(dt.year - 1, 1, dt.location);
     }
     var start = Date.fromTZDateTime(w1Start);
     var diff = date.value - start.value;
@@ -89,17 +83,16 @@ class Week extends Interval implements TimeOrdering<Week> {
     return week;
   }
 
-
   /// Return the start of week
   static TZDateTime weekStart(int year, int week, Location location) {
     // do the calculations in UTC, otherwise you get errors
     var boy = TZDateTime.utc(year);
-    if ([5,6,7].contains(boy.weekday)) {
+    if ([5, 6, 7].contains(boy.weekday)) {
       /// on Fri, Sat, Sun => it's on last week of the previous year
       week += 1;
     }
-    var _start = boy.subtract(Duration(days: boy.weekday-1));
-    _start = _start.add(Duration(days: 7*(week-1)));
+    var _start = boy.subtract(Duration(days: boy.weekday - 1));
+    _start = _start.add(Duration(days: 7 * (week - 1)));
     return TZDateTime(location, _start.year, _start.month, _start.day);
   }
 
@@ -126,6 +119,5 @@ class Week extends Interval implements TimeOrdering<Week> {
   @override
   int get hashCode => _value;
 
-  Interval toInterval() => Interval(_start, _end);
-
+  Interval toInterval() => Interval(start, end);
 }

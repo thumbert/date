@@ -190,22 +190,7 @@ int _toYear(String y) {
   return value;
 }
 
-Map<String, int> _monthCode = {
-  'F': 1,
-  'G': 2,
-  'H': 3,
-  'J': 4,
-  'K': 5,
-  'M': 6,
-  'N': 7,
-  'Q': 8,
-  'U': 9,
-  'V': 10,
-  'X': 11,
-  'Z': 12,
-};
-
-Map _monthIdx = {
+const _monthIdx = <String, int>{
   'jan': 1,
   'feb': 2,
   'mar': 3,
@@ -220,7 +205,7 @@ Map _monthIdx = {
   'dec': 12
 };
 
-List _monthNames = [
+const _monthNames = <String>[
   'january',
   'february',
   'march',

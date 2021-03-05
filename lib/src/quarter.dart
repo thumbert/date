@@ -12,7 +12,6 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
   Location location;
 
   int _value;
-  TZDateTime _start, _end;
   static final isoFormat = DateFormat('yyyy-QQQ');
   static final format = DateFormat('QQQ, yyyy');
 
@@ -21,8 +20,8 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
       : super(TZDateTime.utc(year), TZDateTime.utc(year)) {
     _value = 100 * year + (quarter - 1) * 25;
     location ??= UTC;
-    _start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
-    _end = Month.fromTZDateTime(_start).add(2).end;
+    start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
+    end = Month.fromTZDateTime(start).add(2).end;
   }
 
   Quarter.fromTZDateTime(TZDateTime datetime)
@@ -33,9 +32,9 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
     var month = datetime.month;
     quarter = month ~/ 3 + 1;
 
-    _value = 100 * year + (quarter-1) * 25;
-    _start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
-    _end = Month.fromTZDateTime(_start).add(2).end;
+    _value = 100 * year + (quarter - 1) * 25;
+    start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
+    end = Month.fromTZDateTime(start).add(2).end;
   }
 
   /// Parse the "ISO" format yyyy-Qq, yyyyQq or the readable format Qq, yyyy
@@ -47,13 +46,8 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
     return Quarter(year, quarter, location: location);
   }
 
-  @override
-  TZDateTime get start => _start;
-  @override
-  TZDateTime get end => _end;
-
   Date get startDate =>
-      Date(_start.year, _start.month, _start.day, location: location);
+      Date(start.year, start.month, start.day, location: location);
 
   Quarter get next => add(1);
 
@@ -97,5 +91,5 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
   @override
   int get hashCode => _value;
 
-  Interval toInterval() => Interval(_start, _end);
+  Interval toInterval() => Interval(start, end);
 }

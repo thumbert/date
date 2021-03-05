@@ -9,10 +9,12 @@ import 'package:timezone/timezone.dart';
 
 /// Class representing a calendar Month implemented as an Interval.
 class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
+  int year;
+
+  /// between Jan=1 to Dec=12
+  int month;
   int _value;
-  int _year;
-  int _month; // between Jan=1 to Dec=12
-  Location _location;
+  Location location;
 
   static final DateFormat _defaultFmt = DateFormat('MMMyy');
   static final DateFormat _isoFmt = DateFormat('yyyy-MM');
@@ -27,15 +29,14 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   /// The default timezone is UTC.
   /// Specify the timezone for the month
   /// if you want to split/aggregate months.
-  Month(int year, int month, {Location location})
+  Month(this.year, this.month, {this.location})
       : super(TZDateTime.utc(year, month), TZDateTime.utc(year, month + 1)) {
     _value = year * 12 + month;
-    _year = year;
-    _month = month;
     if (location == null) {
-      _location = UTC;
+      location = UTC;
     } else {
-      _location = location;
+      start = TZDateTime(location, year, month);
+      end = TZDateTime(location, year, month + 1);
     }
   }
 
@@ -47,34 +48,25 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
-      : super(TZDateTime.utc(datetime.year, datetime.month),
-            TZDateTime.utc(datetime.year, datetime.month + 1)) {
+      : super(TZDateTime(datetime.location, datetime.year, datetime.month),
+            TZDateTime(datetime.location, datetime.year, datetime.month + 1)) {
     _value = datetime.year * 12 + datetime.month;
-    _year = datetime.year;
-    _month = datetime.month;
-    _location = datetime.location;
+    year = datetime.year;
+    month = datetime.month;
+    location = datetime.location;
   }
 
   int _calcYear(int x) => (x - 1) ~/ 12;
   int _calcMonth(int x) => (x - 1) % 12 + 1;
 
-  Location get location => _location;
-
-  /// Get the datetime corresponding to the beginning of this month.
-  /// The default timezone is UTC unless specified otherwise.
-  @override
-  TZDateTime get start => TZDateTime(location, _year, _month);
-  @override
-  TZDateTime get end => TZDateTime(location, _year, _month + 1);
-
   /// Get the first day of the month.
-  Date get startDate => Date(_year, _month, 1, location: _location);
+  Date get startDate => Date(year, month, 1, location: location);
 
   /// Get the last day of the month.
   Date get endDate => next.startDate.subtract(1);
 
   Month get previous =>
-      Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: _location);
+      Month(_calcYear(_value - 1), _calcMonth(_value - 1), location: location);
 
   /// Return the previous [n] months ending on this month.
   List<Month> previousN(int n) {
@@ -86,7 +78,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   }
 
   Month get next =>
-      Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: _location);
+      Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: location);
 
   /// Return the next [n] months starting on this month.
   List<Month> nextN(int n) {
@@ -135,10 +127,10 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   @override
   Month add(int months) =>
       Month(_calcYear(_value + months), _calcMonth(_value + months),
-          location: _location);
+          location: location);
   Month subtract(int months) =>
       Month(_calcYear(_value - months), _calcMonth(_value - months),
-          location: _location);
+          location: location);
 
   @override
   bool isBefore(Month other) => _value < other._value;
@@ -153,9 +145,6 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   @override
   int get hashCode => _value;
-
-  int get year => _year;
-  int get month => _month;
 
   /// Days of the month as list.
   List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt));

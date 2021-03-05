@@ -4,14 +4,12 @@ import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
 class Interval implements Comparable<Interval> {
-  TZDateTime _start;
-  TZDateTime _end;
+  TZDateTime start;
+  TZDateTime end;
 
   /// An implementation of a time interval. The interval is ClosedOpen [start, end).
   /// The [start] and the [end] should be in the same time zone location.
-  Interval(TZDateTime start, TZDateTime end) {
-    _start = start;
-    _end = end;
+  Interval(this.start, this.end) {
     if (end.isBefore(start)) {
       throw ArgumentError('Start is not before the end DateTime.');
     }
@@ -21,15 +19,13 @@ class Interval implements Comparable<Interval> {
   }
 
   /// Construct an interval of a given [duration] starting at a [start] TZDateTime.
-  Interval.beginning(TZDateTime start, Duration duration) {
-    _start = start;
-    _end = start.add(duration);
+  Interval.beginning(this.start, Duration duration) {
+    end = start.add(duration);
   }
 
   /// Construct an interval of a given [duration] ending at a [start] TZDateTime.
-  Interval.ending(TZDateTime end, Duration duration) {
-    _end = end;
-    _start = end.subtract(duration);
+  Interval.ending(this.end, Duration duration) {
+    start = end.subtract(duration);
   }
 
   /// Find the smallest interval covering all the input intervals.
@@ -93,11 +89,11 @@ class Interval implements Comparable<Interval> {
     return us;
   }
 
-  TZDateTime get start => _start;
-  TZDateTime get end => _end;
+  // TZDateTime get start => _start;
+  // TZDateTime get end => _end;
 
   /// Does this interval abut with the other interval?
-  bool abuts(Interval other) => _start == other.end || _end == other.start;
+  bool abuts(Interval other) => start == other.end || end == other.start;
 
   /// Tests whether this interval contains this Datetime.
   bool containsTime(TZDateTime time) {
@@ -187,7 +183,7 @@ class Interval implements Comparable<Interval> {
   bool operator ==(dynamic other) {
     if (other is! Interval) return false;
     Interval interval = other;
-    return _start == interval.start && _end == interval.end;
+    return start == interval.start && end == interval.end;
   }
 
   /// Sort by start, if the start is identical, sort by end.
@@ -228,7 +224,7 @@ class Interval implements Comparable<Interval> {
   }
 
   @override
-  String toString() => isInstant() ? start.toString() : '[$_start, $end)';
+  String toString() => isInstant() ? start.toString() : '[$start, $end)';
 
   /// Create a new interval ending with the specified end instant.
   /// If [end] is not specified, it means now.
@@ -247,16 +243,21 @@ class Interval implements Comparable<Interval> {
   /// Create a new interval in the specified time zone.  Useful when you just
   /// want to change the time zone location.
   Interval withTimeZone(Location location) {
-    var newStart = TZDateTime(location, start.year, start.month, start.day,
-        start.hour, start.minute, start.second, start.millisecond,
+    var newStart = TZDateTime(
+        location,
+        start.year,
+        start.month,
+        start.day,
+        start.hour,
+        start.minute,
+        start.second,
+        start.millisecond,
         start.microsecond);
-    var newEnd = TZDateTime(location, end.year, end.month, end.day,
-        end.hour, end.minute, end.second, end.millisecond,
-        end.microsecond);
+    var newEnd = TZDateTime(location, end.year, end.month, end.day, end.hour,
+        end.minute, end.second, end.millisecond, end.microsecond);
     return Interval(newStart, newEnd);
   }
 }
-
 
 class _HourIterator extends Iterator<Hour> {
   TZDateTime start, end, _current;

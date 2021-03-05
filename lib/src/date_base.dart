@@ -14,50 +14,51 @@ import 'hour.dart';
 ///A simple Date class.  No worries about the time of the day, time zones, etc.
 ///Days are counted as integers from an origin, set to '1970-01-01'.
 class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
-  int _year;
-  int _month;
-  int _day;
+  int year;
+  int month;
+  int day;
   int _value; // number of days since origin 1970-01-01
   int _dayOfWeek;
-  Location _location;
+  Location location;
 
   /// Default string format is the ISO `yyyy-MM-dd`.
   static final DateFormat _defaultFmt = DateFormat('yyyy-MM-dd');
   static final int _ORIGIN = 2440588; // 1970-01-01 is day zero
   static final Duration D1 = Duration(days: 1);
 
-  /// Return today's date.
-  static Date today({Location location}) {
-    var now = DateTime.now();
-    return Date(now.year, now.month, now.day, location: location);
-  }
-
   /// Construct a [Date] from parts.
-  Date(int year, int month, int day, {Location location})
+  Date(this.year, this.month, this.day, {this.location})
       : super(TZDateTime.utc(year, month, day),
             TZDateTime.utc(year, month, day + 1)) {
-    _year = year;
-    _month = month;
-    _day = day;
     _simpleValidation();
     _calcValue();
     if (location == null) {
-      _location = UTC;
+      location = UTC;
     } else {
-      _location = location;
+      start = TZDateTime(location, year, month, day);
+      end = TZDateTime(location, year, month, day + 1);
     }
   }
 
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
   /// datetime.
   Date.fromTZDateTime(TZDateTime datetime)
-      : super(TZDateTime.utc(datetime.year, datetime.month, datetime.day),
-            TZDateTime.utc(datetime.year, datetime.month, datetime.day + 1)) {
-    _year = datetime.year;
-    _month = datetime.month;
-    _day = datetime.day;
+      : super(
+            TZDateTime(
+                datetime.location, datetime.year, datetime.month, datetime.day),
+            TZDateTime(datetime.location, datetime.year, datetime.month,
+                datetime.day + 1)) {
+    year = datetime.year;
+    month = datetime.month;
+    day = datetime.day;
     _calcValue();
-    _location = datetime.location;
+    location = datetime.location;
+  }
+
+  /// Return today's date.
+  static Date today({Location location}) {
+    var now = DateTime.now();
+    return Date(now.year, now.month, now.day, location: location);
   }
 
   /// Construct a date given the number of days since the origin 1970-01-01.
@@ -110,15 +111,6 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     return tryParseDate(input, location: location);
   }
 
-  /// the year of the date
-  int get year => _year;
-
-  /// month of the year for this date
-  int get month => _month;
-
-  /// day of the month for this date
-  int get day => _day;
-
   /// julian date
   int get value => _value;
 
@@ -127,30 +119,21 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// [chron](http://CRAN.R-project.org/package=chron).
   void _calcValue() {
     // code from julian date in the S book (p.269)
-    var y = _year + (_month > 2 ? 0 : -1);
-    var m = _month + (_month > 2 ? -3 : 9);
+    var y = year + (month > 2 ? 0 : -1);
+    var m = month + (month > 2 ? -3 : 9);
     var c = y ~/ 100;
     var ya = y - 100 * c;
 
     _value = (146097 * c) ~/ 4 +
         (1461 * ya) ~/ 4 +
         (153 * m + 2) ~/ 5 +
-        _day +
+        day +
         1721119 -
         _ORIGIN;
   }
 
-  Location get location => _location;
-
-  /// Get the datetime corresponding to the beginning of this month.
-  /// The default timezone is UTC unless specified otherwise.
-  @override
-  TZDateTime get start => TZDateTime(location, _year, _month, _day);
-  @override
-  TZDateTime get end => TZDateTime(location, _year, _month, _day + 1);
-
   /// Return the previous day.
-  Date get previous => Date.fromJulianDay(_value - 1, location: _location);
+  Date get previous => Date.fromJulianDay(_value - 1, location: location);
 
   /// Return the previous [n] days ending on this date.
   List<Date> previousN(int n) {
@@ -162,7 +145,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   /// Return the next day.
-  Date get next => Date.fromJulianDay(value + 1, location: _location);
+  Date get next => Date.fromJulianDay(value + 1, location: location);
 
   /// Return the next [n] days starting on this date. [n] needs to be greater
   /// than 0.
@@ -191,17 +174,19 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
 
   /// Add a number of days to this date.
   @override
-  Date add(int step) => Date.fromJulianDay(_value + step, location: _location);
+  Date add(int step) => Date.fromJulianDay(_value + step, location: location);
 
   /// Subtract a number of days from this date.
   Date subtract(int step) =>
-      Date.fromJulianDay(value - step, location: _location);
+      Date.fromJulianDay(value - step, location: location);
 
   /// Get the beginning of the month.
-  Date get beginningOfMonth => Date(_year, _month, 1, location: _location);
+  Date get beginningOfMonth => Date(year, month, 1, location: location);
 
   /// Get the [Month] this [Date] belongs to.
-  Month currentMonth() => Month(_year, _month, location: _location);
+  Month currentMonth() {
+    return Month(year, month, location: location);
+  }
 
   @override
   bool isBefore(Date other) => _value < other._value;
@@ -225,10 +210,10 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   void _calcDayOfWeek() {
-    var ix = _year + ((_month - 14) / 12).truncate();
+    var ix = year + ((month - 14) / 12).truncate();
     var jx =
-        ((13 * (_month + 10 - (_month + 10) ~/ 13 * 12) - 1) / 5).truncate() +
-            _day +
+        ((13 * (month + 10 - (month + 10) ~/ 13 * 12) - 1) / 5).truncate() +
+            day +
             77 +
             (5 * (ix - (ix ~/ 100) * 100)) ~/ 4 +
             ix ~/ 400 -
@@ -240,7 +225,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   /// Return the day of the year.  1-Jan is day 1 of the year.
-  int dayOfYear() => value - Date(_year, 1, 1).value + 1;
+  int dayOfYear() => value - Date(year, 1, 1).value + 1;
 
   /// If this [Date] is Sat or Sun, return true.  False otherwise.
   bool isWeekend() => weekday >= 6 ? true : false;
@@ -265,17 +250,17 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   @override
   String toString([DateFormat fmt]) {
     fmt ??= _defaultFmt;
-    return fmt.format(DateTime(_year, _month, _day));
+    return fmt.format(DateTime(year, month, day));
   }
 
   Interval toInterval() => Interval(start, end);
 
   void _simpleValidation() {
-    if (_month > 12 || _month < 1) {
-      throw FormatException('Invalid month value $_month', _month);
+    if (month > 12 || month < 1) {
+      throw FormatException('Invalid month value $month', month);
     }
-    if (_day > 31 || _day < 1) {
-      throw FormatException('Invalid day value $_day', _day);
+    if (day > 31 || day < 1) {
+      throw FormatException('Invalid day value $day', day);
     }
   }
 }
