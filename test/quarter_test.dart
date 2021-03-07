@@ -15,6 +15,12 @@ void tests() {
       expect(m.toString(), '2014-Q1');
     });
 
+    test('Quarter.utc constructor', () {
+      var quarter = Quarter.utc(2019, 3);
+      expect(quarter.start, TZDateTime.utc(2019, 7, 1));
+      expect(quarter.end, TZDateTime.utc(2019, 10, 1));
+    });
+
     test('Create quarters from DateTime', () {
       Quarter m;
       m = Quarter.fromTZDateTime(TZDateTime(local, 2014));

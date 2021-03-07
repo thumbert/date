@@ -9,14 +9,13 @@ import 'interval.dart';
 class Quarter extends Interval implements TimeOrdering<Quarter> {
   int year;
   late int quarter;
-  Location location;
 
   late int _value;
   static final isoFormat = DateFormat('yyyy-QQQ');
   static final format = DateFormat('QQQ, yyyy');
 
   /// There is no ISO standard
-  Quarter(this.year, this.quarter, {required this.location})
+  Quarter(this.year, this.quarter, {required location})
       : super(TZDateTime.utc(year), TZDateTime.utc(year)) {
     _value = 100 * year + (quarter - 1) * 25;
     start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
@@ -25,14 +24,19 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
 
   Quarter.fromTZDateTime(TZDateTime datetime)
       : year = datetime.year,
-        location = datetime.location,
         super(TZDateTime(datetime.location, datetime.year),
             TZDateTime(datetime.location, datetime.year)) {
     var month = datetime.month;
     quarter = month ~/ 3 + 1;
-
     _value = 100 * year + (quarter - 1) * 25;
-    start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
+    start = TZDateTime(datetime.location, year, (quarter - 1) * 3 + 1);
+    end = Month.fromTZDateTime(start).add(2).end;
+  }
+
+  Quarter.utc(this.year, this.quarter)
+      : super(TZDateTime.utc(year), TZDateTime.utc(year)) {
+    _value = 100 * year + (quarter - 1) * 25;
+    start = TZDateTime.utc(year, (quarter - 1) * 3 + 1);
     end = Month.fromTZDateTime(start).add(2).end;
   }
 
@@ -44,6 +48,8 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
     var quarter = int.parse(x.substring(5 + offset));
     return Quarter(year, quarter, location: location);
   }
+
+  Location get location => start.location;
 
   Date get startDate =>
       Date(start.year, start.month, start.day, location: location);

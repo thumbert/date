@@ -1,6 +1,6 @@
 name: date
 description: Hour, Date, Month implementations for Dart and other time related utilities.
-version: 3.0.0
+version: 3.0.1
 author: Tony Humbert <tony.humberts@gmail.com>
 
 environment:

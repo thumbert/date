@@ -14,7 +14,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   /// between Jan=1 to Dec=12
   int month;
   late int _value;
-  Location location;
+  // Location location;
 
   static final DateFormat _defaultFmt = DateFormat('MMMyy');
   static final DateFormat _isoFmt = DateFormat('yyyy-MM');
@@ -29,9 +29,15 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   /// The default timezone is UTC.
   /// Specify the timezone for the month
   /// if you want to split/aggregate months.
-  Month(this.year, this.month, {required this.location})
+  Month(this.year, this.month, {required location})
       : super(TZDateTime(location, year, month),
             TZDateTime(location, year, month + 1)) {
+    _value = year * 12 + month;
+  }
+
+  /// A convenience constructor for utc months
+  Month.utc(this.year, this.month)
+      : super(TZDateTime(UTC, year, month), TZDateTime(UTC, year, month + 1)) {
     _value = year * 12 + month;
   }
 
@@ -45,7 +51,6 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   Month.fromTZDateTime(TZDateTime datetime)
       : year = datetime.year,
         month = datetime.month,
-        location = datetime.location,
         super(TZDateTime(datetime.location, datetime.year, datetime.month),
             TZDateTime(datetime.location, datetime.year, datetime.month + 1)) {
     _value = datetime.year * 12 + datetime.month;
@@ -53,6 +58,8 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   int _calcYear(int x) => (x - 1) ~/ 12;
   int _calcMonth(int x) => (x - 1) % 12 + 1;
+
+  Location get location => start.location;
 
   /// Get the first day of the month.
   Date get startDate => Date(year, month, 1, location: location);

@@ -1,5 +1,8 @@
 # Changelog
 
+# 3.0.1 (released 2021-03-07)
+- Introduce Date.utc, Month.utc, Quarter.utc constructors for convenience
+
 ## 3.0.0 (released 2021-03-06)
 - Moved the package to null safety
 - Breaking change in Date, Month, Quarter have now the timezone location 

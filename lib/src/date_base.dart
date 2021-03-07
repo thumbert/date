@@ -47,6 +47,14 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     _calcValue();
   }
 
+  /// A convenience constructor for utc dates
+  Date.utc(this.year, this.month, this.day)
+      : super(TZDateTime(UTC, year, month, day),
+            TZDateTime(UTC, year, month, day + 1)) {
+    _simpleValidation();
+    _calcValue();
+  }
+
   /// Return today's date.
   static Date today({required Location location}) {
     var now = DateTime.now();

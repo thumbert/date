@@ -40,7 +40,7 @@ var nextHour = hour.next;
 ## Date class
 A Date is a `DateTime` object without time of day.  Construct a `Date`:
 ```dart
-var dt1 = Date(2015,1,16);    // in UTC time zone
+var dt1 = Date.utc(2015,1,16);    // in UTC time zone
 var dt2 = Date.parse('20150106');
 ```
 
@@ -49,15 +49,15 @@ Operate on dates:
 print(dt1.next);
 print(dt1.previous);
 
-dt2.add(1) == Date(2015,1,17);
-dt2.subtract(1) == Date(2015,1,14);
+dt2.add(1) == Date.utc(2015,1,17);
+dt2.subtract(1) == Date.utc(2015,1,14);
 ```
 
 
 ## Month class
 Construct a `Month`:
 ```dart
-var m1 = Month(2017,3);  // in UTC time zone
+var m1 = Month.utc(2017,3);  
 var m2 = Month.parse('Mar17'); // 'H17', '2017-03', 'March 2017' work
 expect(m1, m2);
 var days = m1.days();  // get the list of days in this month 

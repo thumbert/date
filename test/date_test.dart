@@ -11,6 +11,12 @@ import 'package:date/date.dart';
 
 void testDate() {
   group('Test Date:', () {
+    test('Date.utc constructor', () {
+      var date = Date.utc(2019, 10, 1);
+      expect(date.start, TZDateTime.utc(2019, 10, 1));
+      expect(date.end, TZDateTime.utc(2019, 10, 2));
+    });
+
     test('From year month day to Julian day', () {
       expect(Date(1970, 1, 1, location: UTC).value, 0);
       expect(Date(2014, 1, 1, location: UTC).value, 16071);
@@ -89,13 +95,17 @@ void testDate() {
     });
 
     test('next/previous day', () {
-      expect(Date(2015, 2, 28, location: UTC).next, Date(2015, 3, 1, location: UTC));
-      expect(Date(2015, 1, 1, location: UTC).previous, Date(2014, 12, 31, location: UTC));
+      expect(Date(2015, 2, 28, location: UTC).next,
+          Date(2015, 3, 1, location: UTC));
+      expect(Date(2015, 1, 1, location: UTC).previous,
+          Date(2014, 12, 31, location: UTC));
     });
 
     test('current/next/previous month', () {
-      expect(Date(2015, 2, 28, location: UTC).beginningOfMonth, Date(2015, 2, 1, location: UTC));
-      expect(Date(2015, 2, 28, location: UTC).currentMonth().next.startDate, Date(2015, 3, 1, location: UTC));
+      expect(Date(2015, 2, 28, location: UTC).beginningOfMonth,
+          Date(2015, 2, 1, location: UTC));
+      expect(Date(2015, 2, 28, location: UTC).currentMonth().next.startDate,
+          Date(2015, 3, 1, location: UTC));
       expect(Date(2015, 2, 28, location: UTC).currentMonth().previous.startDate,
           Date(2015, 1, 1, location: UTC));
     });
@@ -108,9 +118,12 @@ void testDate() {
     });
 
     test('add/subtract days', () {
-      expect(Date(2015, 1, 1, location: UTC).add(1), Date(2015, 1, 2, location: UTC));
-      expect(Date(2015, 1, 1, location: UTC).subtract(1), Date(2014, 12, 31, location: UTC));
-      expect(Date(2015, 1, 1, location: UTC).add(-1), Date(2014, 12, 31, location: UTC));
+      expect(Date(2015, 1, 1, location: UTC).add(1),
+          Date(2015, 1, 2, location: UTC));
+      expect(Date(2015, 1, 1, location: UTC).subtract(1),
+          Date(2014, 12, 31, location: UTC));
+      expect(Date(2015, 1, 1, location: UTC).add(-1),
+          Date(2014, 12, 31, location: UTC));
     });
 
     test('Change the date display format', () {
@@ -119,14 +132,21 @@ void testDate() {
     });
 
     test('Sort dates', () {
-      var x = [Date(2014, 8, 1, location: UTC), Date(2014, 12, 1, location: UTC), Date(2014, 2, 1, location: UTC)];
+      var x = [
+        Date(2014, 8, 1, location: UTC),
+        Date(2014, 12, 1, location: UTC),
+        Date(2014, 2, 1, location: UTC)
+      ];
       x.sort();
       expect(x.map((d) => d.toString()).join(','),
           '2014-02-01,2014-08-01,2014-12-01');
     });
 
     test('toSet() on a list of Dates', () {
-      var x = [Date(2014, 1, 1, location: UTC), Date(2014, 1, 1, location: UTC)];
+      var x = [
+        Date(2014, 1, 1, location: UTC),
+        Date(2014, 1, 1, location: UTC)
+      ];
       expect(x.toSet().toList().length, 1);
     });
 

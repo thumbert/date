@@ -9,11 +9,16 @@ import 'package:timezone/timezone.dart';
 import 'package:date/src/month.dart';
 import 'package:date/src/interval.dart';
 
-
 void tests() {
   var local = getLocation('America/New_York');
 
   group('Test Month:', () {
+    test('Month.utc constructor', () {
+      var month = Month.utc(2019, 10);
+      expect(month.start, TZDateTime.utc(2019, 10, 1));
+      expect(month.end, TZDateTime.utc(2019, 11, 1));
+    });
+
     test('Create months from year month', () {
       var m = Month(2014, 1, location: UTC);
       var m2 = Month(2014, 1, location: UTC);
@@ -31,7 +36,7 @@ void tests() {
       expect([m.year, m.month], [2014, 12]);
     });
 
-    test('Create month in a different timezone', (){
+    test('Create month in a different timezone', () {
       var m1 = Month(2017, 1, location: getLocation('America/New_York'));
       expect(m1.location.toString(), 'America/New_York');
       expect(m1.start.toString(), '2017-01-01 00:00:00.000-0500');
@@ -42,9 +47,12 @@ void tests() {
 
     test('Next/previous months', () {
       expect(Month(2014, 1, location: UTC).next, Month(2014, 2, location: UTC));
-      expect(Month(2014, 1, location: UTC).previous, Month(2013, 12, location: UTC));
-      expect(Month(2014, 1, location: UTC).add(6), Month(2014, 7, location: UTC));
-      expect(Month(2015, 11, location: UTC).next, Month(2015, 12, location: UTC));
+      expect(Month(2014, 1, location: UTC).previous,
+          Month(2013, 12, location: UTC));
+      expect(
+          Month(2014, 1, location: UTC).add(6), Month(2014, 7, location: UTC));
+      expect(
+          Month(2015, 11, location: UTC).next, Month(2015, 12, location: UTC));
     });
 
     test('nextN, previousN, upTo', () {
@@ -77,28 +85,30 @@ void tests() {
 
     test('Get the days of the month', () {
       var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
-      var days = it.splitLeft((dt) => Month.fromTZDateTime(dt))
+      var days = it
+          .splitLeft((dt) => Month.fromTZDateTime(dt))
           .cast<Month>()
-          .map((m) => m.days().length).toList();
+          .map((m) => m.days().length)
+          .toList();
       expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
     });
 
-    test('time ordering for months', (){
-      var m1 = Month(2015,6, location: UTC);
-      var m2 = Month(2015,2, location: UTC);
+    test('time ordering for months', () {
+      var m1 = Month(2015, 6, location: UTC);
+      var m2 = Month(2015, 2, location: UTC);
       expect(m1.isBefore(m2), false);
       expect(m1.isAfter(m2), true);
     });
 
-    test('compareTo months', (){
-      var m1 = Month(2015,6, location: UTC);
-      var m2 = Month(2015,2, location: UTC);
+    test('compareTo months', () {
+      var m1 = Month(2015, 6, location: UTC);
+      var m2 = Month(2015, 2, location: UTC);
       expect(m1.compareTo(m2), 1);
       expect(m1.compareTo(m1), 0);
     });
 
     test('month format (default)', () {
-      var m1 = Month(2015,6, location: UTC);
+      var m1 = Month(2015, 6, location: UTC);
       expect(m1.toString(), 'Jun15');
       expect(m1.toIso8601String(), '2015-06');
     });
@@ -136,7 +146,6 @@ void tests() {
         Date(2020, 6, 29, location: UTC),
       ]);
     });
-
   });
 }
 
