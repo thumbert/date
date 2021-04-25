@@ -3,7 +3,7 @@
 A [Dart](http://www.dartlang.org) package that deals with time intervals.  There are 
 classes for a date, month, hour.  
 
-##Table of Contents
+## Table of Contents
 
 **[Interval](#interval-class)**  
 **[Hour](#hour-class)**  
@@ -94,6 +94,7 @@ or intervals relative to the current date
 * e.g. -3y for the last 3 years, +7y for the next 7 years
 * and combinations of past/future periods, e.g. -3d+7d, -3m+7m, -1y+1y, etc.
 
+For example
 ```dart
 parseTerm('Q3,2017');
 parseTerm('Cal22');
