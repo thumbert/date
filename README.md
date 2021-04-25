@@ -7,6 +7,8 @@ classes for a date, month, hour.
 
 **[Interval](#interval-class)**  
 **[Hour](#hour-class)**  
+**[Date](#date-class)**  
+**[Month](#month-class)**  
 **[Term parser](#term-parser)**  
 
 ## Interval class
