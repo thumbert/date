@@ -1,5 +1,9 @@
 # Changelog
 
+# 3.0.2 (released 2021-04-26)
+- Bump up petitparser, and resolve deprecations
+- Support more strings to term parser  
+
 # 3.0.1 (released 2021-03-07)
 - Introduce Date.utc, Month.utc, Quarter.utc constructors for convenience
 

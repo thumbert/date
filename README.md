@@ -3,7 +3,11 @@
 A [Dart](http://www.dartlang.org) package that deals with time intervals.  There are 
 classes for a date, month, hour.  
 
- 
+##Table of Contents
+**[Interval](#interval-class)**  
+**[Hour](#hour-class)**  
+**[Term parser](#term-parser)**  
+
 ## Interval class
 A class to represent the time interval between a start (closed) and end (open) time 
 instant; in mathematical notation: [start, end).  
@@ -70,6 +74,24 @@ m1.previous(12); // previous 12 months
 m1.nextN(12); // next 12 months from Mar17 (not included), e.g [Apr17, ... Mar18]
 m1.upTo(Month(2017,12)); // [Mar17, Apr17, May17, ... Dec17]  
 ```
+
+## Term parser
+
+A parser for time intervals based on a proper grammar.  You can parse 
+* a Date, e.g. '13Jan21', '2021-01-13'
+* a Month, e.g. 'Jan21', 'January 2021', 'Jan 2021', 'F21', '2021-01'
+* a Quarter, e.g. 'Q2, 21', 'Q2 2021', 'Q2, 2021'
+* a calendar Year, e.g. 'Cal2021', 'Cal 2021', 'Cal21', '2021'
+
+or ranges
+* a Date range, e.g. '13Jan21-21Feb22'
+* a Month range, e.g. 'Jan21-Mar21', 'F21-G21', 
+
+or intervals relative to the current date 
+* e.g. -3d for the last 3 days, +7d for the next 7 days
+* e.g. -3m for the last 3 months, +7m for the next 7 months
+* e.g. -3y for the last 3 years, +7y for the next 7 years
+* and combinations of past/future periods, e.g. -3d+7d, -3m+7m, -1y+1y, etc.
 
 ## Features and bugs
 

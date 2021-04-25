@@ -1,18 +1,16 @@
 library term_parse;
 
-import 'package:intl/intl.dart';
 import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
-final TermParser _parser = TermParser();
-
-// Decided not to support the ISO8601 duration parser.
+final _parser = TermParserDefinition().build();
 
 /// Parse a limited number of String inputs into a datetime interval.
 /// Supported tokens are:
 /// <p>days: 1Jan17, months: 'Jan17', 'F18', years: 'Cal17', quarters: 'Q3,18',
-/// day ranges: 1Jan17-3Jan17, or month ranges: Jul17-Aug17, F21-H21.
+/// day ranges: 1Jan17-3Jan17,
+/// month ranges: Jul17-Aug17, F21-H21.
 ///
 /// <p>Or a term relative to the current moment.  For example:
 /// '-10d' the last 10 days, '+10d' the next 10 days,
@@ -39,34 +37,36 @@ Interval? parseTerm(String term, {Location? tzLocation}) {
   return interval;
 }
 
-class TermGrammar extends GrammarParser {
-  TermGrammar() : super(const TermGrammarDefinition());
-}
-
 class TermGrammarDefinition extends GrammarDefinition {
   const TermGrammarDefinition();
 
   @override
-  Parser start() => ref(value).end();
+  Parser start() => ref0(value).end();
   Parser token(Parser p) => p.flatten().trim();
-  Parser simpleDayToken() => ref(dayToken) & ref(monthToken) & ref(yearToken);
-  Parser simpleMonthToken() => ref(monthToken) & ref(yearToken);
-  Parser simpleMonthCodeToken() => token(letter() & digit() & digit());
-  Parser simpleQuarterToken() => quarterToken();
-  Parser simpleCalYearToken() => calYearToken();
+  Parser simpleDayToken() =>
+      ref0(dayToken) & ref0(monthToken) & ref0(yearToken);
+  Parser simpleMonthToken() => ref0(monthToken) & ref0(yearToken) ;  // Feb21
+  // Parser simpleMonthToken() => token(monthToken() & yearToken()) ;  // Feb21
+  Parser simpleMonthCodeToken() => token(letter() & digit() & digit()); // G21
+  Parser simpleQuarterToken() =>
+      token(char('Q') & digit()) & char(',').optional() & yearToken();
+  Parser simpleCalYearToken() =>
+      (token((string('CAL') | string('Cal'))) & yearToken()).end() | d4().end();
   Parser simpleToken() =>
       simpleCalYearToken() |
-      ref(simpleMonthToken) |
-      ref(simpleMonthCodeToken) |
-      ref(simpleDayToken) |
+      ref0(simpleMonthToken) |
+      ref0(simpleMonthCodeToken) |
+      ref0(yyyymmdd) |
+      ref0(yyyymm) |
+      ref0(simpleDayToken) |
       simpleQuarterToken();
 
   Parser compoundDayToken() =>
-      ref(simpleDayToken) & char('-') & ref(simpleDayToken);
+      ref0(simpleDayToken) & char('-') & ref0(simpleDayToken);
   Parser compoundMonthSimpleToken() =>
-      ref(simpleMonthToken) & char('-') & ref(simpleMonthToken);
+      ref0(simpleMonthToken) & char('-') & ref0(simpleMonthToken);
   Parser compoundMonthCodeToken() =>
-      ref(simpleMonthCodeToken) & char('-') & ref(simpleMonthCodeToken);
+      ref0(simpleMonthCodeToken) & char('-') & ref0(simpleMonthCodeToken);
   Parser compoundMonthToken() =>
       compoundMonthSimpleToken() | compoundMonthCodeToken();
   Parser compoundRelativeToken() => relativeToken() & relativeToken();
@@ -77,7 +77,9 @@ class TermGrammarDefinition extends GrammarDefinition {
       token(char('-') | char('+')) & digit().plus() & letter();
 
   // compound term needs to be parsed first
-  Parser value() => ref(compoundToken) | ref(simpleToken) | ref(relativeToken);
+  Parser value() =>
+      ref0(compoundToken) |
+      ref0(simpleToken) | ref0(relativeToken);
 
   Parser dayToken() => token(digit().repeat(1, 2));
   Parser monthToken() =>
@@ -93,9 +95,12 @@ class TermGrammarDefinition extends GrammarDefinition {
       oct() |
       nov() |
       dec();
-  Parser yearToken() => token(digit().repeat(2, 4));
-  Parser quarterToken() => token(char('Q') & digit()) & char(',') & yearToken();
-  Parser calYearToken() => token((string('CAL') | string('Cal'))) & yearToken();
+  // Parser yearToken() => token(digit().repeat(2, 4));
+  Parser d4() => token(digit().repeat(4, 4));
+  Parser d2() => token(digit().repeat(2, 2));
+  Parser yearToken() => token(d4() | d2());
+  Parser yyyymm() => d4() & char('-').optional() & d2();
+  Parser yyyymmdd() => (d4() & char('-') & d2() & char('-') & d2()) | (d4() & d2() & d2());
 
   Parser jan() => token(string('January') |
       string('JANUARY') |
@@ -155,11 +160,6 @@ class TermGrammarDefinition extends GrammarDefinition {
       string('DEC'));
 }
 
-/// Parse a term
-class TermParser extends GrammarParser {
-  TermParser() : super(const TermParserDefinition());
-}
-
 /// the parser definition
 class TermParserDefinition extends TermGrammarDefinition {
   const TermParserDefinition();
@@ -174,6 +174,23 @@ class TermParserDefinition extends TermGrammarDefinition {
             _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]!,
             location: UTC);
       });
+
+  @override
+  Parser yyyymm() => super.yyyymm().map((each){
+    List input = each;
+    if (input.length == 3) {
+      input.removeAt(1);
+    }
+    return Month(_toYear(input[0]), int.parse(input[1]), location: UTC);
+  });
+
+  @override
+  Parser yyyymmdd() => super.yyyymmdd().map((each){
+    var input = (each as List).where((e) => !(e == null || e == '-')).toList();
+    return Date(int.parse(input[0]), int.parse(input[1]), int.parse(input[2]),
+        location: UTC);
+  });
+
 
   @override
   Parser simpleDayToken() => super.simpleDayToken().map((each) {
@@ -194,7 +211,14 @@ class TermParserDefinition extends TermGrammarDefinition {
       });
   @override
   Parser simpleCalYearToken() => super.simpleCalYearToken().map((each) {
-        var year = _toYear(each[1]);
+        late int year;
+        if (each is List) {
+          // it's CalYY, CalYYYY construct
+          year = _toYear(each[1]);
+        } else {
+          // it's a yyyy
+          year = _toYear(each);
+        }
         var start = TZDateTime.utc(year);
         var end = TZDateTime.utc(year + 1);
         return Interval(start, end);
@@ -265,6 +289,7 @@ int? _toMonth(String m) {
 
 /// Convert a string to a year value.  A two digit or 4 digit string.
 int _toYear(String y) {
+  y = y.trim();
   if (!(y.length == 2 || y.length == 4)) {
     throw ArgumentError('Invalid year format: $y');
   }
@@ -279,7 +304,7 @@ int _toYear(String y) {
   return value;
 }
 
-Map<String, int> _monthCode = {
+const _monthCode = <String, int>{
   'F': 1,
   'G': 2,
   'H': 3,
@@ -294,7 +319,7 @@ Map<String, int> _monthCode = {
   'Z': 12,
 };
 
-Map _monthIdx = {
+const _monthIdx = <String, int>{
   'jan': 1,
   'feb': 2,
   'mar': 3,
@@ -309,7 +334,7 @@ Map _monthIdx = {
   'dec': 12
 };
 
-List _monthNames = [
+const _monthNames = <String>[
   'january',
   'february',
   'march',

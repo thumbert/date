@@ -1,6 +1,6 @@
 name: date
 description: Hour, Date, Month implementations for Dart and other time related utilities.
-version: 3.0.1
+version: 3.0.2
 author: Tony Humbert <tony.humberts@gmail.com>
 
 environment:
@@ -8,8 +8,8 @@ environment:
 
 dependencies:
   intl: ^0.17.0
-  petitparser: ^4.0.2
-  timezone: ^0.7.0-nullsafety.0
+  petitparser: ^4.1.0
+  timezone: ^0.7.0
 
 dev_dependencies:
   pedantic: ^1.11.0
