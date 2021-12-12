@@ -27,6 +27,8 @@ class Term {
     _interval = interval;
   }
 
+  Location get location => interval.start.location;
+
   /// Return a similar term that starts in year [year].
   /// For example, if term is 'Jul20-Aug20', it will return 'Jul18-Aug18' with
   /// start year 2018.   Or term 'Nov20-Mar21' will return 'Nov18-Mar19' with
@@ -37,8 +39,12 @@ class Term {
         Date(year, _start.month, _start.day, location: _start.location);
     var _end = endDate;
     var offset = _end.year - _start.year;
-    var newEnd =
-        Date(year + offset, _end.month, _end.day, location: _end.location);
+    late Date newEnd;
+    if (interval.end == TZDateTime(location, _start.year, 3)) {
+      newEnd = Date(year + offset, 3, 1, location: location).previous;
+    } else {
+      newEnd = Date(year + offset, _end.month, _end.day, location: location);
+    }
     return Term(newStart, newEnd);
   }
 

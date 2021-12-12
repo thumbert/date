@@ -2,7 +2,6 @@ library test.term_parse_test;
 
 import 'package:test/test.dart';
 import 'package:timezone/data/latest.dart';
-import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart';
 import 'package:date/src/interval.dart';
 import 'package:date/src/month.dart';

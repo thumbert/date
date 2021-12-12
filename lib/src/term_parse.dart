@@ -45,7 +45,7 @@ class TermGrammarDefinition extends GrammarDefinition {
   Parser token(Parser p) => p.flatten().trim();
   Parser simpleDayToken() =>
       ref0(dayToken) & ref0(monthToken) & ref0(yearToken);
-  Parser simpleMonthToken() => ref0(monthToken) & ref0(yearToken) ;  // Feb21
+  Parser simpleMonthToken() => ref0(monthToken) & ref0(yearToken); // Feb21
   // Parser simpleMonthToken() => token(monthToken() & yearToken()) ;  // Feb21
   Parser simpleMonthCodeToken() => token(letter() & digit() & digit()); // G21
   Parser simpleQuarterToken() =>
@@ -78,8 +78,7 @@ class TermGrammarDefinition extends GrammarDefinition {
 
   // compound term needs to be parsed first
   Parser value() =>
-      ref0(compoundToken) |
-      ref0(simpleToken) | ref0(relativeToken);
+      ref0(compoundToken) | ref0(simpleToken) | ref0(relativeToken);
 
   Parser dayToken() => token(digit().repeat(1, 2));
   Parser monthToken() =>
@@ -100,7 +99,8 @@ class TermGrammarDefinition extends GrammarDefinition {
   Parser d2() => token(digit().repeat(2, 2));
   Parser yearToken() => token(d4() | d2());
   Parser yyyymm() => d4() & char('-').optional() & d2();
-  Parser yyyymmdd() => (d4() & char('-') & d2() & char('-') & d2()) | (d4() & d2() & d2());
+  Parser yyyymmdd() =>
+      (d4() & char('-') & d2() & char('-') & d2()) | (d4() & d2() & d2());
 
   Parser jan() => token(string('January') |
       string('JANUARY') |
@@ -176,21 +176,22 @@ class TermParserDefinition extends TermGrammarDefinition {
       });
 
   @override
-  Parser yyyymm() => super.yyyymm().map((each){
-    List input = each;
-    if (input.length == 3) {
-      input.removeAt(1);
-    }
-    return Month(_toYear(input[0]), int.parse(input[1]), location: UTC);
-  });
+  Parser yyyymm() => super.yyyymm().map((each) {
+        List input = each;
+        if (input.length == 3) {
+          input.removeAt(1);
+        }
+        return Month(_toYear(input[0]), int.parse(input[1]), location: UTC);
+      });
 
   @override
-  Parser yyyymmdd() => super.yyyymmdd().map((each){
-    var input = (each as List).where((e) => !(e == null || e == '-')).toList();
-    return Date(int.parse(input[0]), int.parse(input[1]), int.parse(input[2]),
-        location: UTC);
-  });
-
+  Parser yyyymmdd() => super.yyyymmdd().map((each) {
+        var input =
+            (each as List).where((e) => !(e == null || e == '-')).toList();
+        return Date(
+            int.parse(input[0]), int.parse(input[1]), int.parse(input[2]),
+            location: UTC);
+      });
 
   @override
   Parser simpleDayToken() => super.simpleDayToken().map((each) {

@@ -46,7 +46,7 @@ class Hour extends Interval implements TimeOrdering<Hour>, Additive<Hour> {
   @override
   bool operator ==(dynamic other) {
     if (other is! Hour) return false;
-    Hour hour = other;
+    var hour = other;
     return start == hour.start;
   }
 

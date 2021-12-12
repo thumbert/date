@@ -17,14 +17,17 @@ class TimeIterable<E extends ComparableWithAdd<E>> extends Object
   ///    From [start] to [end] inclusive.
   ///    The [step] can be positive or negative (but non-zero.)
   ///
-  TimeIterable(E this.start, E this.end, {int this.step: 1}) {
-    if (end.compareTo(start) > 0 && step < 0)
+  TimeIterable(this.start, this.end, {this.step = 1}) {
+    if (end.compareTo(start) > 0 && step < 0) {
       throw 'End is after start and step is negative!';
-    if (end.compareTo(start) < 0 && step > 0)
+    }
+    if (end.compareTo(start) < 0 && step > 0) {
       throw 'End is before start and step is positive!';
+    }
   }
 
-  Iterator<E?> get iterator => new TimeIterator<E>(start, end, step: step);
+  @override
+  Iterator<E?> get iterator => TimeIterator<E>(start, end, step: step);
 }
 
 /// An iterator for time interval objects.  The type [E] needs to have an [add] method.
@@ -33,7 +36,7 @@ class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E?> {
   int step;
   late Function _isDone;
 
-  TimeIterator(E this.start, E this.end, {int this.step: 1}) {
+  TimeIterator(E this.start, E this.end, {this.step = 1}) {
     if (step > 0) {
       _isDone = (x) => x.compareTo(end) > 0;
     } else if (step < 0) {
@@ -43,8 +46,9 @@ class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E?> {
     }
   }
 
+  @override
   bool moveNext() {
-    bool res = true;
+    var res = true;
     if (_current == null) {
       _current = start;
     } else {
@@ -55,5 +59,6 @@ class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E?> {
     return res;
   }
 
+  @override
   E? get current => _current;
 }

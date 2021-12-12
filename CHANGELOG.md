@@ -1,5 +1,9 @@
 # Changelog
 
+# 3.0.3 (released 2021-12-12)
+- Added package lints, apply dart fix
+- Fix bug in term.withStartYear when term ends on 1-Mar
+
 # 3.0.2 (released 2021-04-26)
 - Bump up petitparser, and resolve deprecations
 - Support more strings to term parser  

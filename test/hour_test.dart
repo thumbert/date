@@ -9,18 +9,18 @@ import 'package:timezone/standalone.dart';
 import 'package:timezone/src/env.dart';
 
 hourTest() {
-  Location location = getLocation('America/New_York');  // 'US/Mountain', 'US/Central', 'US/Pacific'
+  var location = getLocation('America/New_York');  // 'US/Mountain', 'US/Central', 'US/Pacific'
   group('Test Hour:', () {
     test('create hour', (){
-      Hour h = new Hour.beginning(new TZDateTime(location, 2015, 1, 1));
-      expect(h.end, new TZDateTime(location, 2015, 1, 1, 1));
+      var h = Hour.beginning(TZDateTime(location, 2015, 1, 1));
+      expect(h.end, TZDateTime(location, 2015, 1, 1, 1));
       expect(h.toString(), '[2015-01-01 00:00:00.000-0500, 2015-01-01 01:00:00.000-0500)');
     });
 
     test('next/previous hour', () {
-      Hour h = new Hour.beginning(new TZDateTime(location, 2015, 1, 1));
-      expect(h.next, new Hour.beginning(new TZDateTime(location, 2015, 1, 1, 1)));
-      expect(h.previous, new Hour.ending(new TZDateTime(location, 2015, 1, 1)));
+      var h = Hour.beginning(TZDateTime(location, 2015, 1, 1));
+      expect(h.next, Hour.beginning(TZDateTime(location, 2015, 1, 1, 1)));
+      expect(h.previous, Hour.ending(TZDateTime(location, 2015, 1, 1)));
     });
 
     test('hour iterable around DST', () {
