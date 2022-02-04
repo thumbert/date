@@ -21,11 +21,12 @@ const _iMon = <String>[
 final _mon = Map.fromIterables(_iMon, List.generate(12, (i) => i + 1));
 
 /// Parse a string in the format MYY (e.g. 'F18') into a month.
-Month parseMYY(String x) {
+Month parseMYY(String x, {Location? location}) {
+  location ??= UTC;
   var yy = int.parse(x.substring(1));
   var year = yy > 50 ? 1900 + yy : 2000 + yy;
   var month = _mon[x.substring(0, 1).toUpperCase()]!;
-  return Month(year, month, location: UTC);
+  return Month(year, month, location: location);
 }
 
 /// Format a month into the MYY format.
