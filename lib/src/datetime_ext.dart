@@ -18,3 +18,41 @@ extension DateTimeExtension on num {
         UTC, date.year, date.month, date.day, hour, minute, second);
   }
 }
+
+
+extension DateTimeExtension2 on DateTime {
+  bool isBeginningOfHour() {
+    if (millisecondsSinceEpoch/1000 % 3600 != 0) {
+      return false;
+    }
+    return true;
+  }
+
+  bool isMidnight() {
+    if (hour != 0 || !isBeginningOfHour()) {
+      return false;
+    }
+    return true;
+  }
+
+  bool isBeginningOfWeek() {
+    if (weekday != 1 || !isMidnight() ) {
+      return false;
+    }
+    return true;
+  }
+
+  bool isBeginningOfMonth() {
+    if (day != 1 || !isMidnight()) {
+      return false;
+    }
+    return true;
+  }
+
+  bool isBeginningOfYear() {
+    if (month != 1 || !isBeginningOfMonth()) {
+      return false;
+    }
+    return true;
+  }
+}

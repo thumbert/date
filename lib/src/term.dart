@@ -107,19 +107,26 @@ String prettyTerm(Interval interval) {
   var start = Date.fromTZDateTime(interval.start);
   if (nDays == 1) return start.toString(_fmt);
 
-  if (isBeginningOfMonth(interval.start) && isBeginningOfMonth(interval.end)) {
+  if (interval.start.isBeginningOfMonth() && interval.end.isBeginningOfMonth()) {
     var mStart = Month.fromTZDateTime(interval.start);
-    var mEnd = Month.fromTZDateTime(interval.end);
-    if (mStart == mEnd.previous) {
+    var mEnd = Month.fromTZDateTime(interval.end).previous;
+    if (mStart == mEnd) {
       // it's exactly one month
       return mStart.toString();
     } else {
-      // it's a month range
-      return '${mStart.toString()}-${mEnd.previous.toString()}';
+      // it's a month range.  Special treatment for Cal and Quarters
+      if (mStart.month == 1 && mEnd.month == 12 && mEnd.year == mStart.year) {
+        return 'Cal ${mStart.year % 100}';
+      } else if (interval.isQuarter()) {
+        return Quarter.fromTZDateTime(interval.start).toString(fmt: Quarter.format2);
+      }
+      return '${mStart.toString()}-${mEnd.toString()}';
     }
   } else {
     // it's a day range
     var end = Date.fromTZDateTime(interval.end).previous;
     return '${start.toString(_fmt)}-${end.toString(_fmt)}';
   }
+
+  throw ArgumentError('Not a term $interval');
 }

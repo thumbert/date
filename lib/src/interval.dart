@@ -179,6 +179,36 @@ class Interval implements Comparable<Interval> {
 
   bool isInstant() => start.isAtSameMomentAs(end);
 
+  bool isQuarter() {
+    if (start.isMidnight() && end.isMidnight()) {
+      if (start.month == 1 && end.month == 4 && start.year == end.year) {
+        return true;
+      } else if (start.month == 4 && end.month == 7 && start.year == end.year) {
+        return true;
+      } else if (start.month == 7 &&
+          end.month == 10 &&
+          start.year == end.year) {
+        return true;
+      } else if (start.month == 10 &&
+          end.month == 1 &&
+          start.year == end.year - 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isYear(Interval interval) {
+    if (start.isBeginningOfYear() &&
+        end.isBeginningOfYear() &&
+        start.year == end.year - 1) {
+      return true;
+    }
+    return false;
+  }
+
+
+
   @override
   bool operator ==(dynamic other) {
     if (other is! Interval) return false;
@@ -265,7 +295,7 @@ class _HourIterator extends Iterator<Hour> {
   static const h1 = Duration(hours: 1);
 
   _HourIterator(this.start, this.end) {
-    if (!isBeginningOfHour(start)) {
+    if (!start.isBeginningOfHour()) {
       throw ArgumentError('Start should be at hour beginning, it is $start');
     }
     if (end.difference(start).inHours < 1) {

@@ -1,5 +1,9 @@
 # Changelog
 
+# 3.0.5 (not yet released)
+- prettyTerm() now recognizes calendar years, e.g. 'Cal 23' and quarters, 
+  e.g. 'Q3 22'. 
+
 # 3.0.4 (released 2022-07-01)
 - Increased petitparser to 5.0.0.  
 - Fix a bug parsing 'Jan23-Dec22'.  It returned the instant 2023-01-01 00:00:00 

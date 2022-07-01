@@ -150,22 +150,6 @@ void parseTermTest() {
     test('A wrong month code range: U23-K23 should throw', () {
       expect(() => parseTerm('U23-K23'), throwsArgumentError);
     });
-    test('prettyTerm tests', () {
-      expect(prettyTerm(Date(2018, 1, 1, location: UTC)), '1Jan18');
-      expect(prettyTerm(Month(2018, 1, location: UTC)), 'Jan18');
-      expect(
-          prettyTerm(Interval(
-              TZDateTime.utc(2018, 1, 1), TZDateTime.utc(2018, 1, 21))),
-          '1Jan18-20Jan18');
-      expect(
-          prettyTerm(Interval(
-              TZDateTime.utc(2018, 1, 3), TZDateTime.utc(2018, 5, 21))),
-          '3Jan18-20May18');
-      expect(
-          prettyTerm(
-              Interval(TZDateTime.utc(2018, 1), TZDateTime.utc(2018, 5))),
-          'Jan18-Apr18');
-    });
   });
 }
 

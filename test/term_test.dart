@@ -45,6 +45,31 @@ void tests() {
       expect(Term.parse('1Jun20-3Jun20', location).isDayRange(), true);
       expect(Term.parse('1Jun20-3Jun20', location).isMonthRange(), false);
     });
+    test('toString() a Cal', () {
+      expect(Term.parse('Jan23-Dec23', location).toString(), 'Cal 23');
+    });
+    test('toString() a Quarter', () {
+      expect(Term.parse('Jan23-Mar23', location).toString(), 'Q1, 23');
+      expect(Term.parse('Apr23-Jun23', location).toString(), 'Q2, 23');
+      expect(Term.parse('Jul23-Sep23', location).toString(), 'Q3, 23');
+      expect(Term.parse('Oct23-Dec23', location).toString(), 'Q4, 23');
+    });
+    test('prettyTerm tests', () {
+      expect(prettyTerm(Date(2018, 1, 1, location: UTC)), '1Jan18');
+      expect(prettyTerm(Month(2018, 1, location: UTC)), 'Jan18');
+      expect(
+          prettyTerm(Interval(
+              TZDateTime.utc(2018, 1, 1), TZDateTime.utc(2018, 1, 21))),
+          '1Jan18-20Jan18');
+      expect(
+          prettyTerm(Interval(
+              TZDateTime.utc(2018, 1, 3), TZDateTime.utc(2018, 5, 21))),
+          '3Jan18-20May18');
+      expect(
+          prettyTerm(
+              Interval(TZDateTime.utc(2018, 1), TZDateTime.utc(2018, 5))),
+          'Jan18-Apr18');
+    });
   });
 }
 

@@ -39,6 +39,7 @@ List<Interval> makeContiguousIntervals(List<Interval> x) {
 }
 
 /// Check if a DateTime is a beginning of an hour
+// @Deprecated('Use the extension methods')
 bool isBeginningOfHour(DateTime dt) {
   if (dt.millisecondsSinceEpoch/1000 % 3600 !=0) {
     return false;
@@ -48,6 +49,7 @@ bool isBeginningOfHour(DateTime dt) {
 
 
 /// Check if a DateTime is beginning of a day.
+// @Deprecated('Use the extension methods')
 bool isBeginningOfDay(DateTime dt) {
   if (dt.hour !=0 || !isBeginningOfHour(dt)) {
     return false;
@@ -55,9 +57,11 @@ bool isBeginningOfDay(DateTime dt) {
   return true;
 }
 
+// @Deprecated('Use the extension methods')
 bool isMidnight(DateTime dt) => isBeginningOfDay(dt);
 
 /// Check if a DateTime is beginning of a week.
+// @Deprecated('Use the extension methods')
 bool isBeginningOfWeek(DateTime dt) {
   if (dt.weekday != 1 || !isBeginningOfDay(dt) ) {
     return false;
@@ -67,6 +71,7 @@ bool isBeginningOfWeek(DateTime dt) {
 
 
 /// Check if a DateTime is beginning of a month.
+// @Deprecated('Use the extension methods')
 bool isBeginningOfMonth(DateTime dt) {
   if (dt.day != 1 || !isBeginningOfDay(dt) ) {
     return false;

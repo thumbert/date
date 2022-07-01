@@ -12,6 +12,7 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
   late int _value;
   static final isoFormat = DateFormat('yyyy-QQQ');
   static final format = DateFormat('QQQ, yyyy');
+  static final format2 = DateFormat('QQQ, yy');
 
   /// There is no ISO standard
   Quarter(this.year, this.quarter, {required location})
