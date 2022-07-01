@@ -114,6 +114,9 @@ void parseTermTest() {
       expect(parseTerm('jan17-Feb17'),
           Interval(TZDateTime.utc(2017, 1), TZDateTime.utc(2017, 3)));
     });
+    test('A wrong month range: jan23-dec22 should throw', () {
+      expect(() => parseTerm('jan23-dec22'), throwsArgumentError);
+    });
     test('An ISO day: 2020-07-03, 20200703', () {
       expect(parseTerm('20200703'),
           Interval(TZDateTime.utc(2020, 7, 3), TZDateTime.utc(2020, 7, 4)));
@@ -133,6 +136,9 @@ void parseTermTest() {
           Interval(
               TZDateTime(location, 2017, 1), TZDateTime(location, 2017, 2, 4)));
     });
+    test('A wrong day range: 3jan23-1Jan23 should throw', () {
+      expect(() => parseTerm('3Jan23-1Jan23'), throwsArgumentError);
+    });
     test('A month code range F19-G19', () {
       var location = getLocation('America/New_York');
       var term = Term.parse('F19-G19', location);
@@ -141,7 +147,9 @@ void parseTermTest() {
           Interval(
               TZDateTime(location, 2019, 1), TZDateTime(location, 2019, 3)));
     });
-
+    test('A wrong month code range: U23-K23 should throw', () {
+      expect(() => parseTerm('U23-K23'), throwsArgumentError);
+    });
     test('prettyTerm tests', () {
       expect(prettyTerm(Date(2018, 1, 1, location: UTC)), '1Jan18');
       expect(prettyTerm(Month(2018, 1, location: UTC)), 'Jan18');

@@ -1,13 +1,9 @@
 library test_month;
 
 import 'package:date/date.dart';
-import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 import 'package:timezone/data/latest.dart';
-import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart';
-import 'package:date/src/month.dart';
-import 'package:date/src/interval.dart';
 
 void tests() {
   var local = getLocation('America/New_York');
@@ -119,8 +115,7 @@ void tests() {
     });
 
     test('month parse (other format)', () {
-      var isoFmt = DateFormat('yyyy-MM');
-      var m1 = Month.parse('2017-07', fmt: isoFmt, location: local);
+      var m1 = Month.parse('2017-07', location: local);
       expect(m1, Month(2017, 7, location: local));
     });
 

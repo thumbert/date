@@ -2,9 +2,7 @@ library month;
 
 import 'package:date/date.dart';
 import 'package:intl/intl.dart';
-import 'package:date/src/date_base.dart';
 import 'package:date/src/time_ordering.dart';
-import 'package:date/src/interval.dart';
 import 'package:timezone/timezone.dart';
 
 /// Class representing a calendar Month implemented as an Interval.

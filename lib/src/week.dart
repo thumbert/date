@@ -3,7 +3,6 @@ library week;
 import 'package:date/date.dart';
 import 'package:date/src/time_ordering.dart';
 import 'package:timezone/timezone.dart';
-import 'interval.dart';
 
 class Week extends Interval implements TimeOrdering<Week> {
   int year;

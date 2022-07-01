@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
-final MonthParser _parser = MonthParser();
+final _parser = MonthParserDefinition().build();
 
 /// Parse a limited number of String inputs into a month term using a parser.
 /// Supported tokens are:
@@ -16,22 +16,18 @@ Month parseMonth(String term, {Location? location}) {
   return Month(month.year, month.month, location: location);
 }
 
-class MonthGrammar extends GrammarParser {
-  MonthGrammar() : super(const MonthGrammarDefinition());
-}
-
 class MonthGrammarDefinition extends GrammarDefinition {
   const MonthGrammarDefinition();
 
   @override
-  Parser start() => ref(value).end();
+  Parser start() => ref0(value).end();
   Parser token(Parser p) => p.flatten().trim();
-  Parser simpleMonthToken() => ref(monthToken) & ref(yearToken);
+  Parser simpleMonthToken() => ref0(monthToken) & ref0(yearToken);
   Parser simpleMonthCodeToken() => token(letter() & digit() & digit());
   Parser simpleToken() =>
-      ref(simpleMonthToken) | ref(simpleMonthCodeToken) | yyyymmToken();
+      ref0(simpleMonthToken) | ref0(simpleMonthCodeToken) | yyyymmToken();
 
-  Parser value() => ref(simpleToken);
+  Parser value() => ref0(simpleToken);
 
   Parser monthToken() =>
       jan() |
@@ -108,12 +104,8 @@ class MonthGrammarDefinition extends GrammarDefinition {
       string('DEC'));
 }
 
-/// Parse a term
-class MonthParser extends GrammarParser {
-  MonthParser() : super(const MonthParserDefinition());
-}
 
-/// the parser definition
+/// parser definition
 class MonthParserDefinition extends MonthGrammarDefinition {
   const MonthParserDefinition();
 

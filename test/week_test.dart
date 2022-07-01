@@ -1,7 +1,6 @@
 library test.week_test;
 
 import 'package:date/date.dart';
-import 'package:date/src/week.dart';
 import 'package:test/test.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';

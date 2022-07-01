@@ -1,12 +1,8 @@
 library test.hour_test;
 
-import 'dart:io';
 import 'package:date/date.dart';
 import 'package:test/test.dart';
-import 'package:date/src/hour.dart';
-import 'package:date/src/interval.dart';
 import 'package:timezone/standalone.dart';
-import 'package:timezone/src/env.dart';
 
 hourTest() {
   var location = getLocation('America/New_York');  // 'US/Mountain', 'US/Central', 'US/Pacific'

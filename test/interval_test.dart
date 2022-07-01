@@ -3,11 +3,6 @@ library test.elec.interval;
 import 'package:date/date.dart';
 import 'package:test/test.dart';
 import 'package:timezone/standalone.dart';
-import 'package:date/src/interval.dart';
-import 'package:date/src/hour.dart';
-import 'package:date/src/month.dart';
-import 'package:date/src/date_base.dart';
-import 'package:date/src/utils.dart';
 import 'package:timezone/timezone.dart';
 
 void soloTest() {
@@ -294,7 +289,6 @@ void tests() {
       var interval = Interval(start, end);
       var res = interval.splitLeft((x) => Hour.beginning(x));
       expect(res.length, 2);
-      expect(res.first is Hour, true);
     });
     test(
         'splitting into hours an interval less than an hour, returns an empty list',

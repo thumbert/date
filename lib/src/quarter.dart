@@ -4,7 +4,6 @@ import 'package:date/date.dart';
 import 'package:date/src/time_ordering.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
-import 'interval.dart';
 
 class Quarter extends Interval implements TimeOrdering<Quarter> {
   int year;

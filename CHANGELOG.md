@@ -1,5 +1,10 @@
 # Changelog
 
+# 3.0.4 (released 2022-07-01)
+- Increased petitparser to 5.0.0.  
+- Fix a bug parsing 'Jan23-Dec22'.  It returned the instant 2023-01-01 00:00:00 
+  instead of an error.
+
 # 3.0.3 (released 2021-12-12)
 - Added package lints, apply dart fix
 - Fix bug in term.withStartYear when term ends on 1-Mar

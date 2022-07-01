@@ -229,18 +229,24 @@ class TermParserDefinition extends TermGrammarDefinition {
   Parser compoundMonthToken() => super.compoundMonthToken().map((each) {
         var start = (each[0] as Month).start;
         var end = (each[2] as Month).end;
+        if (!start.isBefore(end)) {
+          throw ArgumentError('End month before start month!');
+        }
         return Interval(start, end);
       });
+
   @override
   Parser compoundDayToken() => super.compoundDayToken().map((each) {
         var start = (each[0] as Date).start;
         var end = (each[2] as Date).end;
+        if (!start.isBefore(end)) {
+          throw ArgumentError('End day before start day!');
+        }
         return Interval(start, end);
       });
 
   @override
   Parser compoundRelativeToken() => super.compoundRelativeToken().map((each) {
-//    print(each);
         var start = (each[0] as Interval).start;
         var end = (each[1] as Interval).end;
         return Interval(start, end);
@@ -248,7 +254,6 @@ class TermParserDefinition extends TermGrammarDefinition {
 
   @override
   Parser relativeToken() => super.relativeToken().map((each) {
-        //print(each);
         Interval res;
         var start = Date.today(location: UTC);
         Date end;

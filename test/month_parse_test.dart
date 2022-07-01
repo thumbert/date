@@ -1,9 +1,7 @@
 library test.month_parse_test;
 
-import 'dart:io';
 import 'package:test/test.dart';
 import 'package:timezone/data/latest.dart';
-import 'package:timezone/standalone.dart';
 import 'package:date/src/month.dart';
 import 'package:date/src/month_parse.dart';
 import 'package:timezone/timezone.dart';

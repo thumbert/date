@@ -4,7 +4,7 @@ import 'package:petitparser/petitparser.dart';
 import 'package:date/date.dart';
 import 'package:timezone/timezone.dart';
 
-final DateParser _parser = DateParser();
+final _parser = DateParserDefinition().build();
 
 /// Parse a limited number of String inputs into a Date using a parser.
 /// Supported tokens are:
@@ -30,22 +30,18 @@ Date? tryParseDate(String term, {Location? location}) {
   return Date(date.year, date.month, date.day, location: location);
 }
 
-class DateGrammar extends GrammarParser {
-  DateGrammar() : super(const DateGrammarDefinition());
-}
-
 class DateGrammarDefinition extends GrammarDefinition {
   const DateGrammarDefinition();
 
   @override
-  Parser start() => ref(value).end();
+  Parser start() => ref0(value).end();
   Parser token(Parser p) => p.flatten().trim();
   Parser dMMMyyToken() =>
       token(digit().repeat(1, 2)) &
       char('-').optional() &
-      ref(monthToken) &
+      ref0(monthToken) &
       char('-').optional() &
-      ref(yearToken);
+      ref0(yearToken);
   Parser yyyymmddToken() =>
       token(digit().repeat(4, 4)) &
       char('-').optional() &
@@ -59,9 +55,9 @@ class DateGrammarDefinition extends GrammarDefinition {
       char('/') &
       token(digit().repeat(4, 4));
 
-  Parser simpleToken() => ref(dMMMyyToken) | yyyymmddToken() | mdyyyyToken();
+  Parser simpleToken() => ref0(dMMMyyToken) | yyyymmddToken() | mdyyyyToken();
 
-  Parser value() => ref(simpleToken);
+  Parser value() => ref0(simpleToken);
 
   Parser monthToken() =>
       jan() |
@@ -136,12 +132,8 @@ class DateGrammarDefinition extends GrammarDefinition {
       string('DEC'));
 }
 
-/// Parse a term
-class DateParser extends GrammarParser {
-  DateParser() : super(const DateParserDefinition());
-}
 
-/// the parser definition
+/// parser definition
 class DateParserDefinition extends DateGrammarDefinition {
   const DateParserDefinition();
 

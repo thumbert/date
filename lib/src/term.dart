@@ -3,7 +3,6 @@ library term;
 import 'package:date/date.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
-import 'term_parse.dart';
 
 class Term {
   late Interval _interval;

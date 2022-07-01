@@ -42,7 +42,7 @@ void testDate() {
     });
 
     test('Parse a string with specific format', () {
-      expect(Date.parse('29May20', fmt: DateFormat('ddMMMyy')),
+      expect(Date.parse('29May20'), //fmt: DateFormat('ddMMMyy')),
           Date(2020, 5, 29, location: UTC));
     });
 
