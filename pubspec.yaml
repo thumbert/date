@@ -1,6 +1,6 @@
 name: date
 description: Hour, Date, Month implementations for Dart and other time related utilities.
-version: 3.0.4
+version: 3.0.5
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -8,7 +8,7 @@ environment:
 dependencies:
   intl: ^0.17.0
   petitparser: ^5.0.0
-  timezone: ^0.7.0
+  timezone: ^0.8.0
 
 dev_dependencies:
   lints: ^2.0.0

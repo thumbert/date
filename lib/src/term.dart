@@ -127,6 +127,4 @@ String prettyTerm(Interval interval) {
     var end = Date.fromTZDateTime(interval.end).previous;
     return '${start.toString(_fmt)}-${end.toString(_fmt)}';
   }
-
-  throw ArgumentError('Not a term $interval');
 }
