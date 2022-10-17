@@ -2,6 +2,7 @@ library test.date_parse_test;
 
 import 'package:date/date.dart';
 import 'package:date/src/date_parse.dart';
+import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart';
@@ -29,7 +30,31 @@ void tests() {
   });
 }
 
+
+/// Parse 7305 days in
+///  * 105 millis using petitparser
+///  *  85 millis using Dart's DateFormat
+///  *  47 millis using raw int and substring parsing of the yyyy-mm-dd string
+///  This justifies creation of Date.fromIsoString
+void speedTest() {
+  var days = Term.parse('1Jan01-31Dec20', UTC).days().map((e) => e.toString());
+  print(days.length);
+  final fmt = DateFormat('yyyy-mm-dd');
+  var sw = Stopwatch()..start();
+  for (var day in days) {
+    // var aux = Date.parse(day, fmt: fmt);
+    // var aux = Date.parse(day);
+    var aux = Date.utc(int.parse(day.substring(0,4)), int.parse(day.substring(5,7)),
+      int.parse(day.substring(8,10)));
+    var bux = aux;
+  }
+  sw.stop();
+  print(sw.elapsedMilliseconds);
+}
+
 void main() async {
   initializeTimeZones();
-  tests();
+  // tests();
+
+  speedTest();
 }

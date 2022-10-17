@@ -1,10 +1,11 @@
 # Changelog
 
-# 3.0.5 (not yet released)
+# 3.0.5 (released 2022-10-17)
 - prettyTerm() now recognizes calendar years, e.g. 'Cal 23' and quarters, 
   e.g. 'Q3 22'. 
 - added methods isQuarter() and isYear() on interval.
 - bump timezone to 0.8.0
+- Add a speed parser Date.fromIsoString static method.  Twice as fast as usual parsing.
 
 # 3.0.4 (released 2022-07-01)
 - Increased petitparser to 5.0.0.  

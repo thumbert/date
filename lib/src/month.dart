@@ -18,7 +18,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   static final DateFormat _isoFmt = DateFormat('yyyy-MM');
 
   /// Return the current month.  If location is not specified, return it
-  /// in [UTC] timezone.20VN!Lolita
+  /// in [UTC] timezone.
   /// 2020
   static Month current({DateTime? datetime, Location? location}) {
     datetime ??= DateTime.now();

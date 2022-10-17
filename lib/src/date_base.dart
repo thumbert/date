@@ -71,6 +71,12 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     return Date(startZ.year, startZ.month, startZ.day, location: location);
   }
 
+  /// Parse Strings in the yyyy-mm-dd format only, e.g. '2020-03-17'.
+  static Date fromIsoString(String x, {Location? location}) {
+    return Date(int.parse(x.substring(0,4)), int.parse(x.substring(5,7)),
+        int.parse(x.substring(8,10)), location: location ?? UTC);
+  }
+
   /// A convenience method to convert Excel dates (origin 1900-01-01)
   static Date fromExcel(int value, {Location? location}) {
     var startZ = DateTime.fromMillisecondsSinceEpoch(
@@ -92,7 +98,11 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// * mm/dd/yyyy format is accepted,
   /// * ddMMMyy format is accepted.
   static Date parse(String input,
-      {Location? location, @deprecated DateFormat? fmt}) {
+      {Location? location, DateFormat? fmt}) {
+    if (fmt != null) {
+      var aux = fmt.parse(input);
+      return Date(aux.year, aux.month, aux.day, location: location ?? UTC);
+    }
     return parseDate(input, location: location);
   }
 
