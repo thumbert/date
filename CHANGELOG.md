@@ -1,6 +1,6 @@
 # Changelog
 
-# 3.0.5 (released 2022-10-17)
+# 3.0.6 (released 2022-10-17)
 - prettyTerm() now recognizes calendar years, e.g. 'Cal 23' and quarters, 
   e.g. 'Q3 22'. 
 - added methods isQuarter() and isYear() on interval.
