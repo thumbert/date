@@ -1,5 +1,9 @@
 # Changelog
 
+
+# Release 2023-01-12
+- Add a `copyWith()` extension to TZDateTime to easily create other TZDateTime 
+
 # 3.0.6 (released 2022-10-17)
 - prettyTerm() now recognizes calendar years, e.g. 'Cal 23' and quarters, 
   e.g. 'Q3 22'. 

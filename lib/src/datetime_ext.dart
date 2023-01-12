@@ -19,10 +19,9 @@ extension DateTimeExtension on num {
   }
 }
 
-
 extension DateTimeExtension2 on DateTime {
   bool isBeginningOfHour() {
-    if (millisecondsSinceEpoch/1000 % 3600 != 0) {
+    if (millisecondsSinceEpoch / 1000 % 3600 != 0) {
       return false;
     }
     return true;
@@ -36,7 +35,7 @@ extension DateTimeExtension2 on DateTime {
   }
 
   bool isBeginningOfWeek() {
-    if (weekday != 1 || !isMidnight() ) {
+    if (weekday != 1 || !isMidnight()) {
       return false;
     }
     return true;
@@ -55,4 +54,24 @@ extension DateTimeExtension2 on DateTime {
     }
     return true;
   }
+}
+
+extension TZDateTimeExt on TZDateTime {
+  TZDateTime copyWith(
+          {Location? location,
+          int? year,
+          int? month,
+          int? day,
+          int? hour,
+          int? minute,
+          int? second}) =>
+      TZDateTime(
+        location ?? this.location,
+        year ?? this.year,
+        month ?? this.month,
+        day ?? this.day,
+        hour ?? this.hour,
+        minute ?? this.minute,
+        second ?? this.second,
+      );
 }
