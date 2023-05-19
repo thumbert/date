@@ -1,5 +1,7 @@
 # Changelog
 
+# Release 2023-05-19
+- Add the list of month abbreviations ['Jan', 'Feb', ...] as a static constant in Month
 
 # Release 2023-01-12
 - Add a `copyWith()` extension to TZDateTime to easily create other TZDateTime 

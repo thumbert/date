@@ -163,4 +163,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   String toIso8601String() => _isoFmt.format(start);
 
   Interval toInterval() => Interval(start, end);
+
+  static const shortNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+    'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 }
