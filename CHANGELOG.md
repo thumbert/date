@@ -1,5 +1,8 @@
 # Changelog
 
+# Release 2023-05-29
+- Bump sdk upper limit to 4.0.0
+
 # Release 2023-05-19
 - Add the list of month abbreviations ['Jan', 'Feb', ...] as a static constant in Month
 
