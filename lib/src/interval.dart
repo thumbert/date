@@ -289,7 +289,7 @@ class Interval implements Comparable<Interval> {
   }
 }
 
-class _HourIterator extends Iterator<Hour> {
+class _HourIterator implements Iterator<Hour> {
   TZDateTime start, end;
   TZDateTime? _current;
   static const h1 = Duration(hours: 1);

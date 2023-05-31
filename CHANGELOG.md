@@ -1,5 +1,9 @@
 # Changelog
 
+# Release 2023-05-31
+- Bump sdk lower limit to 3.0.2
+- Bump up various packages
+
 # Release 2023-05-29
 - Bump sdk upper limit to 4.0.0
 

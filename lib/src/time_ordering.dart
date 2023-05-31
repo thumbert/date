@@ -10,6 +10,6 @@ abstract class Additive<E> {
 }
 
 /// Just a union so I can extend it
-abstract class ComparableWithAdd<E> extends Comparable<E> {
+abstract class ComparableWithAdd<E> implements Comparable<E> {
   E add(int i);
 }

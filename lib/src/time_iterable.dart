@@ -31,7 +31,7 @@ class TimeIterable<E extends ComparableWithAdd<E>> extends Object
 }
 
 /// An iterator for time interval objects.  The type [E] needs to have an [add] method.
-class TimeIterator<E extends ComparableWithAdd<E>> extends Iterator<E?> {
+class TimeIterator<E extends ComparableWithAdd<E>> implements Iterator<E?> {
   E? _current, start, end;
   int step;
   late Function _isDone;
