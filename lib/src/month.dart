@@ -152,6 +152,9 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   /// Days of the month as list.
   List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt));
 
+  /// Quickly get the number of days in this month
+  int get daysInMonth => DateTime(year, month + 1, 0).day;
+
   /// Format a month.  The default format is MMMyy.
   @override
   String toString([DateFormat? fmt]) {

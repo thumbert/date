@@ -11,7 +11,6 @@ void tests() {
     test('with start year', () {
       var nq20 = Term.parse('Jul20-Aug20', location);
       var nq18 = nq20.withStartYear(2018);
-      print(nq18);
       expect(nq18, Term.parse('Jul18-Aug18', location));
       var xh20 = Term.parse('Nov20-Mar21', location);
       var xh18 = xh20.withStartYear(2018);

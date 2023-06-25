@@ -83,8 +83,16 @@ void tests() {
       var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
       var days = it
           .splitLeft((dt) => Month.fromTZDateTime(dt))
-          .cast<Month>()
           .map((m) => m.days().length)
+          .toList();
+      expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
+    });
+
+    test('Get the number of days in a month', () {
+      var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
+      var days = it
+          .splitLeft((dt) => Month.fromTZDateTime(dt))
+          .map((m) => m.daysInMonth)
           .toList();
       expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
     });

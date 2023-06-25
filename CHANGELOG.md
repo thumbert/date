@@ -1,5 +1,9 @@
 # Changelog
 
+# Release 2023-06-25
+- Add number of days in month method to Month object
+- Minor cleanup of tests
+
 # Release 2023-05-31
 - Bump sdk lower limit to 3.0.2
 - Bump up various packages

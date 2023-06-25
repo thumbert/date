@@ -1,6 +1,6 @@
 library test_all;
 
-import 'package:timezone/standalone.dart';
+import 'package:timezone/data/latest.dart';
 import 'date_test.dart' as date;
 import 'date_parse_test.dart' as date_parse;
 import 'extensions_test.dart' as ext;
@@ -14,8 +14,8 @@ import 'quarter_test.dart' as quarter;
 import 'utils_test.dart' as utils;
 import 'week_test.dart' as week;
 
-void main() async {
-  await initializeTimeZone();
+Future<void> main() async {
+  initializeTimeZones();
 
   date.testDate();
   date_parse.tests();
