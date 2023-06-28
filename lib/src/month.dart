@@ -7,12 +7,11 @@ import 'package:timezone/timezone.dart';
 
 /// Class representing a calendar Month implemented as an Interval.
 class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
-  int year;
+  late final int year;
 
   /// between Jan=1 to Dec=12
-  int month;
+  late final int month;
   late int _value;
-  // Location location;
 
   static final DateFormat _defaultFmt = DateFormat('MMMyy');
   static final DateFormat _isoFmt = DateFormat('yyyy-MM');
@@ -42,12 +41,22 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
     _value = year * 12 + month;
   }
 
+  /// Return the month that contains the tz datetime [dt].
+  Month.contains(TZDateTime dt)
+      : super(TZDateTime(dt.location, dt.year, dt.month),
+            TZDateTime(dt.location, dt.year, dt.month + 1)) {
+    year = dt.year;
+    month = dt.month;
+    _value = year * 12 + month;
+  }
+
   /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
   static Month parse(String s,
       {@deprecated DateFormat? fmt, Location? location}) {
     return parseMonth(s, location: location);
   }
 
+  @Deprecated('Use Month.contains')
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
       : year = datetime.year,
@@ -167,6 +176,18 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   Interval toInterval() => Interval(start, end);
 
-  static const shortNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
-    'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  static const shortNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
 }

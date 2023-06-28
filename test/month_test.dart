@@ -24,11 +24,11 @@ void tests() {
 
     test('Create months from DateTime', () {
       Month m;
-      m = Month.fromTZDateTime(TZDateTime(local, 2014));
+      m = Month.contains(TZDateTime(local, 2014));
       expect([m.year, m.month], [2014, 1]);
-      m = Month.fromTZDateTime(TZDateTime(local, 2014, 11));
+      m = Month.contains(TZDateTime(local, 2014, 11));
       expect([m.year, m.month], [2014, 11]);
-      m = Month.fromTZDateTime(TZDateTime(local, 2014, 12));
+      m = Month.contains(TZDateTime(local, 2014, 12));
       expect([m.year, m.month], [2014, 12]);
     });
 
@@ -75,14 +75,14 @@ void tests() {
 
     test('Generate list of months', () {
       var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
-      var months = it.splitLeft((dt) => Month.fromTZDateTime(dt));
+      var months = it.splitLeft((dt) => Month.contains(dt));
       expect(months.length, 12);
     });
 
     test('Get the days of the month', () {
       var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
       var days = it
-          .splitLeft((dt) => Month.fromTZDateTime(dt))
+          .splitLeft((dt) => Month.contains(dt))
           .map((m) => m.days().length)
           .toList();
       expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);
@@ -91,7 +91,7 @@ void tests() {
     test('Get the number of days in a month', () {
       var it = Interval(TZDateTime.utc(2015), TZDateTime.utc(2016));
       var days = it
-          .splitLeft((dt) => Month.fromTZDateTime(dt))
+          .splitLeft((dt) => Month.contains(dt))
           .map((m) => m.daysInMonth)
           .toList();
       expect(days, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]);

@@ -23,7 +23,7 @@ void tests() {
     });
     test('term interval', () {
       var term = Term.parse('Jan21-Mar21', location);
-      var months = term.interval.splitLeft((dt) => Month.fromTZDateTime(dt));
+      var months = term.interval.splitLeft((dt) => Month.contains(dt));
       expect(months.length, 3);
     });
     test('term is*', () {

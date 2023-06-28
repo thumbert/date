@@ -66,16 +66,16 @@ class Term {
   }
 
   bool isOneMonth() {
-    var mStart = Month.fromTZDateTime(interval.start);
-    var mEnd = Month.fromTZDateTime(interval.end);
+    var mStart = Month.contains(interval.start);
+    var mEnd = Month.contains(interval.end);
     return isBeginningOfMonth(interval.start) &&
         isBeginningOfMonth(interval.start) &&
         mStart == mEnd.previous;
   }
 
   bool isMonthRange() {
-    var mStart = Month.fromTZDateTime(interval.start);
-    var mEnd = Month.fromTZDateTime(interval.end);
+    var mStart = Month.contains(interval.start);
+    var mEnd = Month.contains(interval.end);
     return isBeginningOfMonth(interval.start) &&
         isBeginningOfMonth(interval.end) &&
         mStart != mEnd.previous;
@@ -108,8 +108,8 @@ String prettyTerm(Interval interval) {
   if (nDays == 1) return start.toString(_fmt);
 
   if (interval.start.isBeginningOfMonth() && interval.end.isBeginningOfMonth()) {
-    var mStart = Month.fromTZDateTime(interval.start);
-    var mEnd = Month.fromTZDateTime(interval.end).previous;
+    var mStart = Month.contains(interval.start);
+    var mEnd = Month.contains(interval.end).previous;
     if (mStart == mEnd) {
       // it's exactly one month
       return mStart.toString();

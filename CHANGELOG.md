@@ -1,5 +1,9 @@
 # Changelog
 
+# Release 2023-06-28
+- Add Month.contains(tzDateTime).  Always seem to be what I want to have.
+  Deprecate Month.fromTZDateTime
+
 # Release 2023-06-25
 - Add number of days in month method to Month object
 - Minor cleanup of tests

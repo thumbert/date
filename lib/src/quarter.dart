@@ -19,7 +19,7 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
       : super(TZDateTime.utc(year), TZDateTime.utc(year)) {
     _value = 100 * year + (quarter - 1) * 25;
     start = TZDateTime(location, year, (quarter - 1) * 3 + 1);
-    end = Month.fromTZDateTime(start).add(2).end;
+    end = Month.contains(start).add(2).end;
   }
 
   Quarter.fromTZDateTime(TZDateTime datetime)
@@ -30,14 +30,14 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
     quarter = month ~/ 3 + 1;
     _value = 100 * year + (quarter - 1) * 25;
     start = TZDateTime(datetime.location, year, (quarter - 1) * 3 + 1);
-    end = Month.fromTZDateTime(start).add(2).end;
+    end = Month.contains(start).add(2).end;
   }
 
   Quarter.utc(this.year, this.quarter)
       : super(TZDateTime.utc(year), TZDateTime.utc(year)) {
     _value = 100 * year + (quarter - 1) * 25;
     start = TZDateTime.utc(year, (quarter - 1) * 3 + 1);
-    end = Month.fromTZDateTime(start).add(2).end;
+    end = Month.contains(start).add(2).end;
   }
 
   /// Parse the "ISO" format yyyy-Qq, yyyyQq or the readable format Qq, yyyy
