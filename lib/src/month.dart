@@ -42,7 +42,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   }
 
   /// Return the month that contains the tz datetime [dt].
-  Month.contains(TZDateTime dt)
+  Month.containing(TZDateTime dt)
       : super(TZDateTime(dt.location, dt.year, dt.month),
             TZDateTime(dt.location, dt.year, dt.month + 1)) {
     year = dt.year;
@@ -56,7 +56,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
     return parseMonth(s, location: location);
   }
 
-  @Deprecated('Use Month.contains')
+  @Deprecated('Use Month.containing')
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
       : year = datetime.year,
@@ -159,7 +159,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   int get hashCode => _value;
 
   /// Days of the month as list.
-  List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt));
+  List<Date> days() => splitLeft((dt) => Date.containing(dt));
 
   /// Quickly get the number of days in this month
   int get daysInMonth => DateTime(year, month + 1, 0).day;

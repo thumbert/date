@@ -20,7 +20,7 @@ Future<void> main() async {
   date.testDate();
   date_parse.tests();
   ext.tests();
-  hour.hourTest();
+  hour.tests();
   interval.tests();
   month.tests();
   month_parse.tests();

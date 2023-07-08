@@ -316,7 +316,7 @@ void tests() {
     });
     test('Split 1 month into days using splitLeft', () {
       var interval = Month(2017, 3, location: UTC);
-      var days = interval.splitLeft((dt) => Date.fromTZDateTime(dt));
+      var days = interval.splitLeft((dt) => Date.containing(dt));
       expect(days.length, 31);
     });
     test('Split 3 months into days using splitLeft', () {

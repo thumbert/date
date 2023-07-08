@@ -33,6 +33,21 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     _calcValue();
   }
 
+  /// Construct a [Date] from a TZDateTime.  Return the Date that contains this
+  /// datetime.
+  Date.containing(TZDateTime datetime)
+      : year = datetime.year,
+        month = datetime.month,
+        day = datetime.day,
+        super(
+          TZDateTime(
+              datetime.location, datetime.year, datetime.month, datetime.day),
+          TZDateTime(datetime.location, datetime.year, datetime.month,
+              datetime.day + 1)) {
+    _calcValue();
+  }
+
+  @Deprecated('Use Date.containing')
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
   /// datetime.
   Date.fromTZDateTime(TZDateTime datetime)

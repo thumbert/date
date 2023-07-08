@@ -5,12 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
 
 class Term {
-  late Interval _interval;
-
   /// A simple interval for a period between two dates, end date inclusive.
   Term(Date start, Date end) {
     _interval = Interval(start.start, end.end);
   }
+
+  late Interval _interval;
+
 
   Term.parse(String x, Location location) {
     _interval = parseTerm(x, tzLocation: location)!;
@@ -47,13 +48,33 @@ class Term {
     return Term(newStart, newEnd);
   }
 
-  List<Date> days() => _interval.splitLeft((dt) => Date.fromTZDateTime(dt));
+  List<Date> days() => _interval.splitLeft((dt) => Date.containing(dt));
 
-  List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
+  // List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
 
-  Date get startDate => Date.fromTZDateTime(_interval.start);
+  List<Hour> hours() {
+    var approxCount = (_interval.end.millisecondsSinceEpoch - _interval.start.millisecondsSinceEpoch)/3600000;
+    var hour = Hour.beginning(_interval.start);
+    // var out = <Hour>[];
+    var sw = Stopwatch()..start();
+    var out = List<Hour>.filled(approxCount.round(), hour);
 
-  Date get endDate => Date.fromTZDateTime(_interval.end).subtract(1);
+    for (var i=0; i < approxCount; i++) {
+      out[i] = hour;
+      hour = hour.next;
+    }
+    sw.stop();
+    print(sw.elapsedMilliseconds);
+
+    // while (out.last.end.millisecondsSinceEpoch < _interval.end.millisecondsSinceEpoch) {
+    //   out.add(out.last.next);
+    // }
+    return out;
+  }
+
+  Date get startDate => Date.containing(_interval.start);
+
+  Date get endDate => Date.containing(_interval.end).subtract(1);
 
   Interval get interval => _interval;
 
@@ -66,16 +87,16 @@ class Term {
   }
 
   bool isOneMonth() {
-    var mStart = Month.contains(interval.start);
-    var mEnd = Month.contains(interval.end);
+    var mStart = Month.containing(interval.start);
+    var mEnd = Month.containing(interval.end);
     return isBeginningOfMonth(interval.start) &&
         isBeginningOfMonth(interval.start) &&
         mStart == mEnd.previous;
   }
 
   bool isMonthRange() {
-    var mStart = Month.contains(interval.start);
-    var mEnd = Month.contains(interval.end);
+    var mStart = Month.containing(interval.start);
+    var mEnd = Month.containing(interval.end);
     return isBeginningOfMonth(interval.start) &&
         isBeginningOfMonth(interval.end) &&
         mStart != mEnd.previous;
@@ -104,12 +125,12 @@ var _fmt = DateFormat('dMMMyy');
 ///
 String prettyTerm(Interval interval) {
   var nDays = interval.end.difference(interval.start).inDays;
-  var start = Date.fromTZDateTime(interval.start);
+  var start = Date.containing(interval.start);
   if (nDays == 1) return start.toString(_fmt);
 
   if (interval.start.isBeginningOfMonth() && interval.end.isBeginningOfMonth()) {
-    var mStart = Month.contains(interval.start);
-    var mEnd = Month.contains(interval.end).previous;
+    var mStart = Month.containing(interval.start);
+    var mEnd = Month.containing(interval.end).previous;
     if (mStart == mEnd) {
       // it's exactly one month
       return mStart.toString();
@@ -124,7 +145,7 @@ String prettyTerm(Interval interval) {
     }
   } else {
     // it's a day range
-    var end = Date.fromTZDateTime(interval.end).previous;
+    var end = Date.containing(interval.end).previous;
     return '${start.toString(_fmt)}-${end.toString(_fmt)}';
   }
 }

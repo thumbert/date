@@ -1,5 +1,9 @@
 # Changelog
 
+# Release 2023-07-08
+- Rename Month.contains to Month.containing to be aligned with Hour.containing. 
+- Rename Date.fromTZDateTime to Date.containing.
+
 # Release 2023-06-28
 - Add Month.contains(tzDateTime).  Always seem to be what I want to have.
   Deprecate Month.fromTZDateTime

@@ -20,7 +20,7 @@ class Week extends Interval implements TimeOrdering<Week> {
       : super(TZDateTime(location, year), TZDateTime(location, year)) {
     _value = 100 * year + week;
     start = weekStart(year, week, location);
-    end = Date.fromTZDateTime(start).add(7).start;
+    end = Date.containing(start).add(7).start;
   }
 
   /// Implement https://en.wikipedia.org/wiki/ISO_week_date#Calculating_the_week_number_from_a_month_and_day_of_the_month_or_ordinal_date
@@ -44,7 +44,7 @@ class Week extends Interval implements TimeOrdering<Week> {
     }
     _value = 100 * year + week;
     start = weekStart(year, week, location);
-    end = Date.fromTZDateTime(start).add(7).start;
+    end = Date.containing(start).add(7).start;
   }
 
   /// Parse the ISO format yyyy-Www or yyyyWww
@@ -74,7 +74,7 @@ class Week extends Interval implements TimeOrdering<Week> {
       // it's last week of the previous year
       w1Start = weekStart(dt.year - 1, 1, dt.location);
     }
-    var start = Date.fromTZDateTime(w1Start);
+    var start = Date.containing(w1Start);
     var diff = date.value - start.value;
     var week = diff ~/ 7 + 1;
     return week;
@@ -99,7 +99,7 @@ class Week extends Interval implements TimeOrdering<Week> {
   @override
   bool isBefore(Week that) => _value < that._value;
 
-  List<Date> days() => splitLeft((dt) => Date.fromTZDateTime(dt));
+  List<Date> days() => splitLeft((dt) => Date.containing(dt));
 
   @override
   String toString() {

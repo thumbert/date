@@ -244,6 +244,8 @@ class Interval implements Comparable<Interval> {
   List<K> splitLeft<K extends Interval>(K Function(TZDateTime) f) {
     var res = <K>[];
     var current = f(start);
+    // NOTE: the calculation of milliseconds is expensive.  May want to think
+    // of alternatives for a hot path.
     while ((current.end.millisecondsSinceEpoch)
             .compareTo(end.millisecondsSinceEpoch) <
         1) {

@@ -26,7 +26,7 @@ void testDate() {
 
     test('Constructor from TZDateTime for DST', () {
       var eastern = getLocation('America/New_York');
-      var dst = Date.fromTZDateTime(TZDateTime(eastern, 2017, 3, 12));
+      var dst = Date.containing(TZDateTime(eastern, 2017, 3, 12));
       expect(dst.end, TZDateTime(eastern, 2017, 3, 13));
     });
 
