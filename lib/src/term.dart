@@ -50,27 +50,7 @@ class Term {
 
   List<Date> days() => _interval.splitLeft((dt) => Date.containing(dt));
 
-  // List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
-
-  List<Hour> hours() {
-    var approxCount = (_interval.end.millisecondsSinceEpoch - _interval.start.millisecondsSinceEpoch)/3600000;
-    var hour = Hour.beginning(_interval.start);
-    // var out = <Hour>[];
-    var sw = Stopwatch()..start();
-    var out = List<Hour>.filled(approxCount.round(), hour);
-
-    for (var i=0; i < approxCount; i++) {
-      out[i] = hour;
-      hour = hour.next;
-    }
-    sw.stop();
-    print(sw.elapsedMilliseconds);
-
-    // while (out.last.end.millisecondsSinceEpoch < _interval.end.millisecondsSinceEpoch) {
-    //   out.add(out.last.next);
-    // }
-    return out;
-  }
+  List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
 
   Date get startDate => Date.containing(_interval.start);
 
