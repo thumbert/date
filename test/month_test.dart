@@ -22,6 +22,11 @@ void tests() {
       expect(m.toString(), 'Jan14');
     });
 
+    test('Create months from int', () {
+      expect(Month.fromInt(202205), Month.utc(2022, 5));
+      expect(Month.fromInt(202205, location: local), Month(2022, 5, location: local));
+    });
+
     test('Create months from DateTime', () {
       Month m;
       m = Month.containing(TZDateTime(local, 2014));

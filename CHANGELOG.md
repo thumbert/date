@@ -1,5 +1,8 @@
 # Changelog
 
+# Release 2023-07-29
+- Add static methods Date.fromInt and Month.fromInt
+
 # Release 2023-07-28
 - Document that Month.parse and Term.parse throw on incorrect input.
 

@@ -69,6 +69,19 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
     _value = datetime.year * 12 + datetime.month;
   }
 
+  /// Parse strings in the yyyy-mm format only, e.g. '2020-03'.
+  static Month fromIsoString(String x, {Location? location}) {
+    return Month(int.parse(x.substring(0,4)), int.parse(x.substring(5,7)),
+        location: location ?? UTC);
+  }
+
+  /// Given an integer input like 202205 return the Month(2022,5).
+  static Month fromInt(int x, {Location? location}) {
+    var month = x % 100;
+    var year = x ~/ 100;
+    return Month(year, month, location: location ?? UTC);
+  }
+
   int _calcYear(int x) => (x - 1) ~/ 12;
   int _calcMonth(int x) => (x - 1) % 12 + 1;
 

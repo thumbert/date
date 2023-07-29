@@ -62,6 +62,12 @@ void testDate() {
       expect(Date.fromExcel(367), Date(1901, 1, 1, location: UTC));
     });
 
+    test('From integer', () {
+      expect(Date.fromInt(20220517), Date.utc(2022, 5, 17));
+      expect(Date.fromInt(20220517, location: local),
+          Date(2022, 5, 17, location: UTC));
+    });
+
     test('to Excel date', () {
       expect(25569, Date(1970, 1, 1, location: UTC).toExcel());
       expect(43987, Date(2020, 6, 5, location: UTC).toExcel());

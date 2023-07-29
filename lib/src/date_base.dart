@@ -92,6 +92,14 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
         int.parse(x.substring(8,10)), location: location ?? UTC);
   }
 
+  /// Given an integer input like 20220517 return the Date(2022,5,17).
+  static Date fromInt(int x, {Location? location}) {
+    var day = x % 100;
+    var month = (x % 10000) ~/ 100;
+    var year = x ~/ 10000;
+    return Date(year, month, day, location: location ?? UTC);
+  }
+
   /// A convenience method to convert Excel dates (origin 1900-01-01)
   static Date fromExcel(int value, {Location? location}) {
     var startZ = DateTime.fromMillisecondsSinceEpoch(
