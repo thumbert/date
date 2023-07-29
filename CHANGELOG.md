@@ -1,5 +1,8 @@
 # Changelog
 
+# Release 2023-07-28
+- Document that Month.parse and Term.parse throw on incorrect input.
+
 # Release 2023-07-08
 - Rename Month.contains to Month.containing to be aligned with Hour.containing. 
 - Rename Date.fromTZDateTime to Date.containing.

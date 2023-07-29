@@ -9,6 +9,9 @@ final _parser = MonthParserDefinition().build();
 /// Parse a limited number of String inputs into a month term using a parser.
 /// Supported tokens are:
 /// <p>'Jan18', 'January 2018', 'Jan 2018', 'F18', '2018-01', '201801'
+///
+/// Throws a [ParserException] if parsing fails.
+///
 Month parseMonth(String term, {Location? location}) {
   location ??= UTC;
   var res = _parser.parse(term);

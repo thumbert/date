@@ -51,6 +51,9 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   }
 
   /// Parse a string into a Month in the UTC timezone.  The default format is 'MMMyy'.
+  ///
+  /// Throws a [ParserException] if parsing fails.
+  ///
   static Month parse(String s,
       {@deprecated DateFormat? fmt, Location? location}) {
     return parseMonth(s, location: location);

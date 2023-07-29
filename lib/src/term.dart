@@ -2,6 +2,7 @@ library term;
 
 import 'package:date/date.dart';
 import 'package:intl/intl.dart';
+import 'package:petitparser/core.dart';
 import 'package:timezone/timezone.dart';
 
 class Term {
@@ -13,6 +14,8 @@ class Term {
   late Interval _interval;
 
 
+  /// Throws a [ParserException] if parsing fails.
+  ///
   Term.parse(String x, Location location) {
     _interval = parseTerm(x, tzLocation: location)!;
   }
