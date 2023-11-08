@@ -30,6 +30,50 @@ class Term {
     _interval = interval;
   }
 
+  /// Generate a list of terms.
+  /// For example:
+  /// <p>If years = [2021, 2022, 2023], return
+  ///   ['Jan21-Dec21', 'Jan22-Dec22', 'Jan23-Dec23']
+  ///
+  /// <p>If years = [2021, 2022, 2023], monthRange = (12,3), return
+  ///   ['Dec21-Mar22', 'Dec22-Mar23', 'Dec23-Mar24']
+  ///
+  /// <p>If years = [2021, 2022, 2023], monthRange = (12,3),  dayRange = (5,12)
+  ///   return ['5Dec21-12Mar22', '5Dec22-12Mar23', '5Dec23-12Mar24']
+  ///
+  static List<Term> generate({required List<int> years, (int,int)? monthRange,
+      (int,int)? dayRange, required Location location}) {
+    var out = <Term>[];
+    for (var year in years) {
+      Date start, end;
+      if (monthRange == null) {
+        start = Date(year, 1, 1, location: location);
+        end = Date(year, 12, 31, location: location);
+      } else {
+        if (dayRange == null) {
+          start = Date(year, monthRange.$1, 1, location: location);
+          if (monthRange.$2 >= monthRange.$1) {
+            var monthEnd = Month(year, monthRange.$2, location: location);
+            end = monthEnd.endDate;
+          } else {
+            var monthEnd = Month(year+1, monthRange.$2, location: location);
+            end = monthEnd.endDate;
+          }
+        } else {
+          start = Date(year, monthRange.$1, dayRange.$1, location: location);
+          if (monthRange.$2 >= monthRange.$1) {
+            end = Date(year, monthRange.$2, dayRange.$2, location: location);
+          } else {
+            end = Date(year+1, monthRange.$2, dayRange.$2, location: location);
+          }
+        }
+      }
+      out.add(Term(start, end));
+    }
+
+    return out;
+  }
+
   Location get location => interval.start.location;
 
   /// Return a similar term that starts in year [year].

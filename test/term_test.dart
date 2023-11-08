@@ -8,6 +8,30 @@ import 'package:timezone/timezone.dart';
 void tests() {
   group('Term tests:', () {
     var location = getLocation('America/New_York');
+    test('Term generate', () {
+      var years = [2021, 2022, 2023];
+      expect(Term.generate(years: years, location: UTC), [
+        Term.parse('Jan21-Dec21', UTC),
+        Term.parse('Jan22-Dec22', UTC),
+        Term.parse('Jan23-Dec23', UTC),
+      ]);
+      expect(Term.generate(years: years, monthRange: (12, 3), location: UTC), [
+        Term.parse('Dec21-Mar22', UTC),
+        Term.parse('Dec22-Mar23', UTC),
+        Term.parse('Dec23-Mar24', UTC),
+      ]);
+      expect(
+          Term.generate(
+              years: years,
+              monthRange: (12, 3),
+              dayRange: (5, 10),
+              location: UTC),
+          [
+            Term.parse('5Dec21-10Mar22', UTC),
+            Term.parse('5Dec22-10Mar23', UTC),
+            Term.parse('5Dec23-10Mar24', UTC),
+          ]);
+    });
     test('with start year', () {
       var nq20 = Term.parse('Jul20-Aug20', location);
       var nq18 = nq20.withStartYear(2018);

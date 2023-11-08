@@ -9,7 +9,7 @@ classes for a date, month, hour.
 **[Hour](#hour-class)**  
 **[Date](#date-class)**  
 **[Month](#month-class)**  
-**[Term parser](#term-parser)**  
+**[Term](#term)**  
 
 ## Interval class
 A class to represent the time interval between a start (closed) and end (open) time 
@@ -78,9 +78,12 @@ m1.nextN(12); // next 12 months from Mar17 (not included), e.g [Apr17, ... Mar18
 m1.upTo(Month(2017,12)); // [Mar17, Apr17, May17, ... Dec17]  
 ```
 
-## Term parser
+## Term
 
-A parser for time intervals based on a proper grammar.  You can parse 
+Term is a higher level interval-like concept that has a start and end **`Date`**
+(no hours).  
+
+It comes with a parser for date intervals based on a proper grammar.  You can parse 
 * a Date, e.g. '13Jan21', '2021-01-13'
 * a Month, e.g. 'Jan21', 'January 2021', 'Jan 2021', 'F21', '2021-01'
 * a Quarter, e.g. 'Q2, 21', 'Q2 2021', 'Q2, 2021'
@@ -98,11 +101,18 @@ or intervals relative to the current date
 
 For example
 ```dart
-parseTerm('Q3,2017');
-parseTerm('Cal22');
-parseTerm('-3m+7d');
-parseTerm('Jan22-Jun22');
-parseTerm('3Jan22-15Jun22');
+Term.parse('Q3,2017');
+Term.parse('Cal22');
+Term.parse('-3m+7d');
+Term.parse('Jan22-Jun22');
+Term.parse('3Jan22-15Jun22');
+```
+
+You can generate several terms at once with `Term.generate`.  For example
+```dart
+Term.generate([2022,2023], location: UTC); // ['Jan22-Dec22', 'Jan23-Dec23']
+Term.generate([2022,2023], monthRange: (12,3), location: UTC); // ['Dec22-Mar23', 'Dec23-Mar24']
+Term.generate([2022,2023], monthRange: (12,3), dayRange: (5,10), location: UTC); // ['5Dec22-10Mar23', '5Dec23-10Mar24']
 ```
 
 ## Features and bugs

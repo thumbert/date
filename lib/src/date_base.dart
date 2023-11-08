@@ -280,7 +280,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   /// Get all the hours in this day
-  List<Hour> hours() => splitLeft((dt) => Hour.beginning(dt)).cast<Hour>();
+  List<Hour> hours() => splitLeft((dt) => Hour.beginning(dt));
 
   @override
   String toString([DateFormat? fmt]) {
