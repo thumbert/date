@@ -5,6 +5,9 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+# Release 2023-11-12
+- Bumped petitparser to 6.0.0
+
 # Release 2023-11-08
 - Add Term.generate a convenience method to create multiple terms at once
 - Remove an unnecessary cast from Date hours() method 

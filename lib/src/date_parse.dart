@@ -13,7 +13,7 @@ final _parser = DateParserDefinition().build();
 Date parseDate(String term, {Location? location}) {
   location ??= UTC;
   var res = _parser.parse(term);
-  if (res.isFailure) {
+  if (res is Failure) {
     throw FormatException('Malformed input: $term');
   }
   Date date = res.value;
@@ -23,7 +23,7 @@ Date parseDate(String term, {Location? location}) {
 Date? tryParseDate(String term, {Location? location}) {
   location ??= UTC;
   var res = _parser.parse(term);
-  if (res.isFailure) {
+  if (res is Failure) {
     return null;
   }
   Date date = res.value;

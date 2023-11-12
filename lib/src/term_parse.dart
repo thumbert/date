@@ -25,7 +25,7 @@ final _parser = TermParserDefinition().build();
 /// Throws an [ArgumentError] if the parsing fails.
 Interval? parseTerm(String term, {Location? tzLocation}) {
   var res = _parser.parse(term);
-  if (res.isFailure) throw ArgumentError('Couldn\'t parse term $term.');
+  if (res is Failure) throw ArgumentError('Couldn\'t parse term $term.');
   var interval = res.value as Interval?;
   if (tzLocation != null) {
     var start = interval!.start;
