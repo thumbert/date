@@ -5,6 +5,10 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+# Release 2024-03-12
+- Added a (faster) method to calculate the number of hours in a day: hoursInDay
+- Replace all == argument to Object from dynamic
+
 # Release 2023-11-12
 - Bumped petitparser to 6.0.0
 

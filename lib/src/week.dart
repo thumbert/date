@@ -107,7 +107,7 @@ class Week extends Interval implements TimeOrdering<Week> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Week) return false;
     var week = other;
     return _value == week._value && location == week.location;

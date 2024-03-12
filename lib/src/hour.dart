@@ -44,7 +44,7 @@ class Hour extends Interval implements TimeOrdering<Hour>, Additive<Hour> {
   bool isAfter(Hour other) => start.isAfter(other.start);
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Hour) return false;
     var hour = other;
     return start == hour.start;

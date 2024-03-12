@@ -165,7 +165,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   @override
   bool isAfter(Month other) => _value > other._value;
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Month) return false;
     var month = other;
     return _value == month._value && location == month.location;

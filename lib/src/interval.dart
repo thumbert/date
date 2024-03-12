@@ -210,7 +210,7 @@ class Interval implements Comparable<Interval> {
 
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Interval) return false;
     var interval = other;
     return start == interval.start && end == interval.end;

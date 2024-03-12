@@ -42,7 +42,8 @@ void testDate() {
     });
 
     test('Parse a string with specific format', () {
-      expect(Date.parse('29May20'), //fmt: DateFormat('ddMMMyy')),
+      expect(
+          Date.parse('29May20'), //fmt: DateFormat('ddMMMyy')),
           Date(2020, 5, 29, location: UTC));
     });
 
@@ -179,6 +180,13 @@ void testDate() {
       var hours = Date(2019, 1, 1, location: UTC).hours();
       expect(hours.length, 24);
       expect(hours.first, Hour.beginning(TZDateTime.utc(2019)));
+    });
+
+    test('number of hours in a day', () {
+      final location = getLocation('America/New_York');
+      expect(Date(2024, 3, 12, location: location).hoursInDay, 24);
+      expect(Date(2024, 3, 10, location: location).hoursInDay, 23);
+      expect(Date(2024, 11, 3, location: location).hoursInDay, 25);
     });
   });
 }

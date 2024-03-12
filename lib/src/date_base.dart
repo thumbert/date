@@ -40,14 +40,15 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
         month = datetime.month,
         day = datetime.day,
         super(
-          TZDateTime(
-              datetime.location, datetime.year, datetime.month, datetime.day),
-          TZDateTime(datetime.location, datetime.year, datetime.month,
-              datetime.day + 1)) {
+            TZDateTime(
+                datetime.location, datetime.year, datetime.month, datetime.day),
+            TZDateTime(datetime.location, datetime.year, datetime.month,
+                datetime.day + 1)) {
     _calcValue();
   }
 
   @Deprecated('Use Date.containing')
+
   /// Construct a [Date] from a DateTime.  Return the Date that contains this
   /// datetime.
   Date.fromTZDateTime(TZDateTime datetime)
@@ -88,8 +89,9 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
 
   /// Parse Strings in the yyyy-mm-dd format only, e.g. '2020-03-17'.
   static Date fromIsoString(String x, {Location? location}) {
-    return Date(int.parse(x.substring(0,4)), int.parse(x.substring(5,7)),
-        int.parse(x.substring(8,10)), location: location ?? UTC);
+    return Date(int.parse(x.substring(0, 4)), int.parse(x.substring(5, 7)),
+        int.parse(x.substring(8, 10)),
+        location: location ?? UTC);
   }
 
   /// Given an integer input like 20220517 return the Date(2022,5,17).
@@ -120,8 +122,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// * yyyy-mm-dd format is accepted
   /// * mm/dd/yyyy format is accepted,
   /// * ddMMMyy format is accepted.
-  static Date parse(String input,
-      {Location? location, DateFormat? fmt}) {
+  static Date parse(String input, {Location? location, DateFormat? fmt}) {
     if (fmt != null) {
       var aux = fmt.parse(input);
       return Date(aux.year, aux.month, aux.day, location: location ?? UTC);
@@ -229,7 +230,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   bool isAfter(Date other) => _value > other._value;
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Date) return false;
     var date = other;
     return date._value == _value && location == date.location;
@@ -277,6 +278,21 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   /// Convert to an Excel integer
   int toExcel() {
     return _value + 25569;
+  }
+
+  /// Get the number of hours in this day
+  int get hoursInDay {
+    if (location == UTC) return 24;
+    var dt1 = start.add(Duration(hours: 24));
+    if (dt1.hour == 0) {
+      return 24;
+    } else if (dt1.hour == 1) {
+      return 23;
+    } else if (dt1.hour == 23) {
+      return 25;
+    } else {
+      throw StateError('Something wrong');
+    }
   }
 
   /// Get all the hours in this day

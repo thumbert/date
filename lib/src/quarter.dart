@@ -87,7 +87,7 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Quarter) return false;
     var quarter = other;
     return _value == quarter._value && location == quarter.location;

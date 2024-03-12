@@ -130,7 +130,7 @@ class Term {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! Term) return false;
     var term = other;
     return _interval == term._interval;
