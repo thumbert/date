@@ -33,6 +33,23 @@ void tests() {
       expect(it2.splitLeft((dt) => Hour.beginning(dt)).length, 7); // fall back
     });
 
+    test('hour containing DST', () {
+      var hour0 = Hour.containing(TZDateTime(location, 2022, 11, 6, 0));
+      var hour1 = hour0.next;
+      var hour2 = hour1.next;
+      expect(hour1.toString(),
+          '[2022-11-06 01:00:00.000-0400, 2022-11-06 01:00:00.000-0500)');
+      expect(hour2.toString(),
+          '[2022-11-06 01:00:00.000-0500, 2022-11-06 02:00:00.000-0500)');
+
+      /// You can't specify it correctly!  Which one is it? hour1 or hour2?
+      /// It is hour1!
+      var hourInvalid = Hour.containing(TZDateTime(location, 2022, 11, 6, 1));
+      expect(hourInvalid, hour1);
+      expect(hourInvalid.toString(),
+          '[2022-11-06 01:00:00.000-0400, 2022-11-06 01:00:00.000-0500)');
+    });
+
     test('split an year into hours', () {
       var year =
           Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
@@ -93,6 +110,6 @@ void speedTest() {
 
 main() {
   initializeTimeZones();
-  // tests();
-  speedTest();
+  tests();
+  // speedTest();
 }
