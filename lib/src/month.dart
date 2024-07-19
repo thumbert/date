@@ -60,6 +60,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   }
 
   @Deprecated('Use Month.containing')
+
   /// Creates a new Month object from a DateTime.  The Month will contain the [datetime].
   Month.fromTZDateTime(TZDateTime datetime)
       : year = datetime.year,
@@ -71,7 +72,7 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
 
   /// Parse strings in the yyyy-mm format only, e.g. '2020-03'.
   static Month fromIsoString(String x, {Location? location}) {
-    return Month(int.parse(x.substring(0,4)), int.parse(x.substring(5,7)),
+    return Month(int.parse(x.substring(0, 4)), int.parse(x.substring(5, 7)),
         location: location ?? UTC);
   }
 
@@ -191,6 +192,10 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   String toIso8601String() => _isoFmt.format(start);
 
   Interval toInterval() => Interval(start, end);
+
+  Month withTimeZone(Location location) {
+    return Month(year, month, location: location);
+  }
 
   static const shortNames = [
     'Jan',

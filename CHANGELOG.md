@@ -5,6 +5,9 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+# Release 2024-07-19
+- Overwrite the withTimeZone() method for Date and Month.
+
 # Release 2024-04-15
 - Fix bug with Hour.containing at Fall DST. 
 

@@ -306,6 +306,10 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
 
   Interval toInterval() => Interval(start, end);
 
+  Date withTimeZone(Location location) {
+    return Date(year, month, day, location: location);
+  }
+
   void _simpleValidation() {
     if (month > 12 || month < 1) {
       throw FormatException('Invalid month value $month', month);
