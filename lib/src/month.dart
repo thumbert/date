@@ -181,6 +181,9 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
   /// Quickly get the number of days in this month
   int get daysInMonth => DateTime(year, month + 1, 0).day;
 
+  /// return 202404 for Apr24
+  int toInt() => year*100 + month;
+
   /// Format a month.  The default format is MMMyy.
   @override
   String toString([DateFormat? fmt]) {

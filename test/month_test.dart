@@ -24,7 +24,8 @@ void tests() {
 
     test('Create months from int', () {
       expect(Month.fromInt(202205), Month.utc(2022, 5));
-      expect(Month.fromInt(202205, location: local), Month(2022, 5, location: local));
+      expect(Month.fromInt(202205, location: local),
+          Month(2022, 5, location: local));
     });
 
     test('Create months from DateTime', () {
@@ -153,6 +154,10 @@ void tests() {
         Date(2020, 6, 22, location: UTC),
         Date(2020, 6, 29, location: UTC),
       ]);
+    });
+
+    test('to integer', () {
+      expect(202404, Month.utc(2024, 4).toInt());
     });
   });
 }
