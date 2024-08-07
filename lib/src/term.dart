@@ -13,7 +13,6 @@ class Term {
 
   late Interval _interval;
 
-
   /// Throws a [ParserException] if parsing fails.
   ///
   Term.parse(String x, Location location) {
@@ -41,8 +40,11 @@ class Term {
   /// <p>If years = [2021, 2022, 2023], monthRange = (12,3),  dayRange = (5,12)
   ///   return ['5Dec21-12Mar22', '5Dec22-12Mar23', '5Dec23-12Mar24']
   ///
-  static List<Term> generate({required List<int> years, (int,int)? monthRange,
-      (int,int)? dayRange, required Location location}) {
+  static List<Term> generate(
+      {required List<int> years,
+      (int, int)? monthRange,
+      (int, int)? dayRange,
+      required Location location}) {
     var out = <Term>[];
     for (var year in years) {
       Date start, end;
@@ -56,7 +58,7 @@ class Term {
             var monthEnd = Month(year, monthRange.$2, location: location);
             end = monthEnd.endDate;
           } else {
-            var monthEnd = Month(year+1, monthRange.$2, location: location);
+            var monthEnd = Month(year + 1, monthRange.$2, location: location);
             end = monthEnd.endDate;
           }
         } else {
@@ -64,7 +66,8 @@ class Term {
           if (monthRange.$2 >= monthRange.$1) {
             end = Date(year, monthRange.$2, dayRange.$2, location: location);
           } else {
-            end = Date(year+1, monthRange.$2, dayRange.$2, location: location);
+            end =
+                Date(year + 1, monthRange.$2, dayRange.$2, location: location);
           }
         }
       }
@@ -98,6 +101,9 @@ class Term {
   List<Date> days() => _interval.splitLeft((dt) => Date.containing(dt));
 
   List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
+
+  /// Calculate the number of days in this term.
+  int dayCount() => endDate.value - startDate.value + 1;
 
   Date get startDate => Date.containing(_interval.start);
 
@@ -155,7 +161,8 @@ String prettyTerm(Interval interval) {
   var start = Date.containing(interval.start);
   if (nDays == 1) return start.toString(_fmt);
 
-  if (interval.start.isBeginningOfMonth() && interval.end.isBeginningOfMonth()) {
+  if (interval.start.isBeginningOfMonth() &&
+      interval.end.isBeginningOfMonth()) {
     var mStart = Month.containing(interval.start);
     var mEnd = Month.containing(interval.end).previous;
     if (mStart == mEnd) {
@@ -166,7 +173,8 @@ String prettyTerm(Interval interval) {
       if (mStart.month == 1 && mEnd.month == 12 && mEnd.year == mStart.year) {
         return 'Cal ${mStart.year % 100}';
       } else if (interval.isQuarter()) {
-        return Quarter.fromTZDateTime(interval.start).toString(fmt: Quarter.format2);
+        return Quarter.fromTZDateTime(interval.start)
+            .toString(fmt: Quarter.format2);
       }
       return '${mStart.toString()}-${mEnd.toString()}';
     }

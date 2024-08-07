@@ -68,6 +68,12 @@ void tests() {
       expect(Term.parse('1Jun20-3Jun20', location).isDayRange(), true);
       expect(Term.parse('1Jun20-3Jun20', location).isMonthRange(), false);
     });
+    test('number of days in term', () {
+      expect(Term.parse('1Apr24', UTC).dayCount(), 1);
+      expect(Term.parse('1Apr24-10Apr24', UTC).dayCount(), 10);
+      expect(Term.parse('Jan24', UTC).dayCount(), 31);
+      expect(Term.parse('Jan24-Feb24', UTC).dayCount(), 60);
+    });
     test('toString() a Cal', () {
       expect(Term.parse('Jan23-Dec23', location).toString(), 'Cal 23');
     });
