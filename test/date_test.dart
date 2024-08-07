@@ -78,6 +78,10 @@ void testDate() {
       // expect(1, Date(1900, 1, 1).toExcel());  // FAILS -- not sure why!
     });
 
+    test('to integer', () {
+      expect(20240415, Date(2024, 4, 15, location: UTC).toInt());
+    });
+
     test('Day of week (Mon=1, ... Sat=6, Sun=7)', () {
       expect(Date(2014, 12, 19, location: UTC).weekday, 5);
       expect(Date(2014, 1, 1, location: UTC).weekday, 3);

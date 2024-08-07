@@ -280,6 +280,9 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     return _value + 25569;
   }
 
+  /// return 20240415 for 15Apr24
+  int toInt() => year*10000 + month*100 + day;
+
   /// Get the number of hours in this day
   int get hoursInDay {
     if (location == UTC) return 24;

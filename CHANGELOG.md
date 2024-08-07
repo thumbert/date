@@ -8,6 +8,10 @@
 # Release 2024-08-07
 - Add method dayCount() for Term.
 
+# Release 2024-07-27
+- Add convenience method toInt() to Date and Month to return 20240415 and 202404
+  for example.  Occasionally useful for storing dates or months in a db.
+
 # Release 2024-07-19
 - Overwrite the withTimeZone() method for Date and Month.
 
