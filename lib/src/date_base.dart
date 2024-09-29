@@ -281,7 +281,7 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
   }
 
   /// return 20240415 for 15Apr24
-  int toInt() => year*10000 + month*100 + day;
+  int toInt() => year * 10000 + month * 100 + day;
 
   /// Get the number of hours in this day
   int get hoursInDay {
@@ -306,6 +306,9 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
     fmt ??= _defaultFmt;
     return fmt.format(DateTime(year, month, day));
   }
+
+  /// Format a month using the yyyy-MM-dd format.
+  String toIso8601String() => _defaultFmt.format(start);
 
   Interval toInterval() => Interval(start, end);
 
