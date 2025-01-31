@@ -177,6 +177,18 @@ class Interval implements Comparable<Interval> {
     return Interval(iStart, iEnd);
   }
 
+  /// Split an interval at a given [TZDateTime]
+  (Interval? left, Interval? right) splitAt(TZDateTime at) {
+    assert(start.location == at.location);
+    if (at.isBefore(start)) {
+      return (null, this);
+    } else if (at.isAfter(end)) {
+      return (this, null);
+    } else {
+      return (Interval(start, at), Interval(at, end));
+    }
+  }
+
   bool isInstant() => start.isAtSameMomentAs(end);
 
   bool isQuarter() {
@@ -206,8 +218,6 @@ class Interval implements Comparable<Interval> {
     }
     return false;
   }
-
-
 
   @override
   bool operator ==(Object other) {

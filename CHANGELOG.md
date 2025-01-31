@@ -5,6 +5,9 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+# Release 2025-01-31
+- Add splitAt() method for Interval.
+
 # Release 2024-09-29
 - Add toIso8601String() for Date.  Not really needed, but I always seem to forget
   what format toString() uses.  
