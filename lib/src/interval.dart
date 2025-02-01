@@ -182,7 +182,7 @@ class Interval implements Comparable<Interval> {
     assert(start.location == at.location);
     if (at.isBefore(start)) {
       return (null, this);
-    } else if (at.isAfter(end)) {
+    } else if (at.isAfter(end) || at.isAtSameMomentAs(end)) {
       return (this, null);
     } else {
       return (Interval(start, at), Interval(at, end));
