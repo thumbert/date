@@ -5,6 +5,10 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+# Release 2026-01-19 (version 3.1.0)
+- Add a Time class.  Long time coming.  I need it to support SQL TIME data type
+  in package `reduct`. 
+
 # Release 2025-01-31
 - Add splitAt() method for Interval.
 
