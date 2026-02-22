@@ -9,7 +9,7 @@ import 'package:timezone/timezone.dart';
 import 'package:timezone/standalone.dart';
 import 'package:date/date.dart';
 
-void testDate() {
+void tests() {
   group('Test Date:', () {
     test('Date.utc constructor', () {
       var date = Date.utc(2019, 10, 1);
@@ -35,16 +35,19 @@ void testDate() {
       expect(Date.parse('2015-01-03'), Date(2015, 1, 3, location: UTC));
       expect(Date.parse('2015-0103'), Date(2015, 1, 3, location: UTC));
       // Note that 2015-02-29 does not exist
-      expect(Date.parse('20150229'),
-          Date(2015, 3, 1, location: UTC)); // !!! same as DateTime
+      expect(
+        Date.parse('20150229'),
+        Date(2015, 3, 1, location: UTC),
+      ); // !!! same as DateTime
       expect(Date.parse('2/22/2015'), Date(2015, 2, 22, location: UTC));
       expect(Date.parse('22Feb15'), Date(2015, 2, 22, location: UTC));
     });
 
     test('Parse a string with specific format', () {
       expect(
-          Date.parse('29May20'), //fmt: DateFormat('ddMMMyy')),
-          Date(2020, 5, 29, location: UTC));
+        Date.parse('29May20'), //fmt: DateFormat('ddMMMyy')),
+        Date(2020, 5, 29, location: UTC),
+      );
     });
 
     test('From Julian day to year month day', () {
@@ -65,8 +68,10 @@ void testDate() {
 
     test('From integer', () {
       expect(Date.fromInt(20220517), Date.utc(2022, 5, 17));
-      expect(Date.fromInt(20220517, location: local),
-          Date(2022, 5, 17, location: UTC));
+      expect(
+        Date.fromInt(20220517, location: local),
+        Date(2022, 5, 17, location: UTC),
+      );
     });
 
     test('to Excel date', () {
@@ -106,35 +111,57 @@ void testDate() {
     });
 
     test('next/previous day', () {
-      expect(Date(2015, 2, 28, location: UTC).next,
-          Date(2015, 3, 1, location: UTC));
-      expect(Date(2015, 1, 1, location: UTC).previous,
-          Date(2014, 12, 31, location: UTC));
+      expect(
+        Date(2015, 2, 28, location: UTC).next,
+        Date(2015, 3, 1, location: UTC),
+      );
+      expect(
+        Date(2015, 1, 1, location: UTC).previous,
+        Date(2014, 12, 31, location: UTC),
+      );
     });
 
     test('current/next/previous month', () {
-      expect(Date(2015, 2, 28, location: UTC).beginningOfMonth,
-          Date(2015, 2, 1, location: UTC));
-      expect(Date(2015, 2, 28, location: UTC).currentMonth().next.startDate,
-          Date(2015, 3, 1, location: UTC));
-      expect(Date(2015, 2, 28, location: UTC).currentMonth().previous.startDate,
-          Date(2015, 1, 1, location: UTC));
+      expect(
+        Date(2015, 2, 28, location: UTC).beginningOfMonth,
+        Date(2015, 2, 1, location: UTC),
+      );
+      expect(
+        Date(2015, 2, 28, location: UTC).currentMonth().next.startDate,
+        Date(2015, 3, 1, location: UTC),
+      );
+      expect(
+        Date(2015, 2, 28, location: UTC).currentMonth().previous.startDate,
+        Date(2015, 1, 1, location: UTC),
+      );
     });
 
     test('nextN/previousN days', () {
       var date = Date(2015, 2, 3, location: UTC);
       expect(date.nextN(3), [date.add(1), date.add(2), date.add(3)]);
-      expect(date.previousN(3),
-          [date.subtract(3), date.subtract(2), date.subtract(1)]);
+      expect(date.previousN(3), [
+        date.subtract(3),
+        date.subtract(2),
+        date.subtract(1),
+      ]);
     });
 
     test('add/subtract days', () {
-      expect(Date(2015, 1, 1, location: UTC).add(1),
-          Date(2015, 1, 2, location: UTC));
-      expect(Date(2015, 1, 1, location: UTC).subtract(1),
-          Date(2014, 12, 31, location: UTC));
-      expect(Date(2015, 1, 1, location: UTC).add(-1),
-          Date(2014, 12, 31, location: UTC));
+      expect(
+        Date(2015, 1, 1, location: UTC).add(1),
+        Date(2015, 1, 2, location: UTC),
+      );
+      expect(
+        Date(2015, 1, 1, location: UTC).subtract(1),
+        Date(2014, 12, 31, location: UTC),
+      );
+      expect(
+        Date(2015, 1, 1, location: UTC).add(-1),
+        Date(2014, 12, 31, location: UTC),
+      );
+      expect(Date.utc(2025, 1, 1) - Date.utc(2025, 1, 1), 0);
+      expect(Date.utc(2025, 1, 2) - Date.utc(2025, 1, 1), 1);
+      expect(Date.utc(2025, 1, 1) - Date.utc(2024, 1, 1), 366); // leap year
     });
 
     test('Change the date display format', () {
@@ -146,17 +173,19 @@ void testDate() {
       var x = [
         Date(2014, 8, 1, location: UTC),
         Date(2014, 12, 1, location: UTC),
-        Date(2014, 2, 1, location: UTC)
+        Date(2014, 2, 1, location: UTC),
       ];
       x.sort();
-      expect(x.map((d) => d.toString()).join(','),
-          '2014-02-01,2014-08-01,2014-12-01');
+      expect(
+        x.map((d) => d.toString()).join(','),
+        '2014-02-01,2014-08-01,2014-12-01',
+      );
     });
 
     test('toSet() on a list of Dates', () {
       var x = [
         Date(2014, 1, 1, location: UTC),
-        Date(2014, 1, 1, location: UTC)
+        Date(2014, 1, 1, location: UTC),
       ];
       expect(x.toSet().toList().length, 1);
     });
@@ -197,6 +226,6 @@ void testDate() {
 
 void main() async {
   await initializeTimeZone();
-  testDate();
-//  await testDateIterable();
+  tests();
+  //  await testDateIterable();
 }

@@ -15,11 +15,10 @@ import 'quarter_test.dart' as quarter;
 import 'utils_test.dart' as utils;
 import 'week_test.dart' as week;
 
-
 Future<void> main() async {
   initializeTimeZones();
 
-  date.testDate();
+  date.tests();
   date_parse.tests();
   ext.tests();
   hour.tests();
@@ -29,7 +28,7 @@ Future<void> main() async {
   quarter.tests();
   term.tests();
   term_parse.parseTermTest();
-  time.tests(); 
+  time.tests();
   utils.tests();
   week.tests();
 }

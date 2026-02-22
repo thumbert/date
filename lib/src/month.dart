@@ -106,6 +106,13 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
     return out;
   }
 
+  List<Hour> hours() => splitLeft((dt) => Hour.containing(dt));
+
+  int operator -(Month other) {
+    assert(location == other.location);
+    return _value - other._value;
+  }
+
   Month get next =>
       Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: location);
 

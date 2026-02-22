@@ -77,6 +77,7 @@ void tests() {
       var m4 = m3.add(1).subtract(1);
       expect('Dec15: (${m4.year}, ${m4.month})', 'Dec15: (2015, 12)');
       expect(m1.subtract(11), Month(2014, 12, location: UTC));
+      expect(m1 - Month.utc(2014, 11), 12);
     });
 
     test('Generate list of months', () {

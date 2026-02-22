@@ -168,6 +168,11 @@ class Date extends Interval implements TimeOrdering<Date>, Additive<Date> {
         _ORIGIN;
   }
 
+  int operator -(Date other) {
+    assert(location == other.location);
+    return _value - other._value;
+  }
+
   /// Return the previous day.
   Date get previous => Date.fromJulianDay(_value - 1, location: location);
 
