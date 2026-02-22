@@ -142,6 +142,12 @@ class Term {
     return _interval == term._interval;
   }
 
+
+  Term withTimeZone(Location location) {
+    var intTz = interval.withTimeZone(location);
+    return Term.fromInterval(intTz);
+  }
+
   @override
   int get hashCode => _interval.hashCode;
 

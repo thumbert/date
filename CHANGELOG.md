@@ -8,6 +8,7 @@
 # Release 2026-02-22 (version 3.1.1)
 - Add operator - for Month and Date
 - Bump up all dependencies
+- Add withTimeZone() method to Term
 
 # Release 2026-01-19 (version 3.1.0)
 - Add a Time class.  Long time coming.  I need it to support SQL TIME data type
