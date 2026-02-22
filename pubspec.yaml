@@ -7,7 +7,7 @@ environment:
 
 dependencies:
   intl: '>=0.19.0 <1.0.0'
-  petitparser: 7.0.2
+  petitparser: 6.1.0
   timezone: '>=0.9.2 <1.0.0'
 
 dev_dependencies:
