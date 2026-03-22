@@ -5,6 +5,9 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+# Release 2026-03-22
+- Add Date parsing for mm/dd/yy and mm/dd format
+
 # Release 2026-02-22 (version 3.1.1)
 - Add operator - for Month and Date
 - Bump up all dependencies
