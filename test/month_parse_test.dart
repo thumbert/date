@@ -22,6 +22,10 @@ void tests() {
       expect(parseMonth('2018-01'), Month(2018, 1, location: UTC));
       expect(parseMonth('201801'), Month(2018, 1, location: UTC));
     });
+    test('A month in US format: 3/2018, 3/18', () {
+      expect(parseMonth('03/2018'), Month(2018, 3, location: UTC));
+      expect(parseMonth('03/18'), Month(2018, 3, location: UTC));
+    });
     test('throws on incorrect input', () {
       expect(() => parseMonth('2018-0q'), throwsException);
     });

@@ -6,7 +6,8 @@
   faster which is useful when parsing json for example. 
 
 # Release 2026-03-22
-- Add Date parsing for mm/dd/yy and mm/dd format
+- Add format mm/dd/yy and mm/dd for Date parsing 
+- Add format mm/yy and mm/yyyy for Month parsing
 
 # Release 2026-02-22 (version 3.1.1)
 - Add operator - for Month and Date
