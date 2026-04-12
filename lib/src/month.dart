@@ -117,7 +117,11 @@ class Month extends Interval implements TimeOrdering<Month>, Additive<Month> {
       Month(_calcYear(_value + 1), _calcMonth(_value + 1), location: location);
 
   /// Return the next [n] months starting on this month.
+  /// When n = 1, this is the same as [next].
   List<Month> nextN(int n) {
+    if (n < 0) {
+      throw ArgumentError('n must be non-negative');
+    }
     var out = <Month>[];
     for (var i = 1; i <= n; i++) {
       out.add(add(i));
