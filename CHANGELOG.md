@@ -5,6 +5,10 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+
+# Release 2026-05-01
+- Add an extension method to parse Strings like '2024-11-03T01:30:00-05:00[America/New_York]' into a TZDateTime object.
+
 # Release 2026-03-22
 - Add format mm/dd/yy and mm/dd for Date parsing 
 - Add format mm/yy and mm/yyyy for Month parsing

@@ -15,7 +15,14 @@ extension DateTimeExtension on num {
     r = (r * 60 - minute) % 60;
     var second = (r * 60).round();
     return TZDateTime(
-        UTC, date.year, date.month, date.day, hour, minute, second);
+      UTC,
+      date.year,
+      date.month,
+      date.day,
+      hour,
+      minute,
+      second,
+    );
   }
 }
 
@@ -57,21 +64,38 @@ extension DateTimeExtension2 on DateTime {
 }
 
 extension TZDateTimeExt on TZDateTime {
-  TZDateTime copyWith(
-          {Location? location,
-          int? year,
-          int? month,
-          int? day,
-          int? hour,
-          int? minute,
-          int? second}) =>
-      TZDateTime(
-        location ?? this.location,
-        year ?? this.year,
-        month ?? this.month,
-        day ?? this.day,
-        hour ?? this.hour,
-        minute ?? this.minute,
-        second ?? this.second,
-      );
+  TZDateTime copyWith({
+    Location? location,
+    int? year,
+    int? month,
+    int? day,
+    int? hour,
+    int? minute,
+    int? second,
+  }) {
+    return TZDateTime(
+      location ?? this.location,
+      year ?? this.year,
+      month ?? this.month,
+      day ?? this.day,
+      hour ?? this.hour,
+      minute ?? this.minute,
+      second ?? this.second,
+    );
+  }
+}
+
+extension TZDateTimeExt2 on String {
+  /// Parse a string in the extended version of the ISO 8601 format defined in 
+  /// RFC9557, which includes the time zone name in square brackets. For example:
+  /// format '2024-11-03T01:30:00-05:00[America/New_York]'.
+  /// 
+  /// This will only work if the location is available in the timezone database. 
+  /// If the location is not found, an exception will be thrown.
+  /// 
+  TZDateTime parseRfc9557() {
+    var name = substring(26, length - 1);
+    var location = getLocation(name);
+    return TZDateTime.parse(location, substring(0, 25)); 
+  }
 }

@@ -12,6 +12,11 @@ void tests() {
       var out = x.fromExcelDateTime();
       expect(out, TZDateTime.utc(2020, 12, 21, 10, 5, 18));
     });
+    test('TZDateTime parseRfc9557() returns TZDateTime', () {
+      var s = '2020-12-21T10:05:18-05:00[America/New_York]';
+      var out = s.parseRfc9557();
+      expect(out, TZDateTime(getLocation('America/New_York'), 2020, 12, 21, 10, 5, 18));
+    });
     test('TZDateTime copyWith() extension', () {
       var location = getLocation('America/New_York');
       var dt = TZDateTime(location, 2023);
