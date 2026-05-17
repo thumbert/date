@@ -8,9 +8,12 @@ final _parser = TermParserDefinition().build();
 
 /// Parse a limited number of String inputs into a datetime interval.
 /// Supported tokens are:
-/// <p>days: 1Jan17, months: 'Jan17', 'F18', years: 'Cal17', quarters: 'Q3,18',
-/// day ranges: 1Jan17-3Jan17,
-/// month ranges: Jul17-Aug17, F21-H21.
+/// <p>days: 1Jan17,
+/// <p>months: 'Jan17', 'F18',
+/// <p>years: 'Cal17',
+/// <p>quarters: 'Q3,18', '2027-Q3'
+/// <p>day ranges: 1Jan17-3Jan17,
+/// <p>month ranges: Jul17-Aug17, F21-H21.
 ///
 /// <p>Or a term relative to the current moment.  For example:
 /// '-10d' the last 10 days, '+10d' the next 10 days,
@@ -31,8 +34,9 @@ Interval? parseTerm(String term, {Location? tzLocation}) {
     var start = interval!.start;
     var end = interval.end;
     interval = Interval(
-        TZDateTime(tzLocation, start.year, start.month, start.day),
-        TZDateTime(tzLocation, end.year, end.month, end.day));
+      TZDateTime(tzLocation, start.year, start.month, start.day),
+      TZDateTime(tzLocation, end.year, end.month, end.day),
+    );
   }
   return interval;
 }
@@ -50,6 +54,7 @@ class TermGrammarDefinition extends GrammarDefinition {
   Parser simpleMonthCodeToken() => token(letter() & digit() & digit()); // G21
   Parser simpleQuarterToken() =>
       token(char('Q') & digit()) & char(',').optional() & yearToken();
+  Parser isoQuarterToken() => d4() & char('-') & char('Q') & digit();
   Parser simpleCalYearToken() =>
       (token((string('CAL') | string('Cal'))) & yearToken()).end() | d4().end();
   Parser simpleToken() =>
@@ -59,6 +64,7 @@ class TermGrammarDefinition extends GrammarDefinition {
       ref0(yyyymmdd) |
       ref0(yyyymm) |
       ref0(simpleDayToken) |
+      ref0(isoQuarterToken) |
       simpleQuarterToken();
 
   Parser compoundDayToken() =>
@@ -102,62 +108,84 @@ class TermGrammarDefinition extends GrammarDefinition {
   Parser yyyymmdd() =>
       (d4() & char('-') & d2() & char('-') & d2()) | (d4() & d2() & d2());
 
-  Parser jan() => token(string('January') |
-      string('JANUARY') |
-      string('Jan') |
-      string('JAN') |
-      string('jan'));
-  Parser feb() => token(string('February') |
-      string('FEBRUARY') |
-      string('feb') |
-      string('Feb') |
-      string('FEB'));
-  Parser mar() => token(string('March') |
-      string('MARCH') |
-      string('mar') |
-      string('Mar') |
-      string('MAR'));
-  Parser apr() => token(string('April') |
-      string('APRIL') |
-      string('apr') |
-      string('Apr') |
-      string('APR'));
+  Parser jan() => token(
+    string('January') |
+        string('JANUARY') |
+        string('Jan') |
+        string('JAN') |
+        string('jan'),
+  );
+  Parser feb() => token(
+    string('February') |
+        string('FEBRUARY') |
+        string('feb') |
+        string('Feb') |
+        string('FEB'),
+  );
+  Parser mar() => token(
+    string('March') |
+        string('MARCH') |
+        string('mar') |
+        string('Mar') |
+        string('MAR'),
+  );
+  Parser apr() => token(
+    string('April') |
+        string('APRIL') |
+        string('apr') |
+        string('Apr') |
+        string('APR'),
+  );
   Parser may() => token(string('May') | string('MAY') | string('may'));
-  Parser jun() => token(string('June') |
-      string('JUNE') |
-      string('jun') |
-      string('Jun') |
-      string('JUN'));
-  Parser jul() => token(string('July') |
-      string('JULY') |
-      string('jul') |
-      string('Jul') |
-      string('JUL'));
-  Parser aug() => token(string('August') |
-      string('AUGUST') |
-      string('aug') |
-      string('Aug') |
-      string('AUG'));
-  Parser sep() => token(string('September') |
-      string('SEPTEMBER') |
-      string('sep') |
-      string('Sep') |
-      string('SEP'));
-  Parser oct() => token(string('October') |
-      string('OCTOBER') |
-      string('oct') |
-      string('Oct') |
-      string('OCT'));
-  Parser nov() => token(string('November') |
-      string('NOVEMBER') |
-      string('nov') |
-      string('Nov') |
-      string('NOV'));
-  Parser dec() => token(string('December') |
-      string('DECEMBER') |
-      string('dec') |
-      string('Dec') |
-      string('DEC'));
+  Parser jun() => token(
+    string('June') |
+        string('JUNE') |
+        string('jun') |
+        string('Jun') |
+        string('JUN'),
+  );
+  Parser jul() => token(
+    string('July') |
+        string('JULY') |
+        string('jul') |
+        string('Jul') |
+        string('JUL'),
+  );
+  Parser aug() => token(
+    string('August') |
+        string('AUGUST') |
+        string('aug') |
+        string('Aug') |
+        string('AUG'),
+  );
+  Parser sep() => token(
+    string('September') |
+        string('SEPTEMBER') |
+        string('sep') |
+        string('Sep') |
+        string('SEP'),
+  );
+  Parser oct() => token(
+    string('October') |
+        string('OCTOBER') |
+        string('oct') |
+        string('Oct') |
+        string('OCT'),
+  );
+  Parser nov() => token(
+    string('November') |
+        string('NOVEMBER') |
+        string('nov') |
+        string('Nov') |
+        string('NOV'),
+  );
+  Parser dec() => token(
+    string('December') |
+        string('DECEMBER') |
+        string('dec') |
+        string('Dec') |
+        string('DEC'),
+  );
 }
 
 /// the parser definition
@@ -166,119 +194,139 @@ class TermParserDefinition extends TermGrammarDefinition {
 
   @override
   Parser simpleMonthToken() => super.simpleMonthToken().map((each) {
-        return Month(_toYear(each[1]), _toMonth(each[0])!, location: UTC);
-      });
+    return Month(_toYear(each[1]), _toMonth(each[0])!, location: UTC);
+  });
   @override
   Parser simpleMonthCodeToken() => super.simpleMonthCodeToken().map((each) {
-        return Month(
-            _toYear(each.substring(1)), _monthCode[each.substring(0, 1)]!,
-            location: UTC);
-      });
+    return Month(
+      _toYear(each.substring(1)),
+      _monthCode[each.substring(0, 1)]!,
+      location: UTC,
+    );
+  });
 
   @override
   Parser yyyymm() => super.yyyymm().map((each) {
-        List input = each;
-        if (input.length == 3) {
-          input.removeAt(1);
-        }
-        return Month(_toYear(input[0]), int.parse(input[1]), location: UTC);
-      });
+    List input = each;
+    if (input.length == 3) {
+      input.removeAt(1);
+    }
+    return Month(_toYear(input[0]), int.parse(input[1]), location: UTC);
+  });
 
   @override
   Parser yyyymmdd() => super.yyyymmdd().map((each) {
-        var input =
-            (each as List).where((e) => !(e == null || e == '-')).toList();
-        return Date(
-            int.parse(input[0]), int.parse(input[1]), int.parse(input[2]),
-            location: UTC);
-      });
+    var input = (each as List).where((e) => !(e == null || e == '-')).toList();
+    return Date(
+      int.parse(input[0]),
+      int.parse(input[1]),
+      int.parse(input[2]),
+      location: UTC,
+    );
+  });
 
   @override
   Parser simpleDayToken() => super.simpleDayToken().map((each) {
-        return Date(_toYear(each[2]), _toMonth(each[1])!, int.parse(each[0]),
-            location: UTC);
-      });
+    return Date(
+      _toYear(each[2]),
+      _toMonth(each[1])!,
+      int.parse(each[0]),
+      location: UTC,
+    );
+  });
+  @override
+  Parser isoQuarterToken() => super.isoQuarterToken().map((each) {
+    var year = int.parse(each[0]);
+    var quarter = int.parse(each[3]);
+    if (quarter < 1 || quarter > 4) {
+      throw ArgumentError('Invalid quarter: ${each.join()}');
+    }
+    var month = 3 * (quarter - 1) + 1;
+    var start = TZDateTime.utc(year, month);
+    var end = TZDateTime.utc(year, month + 3);
+    return Interval(start, end);
+  });
   @override
   Parser simpleQuarterToken() => super.simpleQuarterToken().map((each) {
-        var year = _toYear(each[2]);
-        var quarter = int.parse(each[0].substring(1));
-        if (quarter < 1 || quarter > 4) {
-          throw ArgumentError('Invalid quarter: ${each.join()}');
-        }
-        var month = 3 * (quarter - 1) + 1;
-        var start = TZDateTime.utc(year, month);
-        var end = TZDateTime.utc(year, month + 3);
-        return Interval(start, end);
-      });
+    var year = _toYear(each[2]);
+    var quarter = int.parse(each[0].substring(1));
+    if (quarter < 1 || quarter > 4) {
+      throw ArgumentError('Invalid quarter: ${each.join()}');
+    }
+    var month = 3 * (quarter - 1) + 1;
+    var start = TZDateTime.utc(year, month);
+    var end = TZDateTime.utc(year, month + 3);
+    return Interval(start, end);
+  });
   @override
   Parser simpleCalYearToken() => super.simpleCalYearToken().map((each) {
-        late int year;
-        if (each is List) {
-          // it's CalYY, CalYYYY construct
-          year = _toYear(each[1]);
-        } else {
-          // it's a yyyy
-          year = _toYear(each);
-        }
-        var start = TZDateTime.utc(year);
-        var end = TZDateTime.utc(year + 1);
-        return Interval(start, end);
-      });
+    late int year;
+    if (each is List) {
+      // it's CalYY, CalYYYY construct
+      year = _toYear(each[1]);
+    } else {
+      // it's a yyyy
+      year = _toYear(each);
+    }
+    var start = TZDateTime.utc(year);
+    var end = TZDateTime.utc(year + 1);
+    return Interval(start, end);
+  });
 
   @override
   Parser compoundMonthToken() => super.compoundMonthToken().map((each) {
-        var start = (each[0] as Month).start;
-        var end = (each[2] as Month).end;
-        if (!start.isBefore(end)) {
-          throw ArgumentError('End month before start month!');
-        }
-        return Interval(start, end);
-      });
+    var start = (each[0] as Month).start;
+    var end = (each[2] as Month).end;
+    if (!start.isBefore(end)) {
+      throw ArgumentError('End month before start month!');
+    }
+    return Interval(start, end);
+  });
 
   @override
   Parser compoundDayToken() => super.compoundDayToken().map((each) {
-        var start = (each[0] as Date).start;
-        var end = (each[2] as Date).end;
-        if (!start.isBefore(end)) {
-          throw ArgumentError('End day before start day!');
-        }
-        return Interval(start, end);
-      });
+    var start = (each[0] as Date).start;
+    var end = (each[2] as Date).end;
+    if (!start.isBefore(end)) {
+      throw ArgumentError('End day before start day!');
+    }
+    return Interval(start, end);
+  });
 
   @override
   Parser compoundRelativeToken() => super.compoundRelativeToken().map((each) {
-        var start = (each[0] as Interval).start;
-        var end = (each[1] as Interval).end;
-        return Interval(start, end);
-      });
+    var start = (each[0] as Interval).start;
+    var end = (each[1] as Interval).end;
+    return Interval(start, end);
+  });
 
   @override
   Parser relativeToken() => super.relativeToken().map((each) {
-        Interval res;
-        var start = Date.today(location: UTC);
-        Date end;
-        var aux = [each[0], ...each[1] as List];
-        var step = int.parse(aux.join());
-        String unit = each[2];
-        if (unit.toLowerCase() == 'm') {
-          end = start.add((step * 30.5).round());
-        } else if (unit.toLowerCase() == 'y') {
-          end = start.add((step * 365.25).round());
-        } else if (unit.toLowerCase() == 'd') {
-          end = start.add(step);
-        } else {
-          throw ArgumentError('Unsupported relative token: $unit');
-        }
-        if (start.isBefore(end)) {
-          res = Interval(start.start, end.end);
-        } else if (start.isAfter(end)) {
-          res = Interval(end.start, start.end);
-        } else {
-          res = start;
-        }
+    Interval res;
+    var start = Date.today(location: UTC);
+    Date end;
+    var aux = [each[0], ...each[1] as List];
+    var step = int.parse(aux.join());
+    String unit = each[2];
+    if (unit.toLowerCase() == 'm') {
+      end = start.add((step * 30.5).round());
+    } else if (unit.toLowerCase() == 'y') {
+      end = start.add((step * 365.25).round());
+    } else if (unit.toLowerCase() == 'd') {
+      end = start.add(step);
+    } else {
+      throw ArgumentError('Unsupported relative token: $unit');
+    }
+    if (start.isBefore(end)) {
+      res = Interval(start.start, end.end);
+    } else if (start.isAfter(end)) {
+      res = Interval(end.start, start.end);
+    } else {
+      res = start;
+    }
 
-        return res;
-      });
+    return res;
+  });
 }
 
 /// Convert a month token to a month value.
@@ -337,7 +385,7 @@ const _monthIdx = <String, int>{
   'sep': 9,
   'oct': 10,
   'nov': 11,
-  'dec': 12
+  'dec': 12,
 };
 
 const _monthNames = <String>[

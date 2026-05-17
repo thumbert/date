@@ -41,7 +41,7 @@ void parseTermTest() {
       expect(parseTerm('03 jan 17'), Date(2017, 1, 3, location: UTC));
       expect(parseTerm('3jan 17'), Date(2017, 1, 3, location: UTC));
     });
-    test('A quarter: "Q1,17", "Q1 17", "Q1, 2017", "Q1 2017"', () {
+    test('A quarter: "Q1,17", "Q1 17", "Q1, 2017", "Q1 2017", "2027-Q3"', () {
       expect(parseTerm('Q1,17'),
           Interval(TZDateTime.utc(2017), TZDateTime.utc(2017, 4)));
       expect(parseTerm('Q1, 2017'),
@@ -50,6 +50,8 @@ void parseTermTest() {
           Interval(TZDateTime.utc(2017), TZDateTime.utc(2017, 4)));
       expect(parseTerm('Q1 17'),
           Interval(TZDateTime.utc(2017), TZDateTime.utc(2017, 4)));
+      expect(parseTerm('2027-Q3'),
+          Interval(TZDateTime.utc(2027, 7), TZDateTime.utc(2027, 10)));
       expect(() => parseTerm('Q1 201'), throwsArgumentError);
     });
     test('A calendar year: 2017, CAL2017, Cal 2017, Cal17', () {

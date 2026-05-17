@@ -6,6 +6,10 @@
   faster which is useful when parsing json for example. 
 
 
+# Release 2026-05-17 (version 3.2.0)
+- And of course we need a .toRfc9557() method on TZDateTime. 
+- Support parsing of the ISO format for quarter, e.g. '2027-Q3' in term_parse. 
+
 # Release 2026-05-01
 - Add an extension method to parse Strings like '2024-11-03T01:30:00-05:00[America/New_York]' into a TZDateTime object.
 

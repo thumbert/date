@@ -1,7 +1,10 @@
 library datetime_ext;
 
 import 'package:date/date.dart';
+import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart';
+
+final fmt = DateFormat('yyyy-MM-ddTHH:mm:ss');
 
 extension DateTimeExtension on num {
   /// Convert from an Excel number to an UTC [TZDateTime] with an up to second
@@ -64,6 +67,22 @@ extension DateTimeExtension2 on DateTime {
 }
 
 extension TZDateTimeExt on TZDateTime {
+  String toRfc9557() {
+    var ms = '';
+    if (millisecond != 0) {
+      ms = '.${millisecond.toString().padLeft(3, '0')}';
+    }
+    var mus = '';
+    if (microsecond != 0) {
+      mus = '.${microsecond.toString().padLeft(3, '0')}';
+    }
+    var offset = timeZoneOffset;
+    var sign = offset.isNegative ? '-' : '+';
+    var hours = offset.inHours.abs().toString().padLeft(2, '0');
+    var minutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0'); 
+    return '${fmt.format(this)}$ms$mus$sign$hours:$minutes[${location.name}]';
+  }
+
   TZDateTime copyWith({
     Location? location,
     int? year,
@@ -72,6 +91,8 @@ extension TZDateTimeExt on TZDateTime {
     int? hour,
     int? minute,
     int? second,
+    int? millisecond,
+    int? microsecond,
   }) {
     return TZDateTime(
       location ?? this.location,
@@ -81,21 +102,23 @@ extension TZDateTimeExt on TZDateTime {
       hour ?? this.hour,
       minute ?? this.minute,
       second ?? this.second,
+      millisecond ?? this.millisecond,
+      microsecond ?? this.microsecond,
     );
   }
 }
 
 extension TZDateTimeExt2 on String {
-  /// Parse a string in the extended version of the ISO 8601 format defined in 
+  /// Parse a string in the extended version of the ISO 8601 format defined in
   /// RFC9557, which includes the time zone name in square brackets. For example:
   /// format '2024-11-03T01:30:00-05:00[America/New_York]'.
-  /// 
-  /// This will only work if the location is available in the timezone database. 
+  ///
+  /// This will only work if the location is available in the timezone database.
   /// If the location is not found, an exception will be thrown.
-  /// 
+  ///
   TZDateTime parseRfc9557() {
     var name = substring(26, length - 1);
     var location = getLocation(name);
-    return TZDateTime.parse(location, substring(0, 25)); 
+    return TZDateTime.parse(location, substring(0, 25));
   }
 }

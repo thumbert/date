@@ -15,38 +15,56 @@ void tests() {
     test('TZDateTime parseRfc9557() returns TZDateTime', () {
       var s = '2020-12-21T10:05:18-05:00[America/New_York]';
       var out = s.parseRfc9557();
-      expect(out, TZDateTime(getLocation('America/New_York'), 2020, 12, 21, 10, 5, 18));
+      expect(
+        out,
+        TZDateTime(getLocation('America/New_York'), 2020, 12, 21, 10, 5, 18),
+      );
+    });
+    test('TZDateTime toRfc9557() extension method', () {
+      var s = '2020-12-21T10:05:18-05:00[America/New_York]';
+      var out = s.parseRfc9557();
+      expect(out.toRfc9557(), s);
     });
     test('TZDateTime copyWith() extension', () {
       var location = getLocation('America/New_York');
       var dt = TZDateTime(location, 2023);
       expect(dt.copyWith(year: 2022), TZDateTime(location, 2022));
       expect(dt.copyWith(location: UTC, year: 2022), TZDateTime(UTC, 2022));
-      expect(dt.copyWith(location: UTC, year: 2022, month: 3),
-          TZDateTime(UTC, 2022, 3));
-      expect(dt.copyWith(location: UTC, year: 2022, month: 3, day: 15),
-          TZDateTime(UTC, 2022, 3, 15));
-      expect(dt.copyWith(location: UTC, year: 2022, month: 3, day: 15, hour: 8),
-          TZDateTime(UTC, 2022, 3, 15, 8));
       expect(
-          dt.copyWith(
-              location: UTC,
-              year: 2022,
-              month: 3,
-              day: 15,
-              hour: 8,
-              minute: 25),
-          TZDateTime(UTC, 2022, 3, 15, 8, 25));
+        dt.copyWith(location: UTC, year: 2022, month: 3),
+        TZDateTime(UTC, 2022, 3),
+      );
       expect(
-          dt.copyWith(
-              location: UTC,
-              year: 2022,
-              month: 3,
-              day: 15,
-              hour: 8,
-              minute: 25,
-              second: 10),
-          TZDateTime(UTC, 2022, 3, 15, 8, 25, 10));
+        dt.copyWith(location: UTC, year: 2022, month: 3, day: 15),
+        TZDateTime(UTC, 2022, 3, 15),
+      );
+      expect(
+        dt.copyWith(location: UTC, year: 2022, month: 3, day: 15, hour: 8),
+        TZDateTime(UTC, 2022, 3, 15, 8),
+      );
+      expect(
+        dt.copyWith(
+          location: UTC,
+          year: 2022,
+          month: 3,
+          day: 15,
+          hour: 8,
+          minute: 25,
+        ),
+        TZDateTime(UTC, 2022, 3, 15, 8, 25),
+      );
+      expect(
+        dt.copyWith(
+          location: UTC,
+          year: 2022,
+          month: 3,
+          day: 15,
+          hour: 8,
+          minute: 25,
+          second: 10,
+        ),
+        TZDateTime(UTC, 2022, 3, 15, 8, 25, 10),
+      );
     });
   });
 }
