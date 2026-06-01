@@ -22,8 +22,10 @@ class Hour extends Interval implements TimeOrdering<Hour>, Additive<Hour> {
   /// Create an hour containing a given [TZDateTime].
   /// At Fall DST transition this correctly returns the hour that actually
   /// contains [dt], including the repeated 01:xx EST hour.
-  Hour.containing(TZDateTime dt)
-    : super(_truncateToHour(dt), _truncateToHour(dt).add(_H1));
+  factory Hour.containing(TZDateTime dt) {
+    final start = _truncateToHour(dt);
+    return Hour.beginning(start);
+  }
 
   /// Create an hour beginning at a given [TZDateTime]
   Hour.beginning(TZDateTime start) : super(start, start.add(_H1));
