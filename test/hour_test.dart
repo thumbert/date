@@ -7,13 +7,16 @@ import 'package:timezone/standalone.dart';
 
 void tests() {
   var location = getLocation(
-      'America/New_York'); // 'US/Mountain', 'US/Central', 'US/Pacific'
+    'America/New_York',
+  ); // 'US/Mountain', 'US/Central', 'US/Pacific'
   group('Test Hour:', () {
     test('create hour', () {
       var h = Hour.beginning(TZDateTime(location, 2015, 1, 1));
       expect(h.end, TZDateTime(location, 2015, 1, 1, 1));
-      expect(h.toString(),
-          '[2015-01-01 00:00:00.000-0500, 2015-01-01 01:00:00.000-0500)');
+      expect(
+        h.toString(),
+        '[2015-01-01 00:00:00.000-0500, 2015-01-01 01:00:00.000-0500)',
+      );
     });
 
     test('next/previous hour', () {
@@ -23,13 +26,19 @@ void tests() {
     });
 
     test('hour iterable around DST', () {
-      var it1 = Interval(TZDateTime(location, 2015, 3, 8, 0),
-          TZDateTime(location, 2015, 3, 8, 6));
-      expect(it1.splitLeft((dt) => Hour.beginning(dt)).length,
-          5); // spring forward
+      var it1 = Interval(
+        TZDateTime(location, 2015, 3, 8, 0),
+        TZDateTime(location, 2015, 3, 8, 6),
+      );
+      expect(
+        it1.splitLeft((dt) => Hour.beginning(dt)).length,
+        5,
+      ); // spring forward
 
-      var it2 = Interval(TZDateTime(location, 2015, 11, 1, 0),
-          TZDateTime(location, 2015, 11, 1, 6));
+      var it2 = Interval(
+        TZDateTime(location, 2015, 11, 1, 0),
+        TZDateTime(location, 2015, 11, 1, 6),
+      );
       expect(it2.splitLeft((dt) => Hour.beginning(dt)).length, 7); // fall back
     });
 
@@ -37,22 +46,41 @@ void tests() {
       var hour0 = Hour.containing(TZDateTime(location, 2022, 11, 6, 0));
       var hour1 = hour0.next;
       var hour2 = hour1.next;
-      expect(hour1.toString(),
-          '[2022-11-06 01:00:00.000-0400, 2022-11-06 01:00:00.000-0500)');
-      expect(hour2.toString(),
-          '[2022-11-06 01:00:00.000-0500, 2022-11-06 02:00:00.000-0500)');
+      expect(
+        hour1.toString(),
+        '[2022-11-06 01:00:00.000-0400, 2022-11-06 01:00:00.000-0500)',
+      );
+      expect(
+        hour2.toString(),
+        '[2022-11-06 01:00:00.000-0500, 2022-11-06 02:00:00.000-0500)',
+      );
 
-      /// You can't specify it correctly!  Which one is it? hour1 or hour2?
-      /// It is hour1!
-      var hourInvalid = Hour.containing(TZDateTime(location, 2022, 11, 6, 1));
-      expect(hourInvalid, hour1);
-      expect(hourInvalid.toString(),
-          '[2022-11-06 01:00:00.000-0400, 2022-11-06 01:00:00.000-0500)');
+      /// TZDateTime wall-clock constructor always resolves to the first
+      /// occurrence (EDT), so Hour.containing returns hour1.
+      var hourFromWallClock = Hour.containing(
+        TZDateTime(location, 2022, 11, 6, 1),
+      );
+      expect(hourFromWallClock, hour1);
+      expect(
+        hourFromWallClock.toString(),
+        '[2022-11-06 01:00:00.000-0400, 2022-11-06 01:00:00.000-0500)',
+      );
+
+      /// When dt is obtained from a TZDateTime with the correct epoch offset
+      /// (i.e. the second 1:00 AM = EST), Hour.containing must return hour2.
+      var hourFromEpoch = Hour.containing(hour2.start);
+      expect(hourFromEpoch, hour2);
+      expect(
+        hourFromEpoch.toString(),
+        '[2022-11-06 01:00:00.000-0500, 2022-11-06 02:00:00.000-0500)',
+      );
     });
 
     test('split an year into hours', () {
-      var year =
-          Interval(TZDateTime(location, 2016), TZDateTime(location, 2017));
+      var year = Interval(
+        TZDateTime(location, 2016),
+        TZDateTime(location, 2017),
+      );
       var hours = year.splitLeft((dt) => Hour.beginning(dt));
       expect(hours.length, 8784);
     });

@@ -9,14 +9,21 @@ import 'package:date/src/interval.dart';
 class Hour extends Interval implements TimeOrdering<Hour>, Additive<Hour> {
   static final Duration _H1 = Duration(hours: 1);
 
+  /// Truncate [dt] to the start of its clock hour using epoch arithmetic,
+  /// so that the correct DST occurrence is preserved.
+  static TZDateTime _truncateToHour(TZDateTime dt) {
+    final ms = dt.millisecondsSinceEpoch;
+    return TZDateTime.fromMillisecondsSinceEpoch(
+      dt.location,
+      ms - ms % Duration.millisecondsPerHour,
+    );
+  }
+
   /// Create an hour containing a given [TZDateTime].
-  /// At Fall DST transition, this constructor will return the first hour, e.g.
-  /// the hour starting on 2022-11-06 01:00:00.000-0400.
+  /// At Fall DST transition this correctly returns the hour that actually
+  /// contains [dt], including the repeated 01:xx EST hour.
   Hour.containing(TZDateTime dt)
-      : super(
-            TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour),
-            TZDateTime(dt.location, dt.year, dt.month, dt.day, dt.hour)
-                .add(_H1));
+    : super(_truncateToHour(dt), _truncateToHour(dt).add(_H1));
 
   /// Create an hour beginning at a given [TZDateTime]
   Hour.beginning(TZDateTime start) : super(start, start.add(_H1));

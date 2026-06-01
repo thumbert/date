@@ -6,6 +6,10 @@
   faster which is useful when parsing json for example. 
 
 
+# Release 2026-06-01 
+- Fixed bug in Hour.containing(dt) when the dt is in the second hour of Fall DST. 
+  Phew!  This has been lurking in there for a long while! 
+
 # Release 2026-05-17 (version 3.2.0)
 - And of course we need a .toRfc9557() method on TZDateTime. 
 - Support parsing of the ISO format for quarter, e.g. '2027-Q3' in term_parse. 
