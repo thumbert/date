@@ -98,6 +98,10 @@ class Term {
     return Term(newStart, newEnd);
   }
 
+  TZDateTime get start => _interval.start;
+  
+  TZDateTime get end => _interval.end;
+
   List<Date> days() => _interval.splitLeft((dt) => Date.containing(dt));
 
   List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));
