@@ -5,6 +5,9 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+## 2026-07-24
+- Add method months() to term, to return the list of months that cover the term.
+
 # Release 2026-06-10
 - Add convenience getters for Term start/end.  
 

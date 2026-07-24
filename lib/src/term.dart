@@ -102,6 +102,13 @@ class Term {
   
   TZDateTime get end => _interval.end;
 
+  /// Return the list of months covering this term.
+  List<Month> months() {
+    final start = Month.containing(_interval.start);
+    final end = Month.containing(_interval.end.subtract(Duration(hours: 1)));
+    return start.upTo(end);
+  }
+
   List<Date> days() => _interval.splitLeft((dt) => Date.containing(dt));
 
   List<Hour> hours() => _interval.splitLeft((dt) => Hour.beginning(dt));

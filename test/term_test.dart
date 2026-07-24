@@ -21,16 +21,18 @@ void tests() {
         Term.parse('Dec23-Mar24', UTC),
       ]);
       expect(
-          Term.generate(
-              years: years,
-              monthRange: (12, 3),
-              dayRange: (5, 10),
-              location: UTC),
-          [
-            Term.parse('5Dec21-10Mar22', UTC),
-            Term.parse('5Dec22-10Mar23', UTC),
-            Term.parse('5Dec23-10Mar24', UTC),
-          ]);
+        Term.generate(
+          years: years,
+          monthRange: (12, 3),
+          dayRange: (5, 10),
+          location: UTC,
+        ),
+        [
+          Term.parse('5Dec21-10Mar22', UTC),
+          Term.parse('5Dec22-10Mar23', UTC),
+          Term.parse('5Dec23-10Mar24', UTC),
+        ],
+      );
     });
     test('with start year', () {
       var nq20 = Term.parse('Jul20-Aug20', location);
@@ -44,6 +46,23 @@ void tests() {
       var t0 = Term.parse('Jan92-Feb92', UTC);
       var t1 = t0.withStartYear(1993);
       expect(t1, Term.parse('Jan93-Feb93', UTC));
+    });
+    test('term months()', () {
+      var term = Term.parse('Jan21-Mar21', UTC);
+      expect(term.months().length, 3);
+      expect(term.months().map((m) => m.toString()), [
+        'Jan21',
+        'Feb21',
+        'Mar21',
+      ]);
+      // 
+      term = Term.parse('3Jan21-10Mar21', UTC);
+      expect(term.months().length, 3);
+      expect(term.months().map((m) => m.toString()), [
+        'Jan21',
+        'Feb21',
+        'Mar21',
+      ]);
     });
     test('term interval', () {
       var term = Term.parse('Jan21-Mar21', location);
@@ -87,17 +106,21 @@ void tests() {
       expect(prettyTerm(Date(2018, 1, 1, location: UTC)), '1Jan18');
       expect(prettyTerm(Month(2018, 1, location: UTC)), 'Jan18');
       expect(
-          prettyTerm(Interval(
-              TZDateTime.utc(2018, 1, 1), TZDateTime.utc(2018, 1, 21))),
-          '1Jan18-20Jan18');
+        prettyTerm(
+          Interval(TZDateTime.utc(2018, 1, 1), TZDateTime.utc(2018, 1, 21)),
+        ),
+        '1Jan18-20Jan18',
+      );
       expect(
-          prettyTerm(Interval(
-              TZDateTime.utc(2018, 1, 3), TZDateTime.utc(2018, 5, 21))),
-          '3Jan18-20May18');
+        prettyTerm(
+          Interval(TZDateTime.utc(2018, 1, 3), TZDateTime.utc(2018, 5, 21)),
+        ),
+        '3Jan18-20May18',
+      );
       expect(
-          prettyTerm(
-              Interval(TZDateTime.utc(2018, 1), TZDateTime.utc(2018, 5))),
-          'Jan18-Apr18');
+        prettyTerm(Interval(TZDateTime.utc(2018, 1), TZDateTime.utc(2018, 5))),
+        'Jan18-Apr18',
+      );
     });
   });
 }
