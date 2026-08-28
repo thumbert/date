@@ -40,11 +40,12 @@ class Term {
   /// <p>If years = [2021, 2022, 2023], monthRange = (12,3),  dayRange = (5,12)
   ///   return ['5Dec21-12Mar22', '5Dec22-12Mar23', '5Dec23-12Mar24']
   ///
-  static List<Term> generate(
-      {required List<int> years,
-      (int, int)? monthRange,
-      (int, int)? dayRange,
-      required Location location}) {
+  static List<Term> generate({
+    required List<int> years,
+    (int, int)? monthRange,
+    (int, int)? dayRange,
+    required Location location,
+  }) {
     var out = <Term>[];
     for (var year in years) {
       Date start, end;
@@ -66,8 +67,12 @@ class Term {
           if (monthRange.$2 >= monthRange.$1) {
             end = Date(year, monthRange.$2, dayRange.$2, location: location);
           } else {
-            end =
-                Date(year + 1, monthRange.$2, dayRange.$2, location: location);
+            end = Date(
+              year + 1,
+              monthRange.$2,
+              dayRange.$2,
+              location: location,
+            );
           }
         }
       }
@@ -85,8 +90,12 @@ class Term {
   /// start year 2018.
   Term withStartYear(int year) {
     var _start = startDate;
-    var newStart =
-        Date(year, _start.month, _start.day, location: _start.location);
+    var newStart = Date(
+      year,
+      _start.month,
+      _start.day,
+      location: _start.location,
+    );
     var _end = endDate;
     var offset = _end.year - _start.year;
     late Date newEnd;
@@ -99,8 +108,19 @@ class Term {
   }
 
   TZDateTime get start => _interval.start;
-  
+
   TZDateTime get end => _interval.end;
+
+  /// Return the list of years covering this term.
+  List<int> years() {
+    var startYear = startDate.year;
+    var endYear = endDate.year;
+    var result = <int>[];
+    for (var year = startYear; year <= endYear; year++) {
+      result.add(year);
+    }
+    return result;
+  }
 
   /// Return the list of months covering this term.
   List<Month> months() {
@@ -153,7 +173,6 @@ class Term {
     return _interval == term._interval;
   }
 
-
   Term withTimeZone(Location location) {
     var intTz = interval.withTimeZone(location);
     return Term.fromInterval(intTz);
@@ -190,8 +209,9 @@ String prettyTerm(Interval interval) {
       if (mStart.month == 1 && mEnd.month == 12 && mEnd.year == mStart.year) {
         return 'Cal ${mStart.year % 100}';
       } else if (interval.isQuarter()) {
-        return Quarter.fromTZDateTime(interval.start)
-            .toString(fmt: Quarter.format2);
+        return Quarter.fromTZDateTime(
+          interval.start,
+        ).toString(fmt: Quarter.format2);
       }
       return '${mStart.toString()}-${mEnd.toString()}';
     }

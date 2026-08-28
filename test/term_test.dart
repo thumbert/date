@@ -64,6 +64,13 @@ void tests() {
         'Mar21',
       ]);
     });
+    test('term years()', () {
+      var term = Term.parse('Jan21-Mar21', UTC);
+      expect(term.years(), [2021]);
+      // 
+      term = Term.parse('3Oct21-10Mar25', UTC);
+      expect(term.years(), [2021, 2022, 2023, 2024, 2025]);
+    });
     test('term interval', () {
       var term = Term.parse('Jan21-Mar21', location);
       var months = term.interval.splitLeft((dt) => Month.containing(dt));
