@@ -84,6 +84,10 @@ class Term {
 
   Location get location => interval.start.location;
 
+  Term withEnd(Date date) => Term(startDate, date);
+
+  Term withStart(Date date) => Term(date, endDate);
+  
   /// Return a similar term that starts in year [year].
   /// For example, if term is 'Jul20-Aug20', it will return 'Jul18-Aug18' with
   /// start year 2018.   Or term 'Nov20-Mar21' will return 'Nov18-Mar19' with
@@ -142,12 +146,12 @@ class Term {
 
   Interval get interval => _interval;
 
-  /// Split the term at the given date [at]. 
+  /// Split the term at the given date [at].
   /// Returns a tuple of the left and right terms.
-  /// The left term will contain all dates before [at], and the right term will 
+  /// The left term will contain all dates before [at], and the right term will
   /// contain all dates from [at] onwards.
-  /// 
-  /// 
+  ///
+  ///
   /// If [at] is before the start of the term, the left term will be null.
   /// If [at] is after the end of the term, the right term will be null.
   /// If [at] is within the term, the term will be split into two non-null terms.
