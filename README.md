@@ -120,11 +120,12 @@ Term.generate([2022,2023], monthRange: (12,3), dayRange: (5,10), location: UTC);
 
 ### Other methods
 
-Get the list of days, months, years that cover this term.
+Get the list of hours, days, months, years that cover this term.
 ```dart
-term.years();
-term.months();  
+term.hours();
 term.days();  
+term.months();  
+term.years();
 ```
 
 Get the count of days in this term `term.dayCount()`.
