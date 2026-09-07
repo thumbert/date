@@ -34,8 +34,11 @@ You can fuse together intervals using the static method
 List<Interval> fusedIntervals = Interval.fuse([i1, i2, i3, i4, i5]);
 ```
 
+Split an interval at at given time `at` into two parts 
+```dart
+var (left, right) = interval.splitAt(at);
+```
   
-
 
 ## Hour class
 A class to represent a given hour.
@@ -114,6 +117,31 @@ Term.generate([2022,2023], location: UTC); // ['Jan22-Dec22', 'Jan23-Dec23']
 Term.generate([2022,2023], monthRange: (12,3), location: UTC); // ['Dec22-Mar23', 'Dec23-Mar24']
 Term.generate([2022,2023], monthRange: (12,3), dayRange: (5,10), location: UTC); // ['5Dec22-10Mar23', '5Dec23-10Mar24']
 ```
+
+### Other methods
+
+Get the list of days, months, years that cover this term.
+```dart
+term.years();
+term.months();  
+term.days();  
+```
+
+Get the count of days in this term `term.dayCount()`.
+
+Some utility functions to determine the 'type' of a term:
+```dart
+term.isOneDay(); // a one-day term, e.g. 3Aug26
+term.isOneMonth(); // a one-month term, e.g Feb26
+term.isMonthRange(); // a month-range term, e.g. Aug26-Nov27
+term.isDayRange(); // most general, if it's not a one-day, one-month or a month-range.
+```
+
+Split a term into two terms at a `Date` boundary.  
+```dart
+var (left, right) = term.splitAt(at);
+```
+
 
 ## Features and bugs
 

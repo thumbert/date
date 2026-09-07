@@ -5,6 +5,11 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+## 2026-09-07
+- Add a `splitAt` method for term.
+- Add a `toTerm` method for interval.
+- Improved the README a bit.
+
 ## 2026-08-28
 - Add method years() to term, to return the list of years that cover the term.
 

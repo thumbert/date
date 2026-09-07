@@ -55,7 +55,7 @@ void tests() {
         'Feb21',
         'Mar21',
       ]);
-      // 
+      //
       term = Term.parse('3Jan21-10Mar21', UTC);
       expect(term.months().length, 3);
       expect(term.months().map((m) => m.toString()), [
@@ -67,7 +67,7 @@ void tests() {
     test('term years()', () {
       var term = Term.parse('Jan21-Mar21', UTC);
       expect(term.years(), [2021]);
-      // 
+      //
       term = Term.parse('3Oct21-10Mar25', UTC);
       expect(term.years(), [2021, 2022, 2023, 2024, 2025]);
     });
@@ -75,6 +75,30 @@ void tests() {
       var term = Term.parse('Jan21-Mar21', location);
       var months = term.interval.splitLeft((dt) => Month.containing(dt));
       expect(months.length, 3);
+    });
+    test('split term at a given date', () {
+      var term = Term.parse('1Jan19-5Jan19', location);
+      var split = term.splitAt(Date(2019, 1, 3, location: location));
+      expect(split, (
+        Term.parse('1Jan19-2Jan19', location),
+        Term.parse('3Jan19-5Jan19', location),
+      ));
+
+      split = term.splitAt(Date(2018, 12, 24, location: location));
+      expect(split, (null, term));
+
+      split = term.splitAt(Date(2019, 1, 6, location: location));
+      expect(split, (term, null));
+
+      split = term.splitAt(Date(2019, 1, 5, location: location));
+      expect(split, (
+        Term.parse('1Jan19-4Jan19', location),
+        Term.parse('5Jan19', location),
+      ));
+    });
+    test('splitting a one-day term at its date returns the whole term', () {
+      var term = Term.parse('3Jan19', location);
+      expect(term.splitAt(Date(2019, 1, 3, location: location)), (term, null));
     });
     test('term is*', () {
       expect(Term.parse('3Jun20', location).isOneDay(), true);

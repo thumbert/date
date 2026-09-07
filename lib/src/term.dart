@@ -142,6 +142,32 @@ class Term {
 
   Interval get interval => _interval;
 
+  /// Split the term at the given date [at]. 
+  /// Returns a tuple of the left and right terms.
+  /// The left term will contain all dates before [at], and the right term will 
+  /// contain all dates from [at] onwards.
+  /// 
+  /// 
+  /// If [at] is before the start of the term, the left term will be null.
+  /// If [at] is after the end of the term, the right term will be null.
+  /// If [at] is within the term, the term will be split into two non-null terms.
+  /// Examples:
+  /// ```
+  /// var term = Term.parse('1Jan19-5Jan19', location)!;
+  /// var split = term.splitAt(Date(2019, 1, 3, location: location));
+  /// // split is (Term.parse('1Jan19-2Jan19', location), Term.parse('3Jan19-5Jan19', location))
+  /// ```
+  (Term? left, Term? right) splitAt(Date at) {
+    assert(location == at.location);
+    if (at.isBefore(startDate)) return (null, this);
+    if (at.isAfter(endDate)) return (this, null);
+    // if the term is only one day, and at is that day, return (this, null)
+    if (isOneDay() && at == startDate) return (this, null);
+    var left = Term(startDate, at.previous);
+    var right = Term(at, endDate);
+    return (left, right);
+  }
+
   bool isOneDay() {
     return interval.end.difference(interval.start).inDays == 1;
   }

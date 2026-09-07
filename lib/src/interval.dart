@@ -177,7 +177,12 @@ class Interval implements Comparable<Interval> {
     return Interval(iStart, iEnd);
   }
 
-  /// Split an interval at a given [TZDateTime]
+  /// Split an interval at a given [TZDateTime].
+  ///
+  /// Returns a tuple containing the left and right intervals.
+  /// If [at] is before the start of the interval, the left part will be null.
+  /// If [at] is after the end of the interval, the right part will be null.
+  ///
   (Interval? left, Interval? right) splitAt(TZDateTime at) {
     assert(start.location == at.location);
     if (at.isBefore(start)) {
@@ -237,7 +242,8 @@ class Interval implements Comparable<Interval> {
   /// see the pairing function http://szudzik.com/ElegantPairing.pdf
   @override
   int get hashCode {
-    var res = end.millisecondsSinceEpoch * (end.millisecondsSinceEpoch + 1) +
+    var res =
+        end.millisecondsSinceEpoch * (end.millisecondsSinceEpoch + 1) +
         start.millisecondsSinceEpoch;
     return res;
   }
@@ -256,13 +262,26 @@ class Interval implements Comparable<Interval> {
     var current = f(start);
     // NOTE: the calculation of milliseconds is expensive.  May want to think
     // of alternatives for a hot path.
-    while ((current.end.millisecondsSinceEpoch)
-            .compareTo(end.millisecondsSinceEpoch) <
+    while ((current.end.millisecondsSinceEpoch).compareTo(
+          end.millisecondsSinceEpoch,
+        ) <
         1) {
       res.add(current);
       current = f(current.end);
     }
     return res;
+  }
+
+  /// A fallible conversion of this interval to a Term.
+  /// Returns null if the interval does not start and end at midnight.
+  Term? toTerm() {
+    if (!isMidnight(start)) {
+      return null;
+    }
+    if (!isMidnight(end)) {
+      return null;
+    }
+    return Term.fromInterval(this);
   }
 
   @override
@@ -286,17 +305,27 @@ class Interval implements Comparable<Interval> {
   /// want to change the time zone location.
   Interval withTimeZone(Location location) {
     var newStart = TZDateTime(
-        location,
-        start.year,
-        start.month,
-        start.day,
-        start.hour,
-        start.minute,
-        start.second,
-        start.millisecond,
-        start.microsecond);
-    var newEnd = TZDateTime(location, end.year, end.month, end.day, end.hour,
-        end.minute, end.second, end.millisecond, end.microsecond);
+      location,
+      start.year,
+      start.month,
+      start.day,
+      start.hour,
+      start.minute,
+      start.second,
+      start.millisecond,
+      start.microsecond,
+    );
+    var newEnd = TZDateTime(
+      location,
+      end.year,
+      end.month,
+      end.day,
+      end.hour,
+      end.minute,
+      end.second,
+      end.millisecond,
+      end.microsecond,
+    );
     return Interval(newStart, newEnd);
   }
 }
