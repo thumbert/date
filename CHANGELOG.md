@@ -5,6 +5,10 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+## 2026-09-18
+- Fix edge case of one day for splitAt.  Make it consistent with the rest of the 
+  implementation.
+
 ## 2026-09-07
 - Add a `splitAt` method for term.
 - Add a `toTerm` method for interval.

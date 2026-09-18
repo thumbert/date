@@ -163,10 +163,8 @@ class Term {
   /// ```
   (Term? left, Term? right) splitAt(Date at) {
     assert(location == at.location);
-    if (at.isBefore(startDate)) return (null, this);
+    if (at.isBefore(startDate) || at == startDate) return (null, this);
     if (at.isAfter(endDate)) return (this, null);
-    // if the term is only one day, and at is that day, return (this, null)
-    if (isOneDay() && at == startDate) return (this, null);
     var left = Term(startDate, at.previous);
     var right = Term(at, endDate);
     return (left, right);

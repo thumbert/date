@@ -98,7 +98,7 @@ void tests() {
     });
     test('splitting a one-day term at its date returns the whole term', () {
       var term = Term.parse('3Jan19', location);
-      expect(term.splitAt(Date(2019, 1, 3, location: location)), (term, null));
+      expect(term.splitAt(Date(2019, 1, 3, location: location)), (null, term));
     });
     test('term is*', () {
       expect(Term.parse('3Jun20', location).isOneDay(), true);
