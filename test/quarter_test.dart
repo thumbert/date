@@ -29,6 +29,8 @@ void tests() {
       expect([m.year, m.quarter], [2014, 2]);
       m = Quarter.fromTZDateTime(TZDateTime(local, 2014, 10));
       expect([m.year, m.quarter], [2014, 4]);
+      m = Quarter.fromTZDateTime(TZDateTime(local, 2014, 12));
+      expect([m.year, m.quarter], [2014, 4]);
     });
 
     test('Create quarter in a different timezone', () {
@@ -36,7 +38,7 @@ void tests() {
       expect(m1.location.toString(), 'America/New_York');
       expect(m1.start.toString(), '2017-01-01 00:00:00.000-0500');
       var m2 = Quarter(2017, 1, location: UTC);
-      expect(m2.location.toString(), 'UTC');
+      expect(m2.location.toString(), 'Etc/UTC');
       expect(m2.start.toString(), '2017-01-01 00:00:00.000Z');
     });
 

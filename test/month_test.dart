@@ -43,7 +43,7 @@ void tests() {
       expect(m1.location.toString(), 'America/New_York');
       expect(m1.start.toString(), '2017-01-01 00:00:00.000-0500');
       var m2 = Month(2017, 1, location: UTC);
-      expect(m2.location.toString(), 'UTC');
+      expect(m2.location.toString(), 'Etc/UTC');
       expect(m2.start.toString(), '2017-01-01 00:00:00.000Z');
     });
 

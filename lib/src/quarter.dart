@@ -27,7 +27,7 @@ class Quarter extends Interval implements TimeOrdering<Quarter> {
         super(TZDateTime(datetime.location, datetime.year),
             TZDateTime(datetime.location, datetime.year)) {
     var month = datetime.month;
-    quarter = month ~/ 3 + 1;
+    quarter = (month - 1) ~/ 3 + 1;
     _value = 100 * year + (quarter - 1) * 25;
     start = TZDateTime(datetime.location, year, (quarter - 1) * 3 + 1);
     end = Month.containing(start).add(2).end;
