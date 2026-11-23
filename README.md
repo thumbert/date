@@ -81,6 +81,10 @@ m1.nextN(12); // next 12 months from Mar17 (not included), e.g [Apr17, ... Mar18
 m1.upTo(Month(2017,12)); // [Mar17, Apr17, May17, ... Dec17]  
 ```
 
+Find the earliest or latest calendar month in an iterable with
+`[m1, m2].min()` or `[m1, m2].max()`. Both return the first month on a tie
+and throw `StateError` for an empty iterable.
+
 ## Term
 
 Term is a higher level interval-like concept that has a start and end **`Date`**

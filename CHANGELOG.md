@@ -5,6 +5,9 @@
   but a simple int year*10000 + month*100 + day.  Should make creation of Dates 
   faster which is useful when parsing json for example. 
 
+## 2026-11-23
+- Add `min()` and `max()` extension methods on `Iterable<Month>`.
+
 ## 2026-20-26
 - Fix bug in Quarter.fromTZDateTime().  Was failing for a timestamp in Dec!  Embarrassing!
 

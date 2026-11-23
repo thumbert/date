@@ -9,6 +9,7 @@ export 'src/datetime_ext.dart';
 export 'src/hour.dart';
 export 'src/interval.dart';
 export 'src/month.dart';
+export 'src/month_ext.dart';
 export 'src/month_parse.dart';
 export 'src/myy.dart';
 export 'src/quarter.dart';

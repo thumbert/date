@@ -111,6 +111,32 @@ void tests() {
       expect(m1.isAfter(m2), true);
     });
 
+    test('minimum month of an iterable', () {
+      var earliest = Month(2014, 12, location: local);
+      var months = [Month.utc(2015, 1), earliest, Month.utc(2015, 2)];
+      expect(months.min(), same(earliest));
+      expect(months.where((month) => month.year == 2015).min(), months.first);
+      expect([earliest].min(), same(earliest));
+      expect([earliest, Month.utc(2014, 12)].min(), same(earliest));
+    });
+
+    test('minimum of an empty month iterable throws', () {
+      expect(() => <Month>[].min(), throwsStateError);
+    });
+
+    test('maximum month of an iterable', () {
+      var latest = Month(2015, 2, location: local);
+      var months = [Month.utc(2015, 1), latest, Month.utc(2014, 12)];
+      expect(months.max(), same(latest));
+      expect(months.where((month) => month.year == 2014).max(), months.last);
+      expect([latest].max(), same(latest));
+      expect([latest, Month.utc(2015, 2)].max(), same(latest));
+    });
+
+    test('maximum of an empty month iterable throws', () {
+      expect(() => <Month>[].max(), throwsStateError);
+    });
+
     test('compareTo months', () {
       var m1 = Month(2015, 6, location: UTC);
       var m2 = Month(2015, 2, location: UTC);
